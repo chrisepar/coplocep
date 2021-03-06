@@ -1,0 +1,8 @@
+.loginContainer {
+    min-height: 100vh;
+}
+
+.loginFormControl {
+    /* border-color: black; */
+    width: 300px;
+}
