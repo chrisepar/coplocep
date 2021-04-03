@@ -1,8 +1,18 @@
 import React, { Component } from 'react';
+import { useHistory } from "react-router-dom";
+import appDetails from '_appDetails.js';
+
 import { Grid, Box, Select, FormControl, MenuItem, InputLabel } from '@material-ui/core';
 import 'css/_login.css';
 
 export default function Login() {
+    const history = useHistory();
+
+    const onChangeRole = (event) => {
+        // setPersonName(event.target.value);
+        history.push(appDetails.baseRoute + "/membership");
+    };
+
     return (
         <Grid container
             direction="column"
@@ -12,7 +22,8 @@ export default function Login() {
                 <InputLabel id="role-label">Login Role</InputLabel>
                 <Select
                     labelId="role-label"
-                    id="login-role">
+                    id="login-role"
+                    onChange={onChangeRole}>
                     <MenuItem value="AD">Administrator</MenuItem>
                     <MenuItem value="CA">Cashier</MenuItem>
                     <MenuItem value="BK">Book Keeper</MenuItem>

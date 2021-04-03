@@ -42,6 +42,7 @@ export default makeStyles((theme) => ({
         justifyContent: 'flex-end',
     },
     content: {
+        width: '90vh',
         flexGrow: 1,
         padding: theme.spacing(3),
         transition: theme.transitions.create('margin', {
@@ -58,8 +59,8 @@ export default makeStyles((theme) => ({
         marginLeft: 0,
     },
     contentContainer: {        
-        display: 'flex',
-        height: '85vh', 
+        // display: 'flex',
+        height: '88vh', 
         width: '100%',
     }
 }));

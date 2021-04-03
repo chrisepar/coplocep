@@ -20,7 +20,6 @@ function Toolbar() {
         </GridToolbarContainer>
     );
 }
-
 function DataGridCore(props) {
     const classes = useStyles();
     const { data, columns, filterModel } = props;
@@ -32,7 +31,7 @@ function DataGridCore(props) {
             columns={columns}
             filterModel={filterModel}
             components={{
-                Toolbar: Toolbar,
+                Toolbar: Toolbar
             }}
             autoPageSize={true}
             pagination={true}

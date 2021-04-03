@@ -6,9 +6,10 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
 import Checkbox from '@material-ui/core/Checkbox';
+import { isNull } from 'lodash';
 
 function TableHeader(props) {
-    const { classes, onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort, headCells, isMultiSelect } = props;
+    const { classes, onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort, columns, isMultiSelect, editable } = props;
     const createSortHandler = (property) => (event) => {
         onRequestSort(event, property);
     };
@@ -26,20 +27,23 @@ function TableHeader(props) {
                         />
                     </TableCell>
                 ) : null}
-                {headCells.map((headCell) => (
+                {(editable) ? <TableCell /> : null}
+                {columns.map((item) => (
                     <TableCell
-                        key={headCell.id}
+                        key={item.field}
                         align='left'
-                        padding={headCell.disablePadding ? 'none' : 'default'}
-                        sortDirection={orderBy === headCell.id ? order : false}
+                        padding={columns.disablePadding ? 'none' : 'default'}
+                        sortDirection={orderBy === item.field ? order : false}
                     >
                         <TableSortLabel
-                            active={orderBy === headCell.id}
-                            direction={orderBy === headCell.id ? order : 'asc'}
-                            onClick={createSortHandler(headCell.id)}
+                            active={orderBy === item.field}
+                            direction={orderBy === item.field ? order : 'asc'}
+                            onClick={createSortHandler(item.field)}
                         >
-                            {headCell.label}
-                            {orderBy === headCell.id ? (
+                            <div className={classes.colHeaderContainer} style={{ width: (item.width) ? item.width : "100px" }}>
+                                {item.headerName}
+                            </div>
+                            {orderBy === item.field ? (
                                 <span className={classes.visuallyHidden}>
                                     {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
                                 </span>
@@ -60,11 +64,12 @@ TableHeader.propTypes = {
     order: PropTypes.oneOf(['asc', 'desc']).isRequired,
     orderBy: PropTypes.string.isRequired,
     rowCount: PropTypes.number.isRequired,
-    headCells: PropTypes.array.isRequired
+    columns: PropTypes.array.isRequired
 };
 
 TableHeader.defaultProps = {
-    disablePadding: false
+    disablePadding: false,
+    editable: false
 };
 
 export default TableHeader;

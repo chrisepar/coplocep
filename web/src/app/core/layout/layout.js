@@ -1,6 +1,8 @@
 //Framework
 import React, { Component } from 'react';
 import clsx from 'clsx';
+import { useHistory, useLocation } from "react-router-dom";
+import appDetails from '_appDetails.js';
 
 //Material UI
 import AppBar from '@material-ui/core/AppBar';
@@ -28,6 +30,8 @@ import appList from 'app_list.js';
 export default function Layout(props) {
     const classes = useStyles();
     const theme = useTheme();
+    const history = useHistory();
+    const location = useLocation();
 
     const [open, setOpen] = React.useState(false);
 
@@ -38,6 +42,10 @@ export default function Layout(props) {
     const handleDrawerClose = () => {
         setOpen(false);
     };
+
+    const handleListItemClick = (event, path) => {
+        history.push(path);
+    }
 
     return (
         <div className={classes.root}>
@@ -58,7 +66,7 @@ export default function Layout(props) {
                         <MenuIcon />
                     </IconButton>
                     <Typography variant="h6" noWrap>
-                        Persistent drawer
+                        {props.appName}
                     </Typography>
                 </Toolbar>
             </AppBar>
@@ -78,12 +86,20 @@ export default function Layout(props) {
                 </div>
                 <Divider />
                 <List>
-                    {appList.map((app, index) => (
-                        <ListItem button key={app.id}>
-                            <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-                            <ListItemText primary={app.name} />
-                        </ListItem>
-                    ))}
+                    {appList.map((app, index) => {
+
+                        return (
+                            <ListItem
+                                button
+                                key={app.id}
+                                selected={props.appName === app.name}
+                                onClick={(event) => handleListItemClick(event, (app.navPath) ? app.navPath : app.path)}>
+                                <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
+                                <ListItemText primary={app.navLabel} />
+                            </ListItem>
+                        );
+                    }
+                    )}
                 </List>
             </Drawer>
             <main

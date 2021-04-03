@@ -1,7 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
+import { useHistory, useLocation } from "react-router-dom";
 
+//Material UI
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -11,9 +13,13 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import Checkbox from '@material-ui/core/Checkbox';
 import { useTableStyles } from 'styles/core/_table.js';
+import IconButton from '@material-ui/core/IconButton';
+import EditIcon from '@material-ui/icons/Edit';
 
 import TableHeader from "app/core/table/tableHeader.js";
 import TableToolbar from "app/core/table/tableToolbar.js";
+
+import field_types from 'app/core/fields/field_types.js';
 
 //Table
 function descendingComparator(a, b, orderBy) {
@@ -42,22 +48,38 @@ function stableSort(array, comparator) {
     return stabilizedThis.map((el) => el[0]);
 }
 
-function dataCell(headCells, row) {
+function valueEmpty(fieldType, value) {
+    if (value === "") {
+        switch (fieldType) {
+            case field_types.text_field:
+                return "";
+            case field_types.number_field:
+                return 0;
+            default:
+                return "";
+        }
+    } else {
+        return value;
+    }
+}
+
+function dataCell(col, row) {
     return (
-        headCells.map((cell, cellIndex) => (
-            <TableCell key={row.name + "_" + cellIndex} align="left">{row[cell.id]}</TableCell>
+        col.map((cell, cellIndex) => (
+            <TableCell key={row.id + "_" + cellIndex} align="left">{valueEmpty(cell.field, row[cell.field]).toString()}</TableCell>
         ))
     );
 }
 
 function getMaxRowsPerPage() {
-    return Math.abs(Math.floor((window.innerHeight - 292) / 53));
+    return Math.abs(Math.floor((window.innerHeight - 185) / 53)) - 1;
 }
 
 function TableCore(props) {
+    const history = useHistory();
     const classes = useTableStyles();
 
-    const { data, headCells, isMultiSelect, rowsPerPageOptions, title } = props;
+    const { data, columns, isMultiSelect, rowsPerPageOptions, title, editable } = props;
 
     const [order, setOrder] = React.useState('asc');
 
@@ -66,7 +88,7 @@ function TableCore(props) {
     const [selected, setSelected] = React.useState([]);
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(getMaxRowsPerPage());
-    
+
     const handleRequestSort = (event, property) => {
         const isAsc = orderBy === property && order === 'asc';
         setOrder(isAsc ? 'desc' : 'asc');
@@ -82,7 +104,7 @@ function TableCore(props) {
         setSelected([]);
     };
 
-    const handleClick = (event, name) => {
+    const handleMultiSelectClick = (event, name) => {
         const selectedIndex = selected.indexOf(name);
         let newSelected = [];
 
@@ -111,37 +133,86 @@ function TableCore(props) {
         setPage(0);
     };
 
+    const handleEditBtnClick = (event, id) => {
+        history.push(history.location.pathname + "/" + id);
+    };
+
     const isSelected = (name) => selected.indexOf(name) !== -1;
 
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
 
+    const getTotal = (field, row) => {
+        var total = 0;
+        for (var counter = 0; counter < row.length; counter++) {
+            total = total + row[counter][field];
+        };
+        return total;
+    };
+
+
+    const hasTotalRow = () => {
+        for (var counter = 0; counter < columns.length; counter++) {
+            if (columns[counter].hasTotal) {
+                return true;
+            }
+        };
+        return false;
+    }
+
+    const rowForTotal = () => {
+        if (hasTotalRow()) {
+            return (
+                <TableRow hover tabIndex={-1} key="totalRowID" className={classes.tableRow} >
+                    <TableCell />
+                    {
+                        columns.map((col, colIndex) => {
+                            if (col.hasTotal) {
+                                return (
+                                    <TableCell key={"totalRowID" + "_" + colIndex} align="left" className={classes.totalRow}>{getTotal(col.field, data)}</TableCell>
+                                );
+                            } else {
+                                return (
+                                    <TableCell />
+                                );
+                            }
+                        })
+                    }
+                </TableRow>
+            );
+        } else {
+            return null;
+        }
+    };
+
     return (
-        <div className={classes.root}>
-            <Paper className={classes.paper}>
-                <TableToolbar title={title} numSelected={selected.length} isMultiSelect={isMultiSelect}/>
-                <TableContainer>
-                    <Table
-                        className={classes.table}
-                        aria-labelledby="tableTitle"
-                        size='medium'
-                        aria-label="enhanced table"
-                    >
-                        <TableHeader
-                            classes={classes}
-                            order={order}
-                            orderBy={orderBy}
-                            onRequestSort={handleRequestSort}
-                            rowCount={data.length}
-                            headCells={headCells}
+        <Paper className={classes.paper}>
+            <TableToolbar title={title} numSelected={selected.length} isMultiSelect={isMultiSelect} />
+            <TableContainer className={classes.tableContainer}>
+                <Table
+                    className={classes.table}
+                    aria-labelledby="tableTitle"
+                    size='medium'
+                    aria-label="enhanced table"
+                    stickyHeader
+                >
+                    <TableHeader
+                        classes={classes}
+                        order={order}
+                        orderBy={orderBy}
+                        onRequestSort={handleRequestSort}
+                        rowCount={data.length}
+                        columns={columns}
 
-                            numSelected={selected.length}
-                            onSelectAllClick={handleSelectAllClick}
-                            isMultiSelect={isMultiSelect}
+                        numSelected={selected.length}
+                        onSelectAllClick={handleSelectAllClick}
+                        isMultiSelect={isMultiSelect}
+                        editable={editable}
 
-                        />
-                        <TableBody>
-                            {stableSort(data, getComparator(order, orderBy))
-                                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                    />
+                    <TableBody className={classes.tableBody}>
+                        {
+                            stableSort(data, getComparator(order, orderBy))
+                                // .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                 .map((row, rowIndex) => {
                                     if (isMultiSelect) {
                                         const isItemSelected = isSelected(row.name);
@@ -149,7 +220,7 @@ function TableCore(props) {
                                         return (
                                             <TableRow
                                                 hover
-                                                onClick={(event) => handleClick(event, row.name)}
+                                                onClick={(event) => handleMultiSelectClick(event, row.name)}
                                                 role="checkbox"
                                                 aria-checked={isItemSelected}
                                                 tabIndex={-1}
@@ -164,7 +235,7 @@ function TableCore(props) {
                                                         inputProps={{ 'aria-labelledby': labelId }}
                                                     />
                                                 </TableCell>
-                                                {dataCell(headCells, row)}
+                                                {dataCell(columns, row)}
                                             </TableRow>
                                         );
                                     } else {
@@ -172,43 +243,53 @@ function TableCore(props) {
                                             <TableRow
                                                 hover
                                                 tabIndex={-1}
-                                                key={row.name}
+                                                key={row.id}
                                                 className={classes.tableRow}
                                             >
-                                                {dataCell(headCells, row)}
+                                                {(editable) ?
+                                                    <TableCell>
+                                                        <IconButton aria-label="expand row" size="small" onClick={(event) => handleEditBtnClick(event, row.id)}>
+                                                            <EditIcon />
+                                                        </IconButton>
+                                                    </TableCell>
+                                                    : null
+                                                }
+                                                {dataCell(columns, row)}
                                             </TableRow>
                                         );
                                     }
-                                })}
-                            {emptyRows > 0 && (
-                                <TableRow style={{ height: 53 * emptyRows }}>
+                                })
+                        }
+
+                        {
+                            emptyRows > 0 && (
+                                <TableRow style={{ height: 53 * (hasTotalRow() ? emptyRows - 1 : emptyRows) }}>
                                     <TableCell colSpan={6} />
                                 </TableRow>
-                            )}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
-                <TablePagination
-                    rowsPerPageOptions={rowsPerPageOptions}
-                    component="div"
-                    count={data.length}
-                    rowsPerPage={rowsPerPage}
-                    page={page}
-                    onChangePage={handleChangePage}
-                    onChangeRowsPerPage={handleChangeRowsPerPage}
-                />
-            </Paper>
-        </div>
+                            )
+                        }
+
+                        {
+                            rowForTotal()
+                        }
+                    </TableBody>
+                </Table>
+            </TableContainer>
+        </Paper>
     );
 };
 
 TableCore.propTypes = {
     data: PropTypes.array.isRequired,
+    columns: PropTypes.array.isRequired,
 };
 
 TableCore.defaultProps = {
     rowsPerPageOptions: [],
-    title: ""
+    title: "",
+    isMultiSelect: false,
+    rowsPerPageOptions: [],
+    editable: false
 };
 
 export default TableCore;

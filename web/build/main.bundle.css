@@ -1,4 +1,13 @@
 .loginContainer {
     min-height: 100vh;
-    background-color: red;
 }
+
+.loginFormControl {
+    /* border-color: black; */
+    width: 300px;
+}
+body {
+    margin: 0px;
+}
+
+/*# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIndlYnBhY2s6Ly9jb3Bsb2NlcC8uL3NyYy9jc3MvX2xvZ2luLmNzcyIsIndlYnBhY2s6Ly9jb3Bsb2NlcC8uL3NyYy9jc3MvX2NvcmUuY3NzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBO0lBQ0ksaUJBQWlCO0FBQ3JCOztBQUVBO0lBQ0kseUJBQXlCO0lBQ3pCLFlBQVk7QUFDaEIsQztBQ1BBO0lBQ0ksV0FBVztBQUNmLEMiLCJmaWxlIjoibWFpbi5idW5kbGUuY3NzIiwic291cmNlc0NvbnRlbnQiOlsiLmxvZ2luQ29udGFpbmVyIHtcclxuICAgIG1pbi1oZWlnaHQ6IDEwMHZoO1xyXG59XHJcblxyXG4ubG9naW5Gb3JtQ29udHJvbCB7XHJcbiAgICAvKiBib3JkZXItY29sb3I6IGJsYWNrOyAqL1xyXG4gICAgd2lkdGg6IDMwMHB4O1xyXG59IiwiYm9keSB7XHJcbiAgICBtYXJnaW46IDBweDtcclxufSJdLCJzb3VyY2VSb290IjoiIn0=*/

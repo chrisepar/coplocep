@@ -1,6 +1,6 @@
 
 var field_types = {
-    text_field: "text",
+    text_field: "string",
     number_field: "number",
     dropdown_field: "dropdown",
     label_field: "label",

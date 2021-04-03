@@ -1,13 +1,14 @@
 import { makeStyles, lighten } from '@material-ui/core/styles';
 
+const drawerWidth = 240;
 
 const useTableStyles = makeStyles((theme) => ({
     root: {
-        width: '100%',
+        display: 'flex'
     },
     paper: {
-        width: '100%',
-        marginBottom: theme.spacing(2),
+        // width: `calc(100% - ${drawerWidth}px)`,
+        marginBottom: theme.spacing(2)
     },
     table: {
         minWidth: 750,
@@ -26,6 +27,24 @@ const useTableStyles = makeStyles((theme) => ({
         top: 20,
         width: 1,
     },
+    colHeaderContainer: {
+        display: 'block',
+        whiteSpace: 'nowrap',
+        overflow: 'hidden',
+        textOverflow: 'ellipsis'           
+    },
+    totalRowStyle: {
+        fontWeight: 'bold'
+    },
+    tableContainer: {
+        maxHeight: '83vh',
+    },
+    emptyRows: {
+        height: '75vh'
+    },
+    totalRow: {
+        fontWeight: 'bold'
+    }
 }));
 
 const useToolbarStyles = makeStyles((theme) => ({
@@ -47,7 +66,6 @@ const useToolbarStyles = makeStyles((theme) => ({
         flex: '1 1 100%',
     },
 }));
-
 export {
     useTableStyles,
     useToolbarStyles
