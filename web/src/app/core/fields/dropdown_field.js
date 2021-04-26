@@ -7,18 +7,7 @@ import useStyles from 'styles/core/fields/_formControl.js';
 
 function DropdownCore(props) {
     const classes = useStyles();
-    const { id, label, defaultVal, list, helperText, handleChange } = props;
-
-    const [value, setValue] = React.useState(defaultVal);
-
-    const onChange = (event) => {
-        if (handleChange !== null) {
-            handleChange();
-        } else {
-            setValue(event.target.value);
-        }
-    };
-
+    const { id, label, value, list, helperText, onChange } = props;
     return (
         <TextField key={id + "Key"}
             id={id + "Dropdown"}
@@ -49,10 +38,10 @@ function DropdownCore(props) {
 DropdownCore.defaultProps = {
     id: "",
     label: "",
-    defaultVal: "",
+    value: "",
     list: [],
     helperText: "",
-    handleChange: null
+    onChange: () => {}
 };
 
 export default DropdownCore;

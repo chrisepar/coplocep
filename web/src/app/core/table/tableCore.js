@@ -48,6 +48,13 @@ function stableSort(array, comparator) {
     return stabilizedThis.map((el) => el[0]);
 }
 
+function searchItem(searchBy, data, value) {
+    var foundData = data.filter(function(item, index){
+        return item[searchBy].toLowerCase().includes(value.toLowerCase());
+    });
+    return (value === "") ? data : (foundData && foundData.length > 0) ? foundData : [];
+};
+
 function valueEmpty(fieldType, value) {
     if (value === "") {
         switch (fieldType) {
@@ -66,7 +73,7 @@ function valueEmpty(fieldType, value) {
 function dataCell(col, row) {
     return (
         col.map((cell, cellIndex) => (
-            <TableCell key={row.id + "_" + cellIndex} align="left">{valueEmpty(cell.field, row[cell.field]).toString()}</TableCell>
+            <TableCell key={row.MemberKey + "_" + cellIndex} align="left">{valueEmpty(cell.field, row[cell.field])}</TableCell>
         ))
     );
 }
@@ -79,7 +86,7 @@ function TableCore(props) {
     const history = useHistory();
     const classes = useTableStyles();
 
-    const { data, columns, isMultiSelect, rowsPerPageOptions, title, editable } = props;
+    const { data, columns, isMultiSelect, rowsPerPageOptions, title, editable, searchBy } = props;
 
     const [order, setOrder] = React.useState('asc');
 
@@ -88,6 +95,8 @@ function TableCore(props) {
     const [selected, setSelected] = React.useState([]);
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(getMaxRowsPerPage());
+
+    const [searchValue, setSearchValue] = React.useState("");
 
     const handleRequestSort = (event, property) => {
         const isAsc = orderBy === property && order === 'asc';
@@ -172,7 +181,7 @@ function TableCore(props) {
                                 );
                             } else {
                                 return (
-                                    <TableCell />
+                                    <TableCell key={"totalRowID" + "_" + colIndex} />
                                 );
                             }
                         })
@@ -186,7 +195,8 @@ function TableCore(props) {
 
     return (
         <Paper className={classes.paper}>
-            <TableToolbar title={title} numSelected={selected.length} isMultiSelect={isMultiSelect} />
+            <TableToolbar title={title} numSelected={selected.length} isMultiSelect={isMultiSelect}
+                setSearchValue={setSearchValue} />
             <TableContainer className={classes.tableContainer}>
                 <Table
                     className={classes.table}
@@ -207,24 +217,23 @@ function TableCore(props) {
                         onSelectAllClick={handleSelectAllClick}
                         isMultiSelect={isMultiSelect}
                         editable={editable}
-
                     />
                     <TableBody className={classes.tableBody}>
                         {
-                            stableSort(data, getComparator(order, orderBy))
+                            stableSort(searchItem(searchBy, data, searchValue), getComparator(order, orderBy))
                                 // .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                 .map((row, rowIndex) => {
                                     if (isMultiSelect) {
-                                        const isItemSelected = isSelected(row.name);
+                                        const isItemSelected = isSelected(row.Name);
                                         const labelId = `enhanced-table-checkbox-${rowIndex}`;
                                         return (
                                             <TableRow
                                                 hover
-                                                onClick={(event) => handleMultiSelectClick(event, row.name)}
+                                                onClick={(event) => handleMultiSelectClick(event, row.Name)}
                                                 role="checkbox"
                                                 aria-checked={isItemSelected}
                                                 tabIndex={-1}
-                                                key={row.name}
+                                                key={row.Name}
                                                 selected={isItemSelected}
                                                 className={classes.tableRow}
                                             >
@@ -243,12 +252,12 @@ function TableCore(props) {
                                             <TableRow
                                                 hover
                                                 tabIndex={-1}
-                                                key={row.id}
+                                                key={row.MemberKey}
                                                 className={classes.tableRow}
                                             >
                                                 {(editable) ?
                                                     <TableCell>
-                                                        <IconButton aria-label="expand row" size="small" onClick={(event) => handleEditBtnClick(event, row.id)}>
+                                                        <IconButton aria-label="expand row" size="small" onClick={(event) => handleEditBtnClick(event, row.MemberKey)}>
                                                             <EditIcon />
                                                         </IconButton>
                                                     </TableCell>

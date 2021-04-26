@@ -6,12 +6,12 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 module.exports = {
     mode: 'development',
-    entry: [path.resolve(__dirname, 'src', 'index.js'), 'webpack-hot-middleware/client'],
+    entry: [path.resolve(__dirname, 'src', 'index.js')],
     output: {
         filename: '[name].bundle.js',
         chunkFilename: "[name].js",
         path: path.resolve(__dirname, 'build'),
-        publicPath: '/',
+        publicPath: '/coploan/app/',
     },
     devtool: 'inline-source-map',
     resolve: {
@@ -28,7 +28,6 @@ module.exports = {
         new HtmlWebpackPlugin({
             title: 'Development',
         }),
-        new webpack.HotModuleReplacementPlugin(),
         new MiniCssExtractPlugin({
             filename: '[name].bundle.css',
             chunkFilename: '[id].css'

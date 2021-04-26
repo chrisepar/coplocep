@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     useParams
 } from "react-router-dom";
+import _ from 'lodash';
 
 import Dropdown from 'app/core/fields/dropdown_field.js';
 import Typography from '@material-ui/core/Typography';
@@ -17,15 +18,18 @@ import Layout from "app/core/layout/layout.js";
 // Styles
 import useStyles from 'styles/_memberDetailsView.js';
 
+import { postData } from 'app/core/helpers/fetch.js';
+import appDetails from '_appDetails.js';
+
 const civilStatusList = [
     {
-        value: "S",
+        value: "Single",
         label: "Single"
     }, {
-        value: "M",
+        value: "Married",
         label: "Married"
     }, {
-        value: "W",
+        value: "Windowed",
         label: "Windowed"
     }
 ];
@@ -44,9 +48,45 @@ const educationalAttainment = [
     }
 ];
 
+const getMember = (memberKey) => {
+    return fetch(appDetails.apiRoute + 'membership/list?memberKey=' + memberKey)
+        .then(data => data.json());
+};
+
+const saveMember = (memberKey, data) => {
+    var url = appDetails.apiRoute + 'membership/edit/' + memberKey;
+    return postData(url, data)
+        .then(data => data.json());
+};
+
 function memberDetails(props) {
     const classes = useStyles();
     let { detailID } = useParams();
+
+    const [detail, setDetail] = useState({});
+    // Get Member Details - Start
+    useEffect(() => {
+        let mounted = true;
+        getMember(detailID)
+            .then(items => {
+                if (mounted) {
+                    setDetail(items[0]);
+                }
+            })
+        return () => mounted = false;
+    }, []);
+    // End
+
+    const handleChange = (event, field) => {
+        var newDetail = _.clone(detail);
+        newDetail[field] = event.target.value;
+        setDetail(newDetail);
+    };
+
+    const handleSave = (event) => {
+        saveMember(detailID, detail);
+    };
+
     return (
         <Layout appName={props.appName}>
             <Grid container spacing={3} >
@@ -57,74 +97,91 @@ function memberDetails(props) {
                 </Grid>
                 <Grid item xs={7} />
                 <Grid item xs={1} >
-                    <SaveButton />
+                    <SaveButton onClick={handleSave} />
                 </Grid>
 
                 <Grid item xs={3}>
-                    <TextField id="lastName" label="Last Name" />
+                    <TextField id="LastName" label="Last Name"
+                        value={detail["LastName"]} onChange={(event) => handleChange(event, "LastName")} />
                 </Grid>
                 <Grid item xs={3}>
-                    <TextField id="firstName" label="First Name" />
+                    <TextField id="FirstName" label="First Name"
+                        value={detail["FirstName"]} onChange={(event) => handleChange(event, "FirstName")} />
                 </Grid>
                 <Grid item xs={3}>
-                    <TextField id="middleName" label="Middle Name" />
+                    <TextField id="MiddleName" label="Middle Name"
+                        value={detail["MiddleName"]} onChange={(event) => handleChange(event, "MiddleName")} />
                 </Grid>
                 <Grid item xs={3}>
-                    <Dropdown id="civilStatus" label="Civil Status" list={civilStatusList} defaultVal="S" />
+                    <Dropdown id="CivilStatus" label="Civil Status" list={civilStatusList} defaultVal="S"
+                        value={detail["CivilStatus"]} onChange={(event) => handleChange(event, "CivilStatus")} />
                 </Grid>
 
 
 
                 <Grid item xs={6}>
-                    <TextField id="address" label="Address" />
+                    <TextField id="Address" label="Address"
+                        value={detail["Address"]} onChange={(event) => handleChange(event, "Address")} />
                 </Grid>
                 <Grid item xs={6} />
 
 
                 <Grid item xs={3}>
-                    <TextField id="birthDate" label="Birthdate" />
+                    <TextField id="Birthdate" label="Birthdate"
+                        value={detail["Birthdate"]} onChange={(event) => handleChange(event, "Birthdate")} />
                 </Grid>
                 <Grid item xs={3}>
-                    <TextField id="age" label="Age" />
+                    <TextField id="Age" label="Age" disabled={true} />
                 </Grid>
                 <Grid item xs={6}>
-                    <TextField id="birthPlace" label="Birthplace" />
+                    <TextField id="Birthplace" label="Birthplace"
+                        value={detail["Birthplace"]} onChange={(event) => handleChange(event, "Birthplace")} />
                 </Grid>
 
 
                 <Grid item xs={3}>
-                    <TextField id="occupation" label="Occupation" />
+                    <TextField id="Occupation" label="Occupation"
+                        value={detail["Occupation"]} onChange={(event) => handleChange(event, "Occupation")} />
                 </Grid>
                 <Grid item xs={3}>
-                    <CurrencyField id="salary" label="Salary" />
+                    <CurrencyField id="Salary" label="Salary"
+                        value={detail["Salary"]} onChange={(event) => handleChange(event, "Salary")} />
                 </Grid>
                 <Grid item xs={3}>
-                    <TextField id="otherIncome" label="Other Source of Income" />
+                    <TextField id="OtherIncome" label="Other Source of Income"
+                        value={detail["OtherIncome"]} onChange={(event) => handleChange(event, "OtherIncome")} />
                 </Grid>
                 <Grid item xs={3}>
-                    <NumberField id="tinNumber" label="Tin Number" maxLength={9} />
+                    <NumberField id="TinNumber" label="Tin Number" maxLength={9}
+                        value={detail["TinNumber"]} onChange={(event) => handleChange(event, "TinNumber")} />
                 </Grid>
 
 
                 <Grid item xs={3}>
-                    <Dropdown id="educationalAttainment" label="Educational Attainment" list={educationalAttainment} defaultVal="NA" />
+                    <Dropdown id="EducationalAttainment" label="Educational Attainment" list={educationalAttainment} defaultVal="NA"
+                        value={detail["EducationalAttainment"]} onChange={(event) => handleChange(event, "EducationalAttainment")} />
                 </Grid>
                 <Grid item xs={6}>
-                    <TextField id="nameOfSpouse" label="Name of Spouse" />
+                    <TextField id="SpouseName" label="Name of Spouse"
+                        value={detail["SpouseName"]} onChange={(event) => handleChange(event, "SpouseName")} />
                 </Grid>
                 <Grid item xs={3}>
-                    <NumberField id="noOfDependencies" label="No. of Dependencies" maxLength={2} />
+                    <NumberField id="Dependencies" label="No. of Dependencies" maxLength={2}
+                        value={detail["Dependencies"]} onChange={(event) => handleChange(event, "Dependencies")} />
                 </Grid>
 
 
                 <Grid item xs={4}>
-                    <MultilineField id="existingCoop" label="Indicate Other Affiliated Cooperative" />
+                    <MultilineField id="OtherCooperative" label="Indicate Other Affiliated Cooperative"
+                        value={detail["OtherCooperative"]} onChange={(event) => handleChange(event, "OtherCooperative")} />
                 </Grid>
                 <Grid item xs={4}>
-                    <MultilineField id="trainingsAttended" label="Indicate Trainings, When, and Who conducted" />
+                    <MultilineField id="Trainings" label="Indicate Trainings, When, and Who conducted"
+                        value={detail["Trainings"]} onChange={(event) => handleChange(event, "Trainings")} />
                 </Grid>
                 <Grid item xs={4}>
-                    <MultilineField id="creditReferences" label="Credit References" />
+                    <MultilineField id="CreditReferences" label="Credit References"
+                        value={detail["CreditReferences"]} onChange={(event) => handleChange(event, "CreditReferences")} />
                 </Grid>
             </Grid>
         </Layout>

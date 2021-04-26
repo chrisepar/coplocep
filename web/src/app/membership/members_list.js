@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 
@@ -13,143 +13,47 @@ import Layout from "app/core/layout/layout.js";
 // import Grid from "app/core/dataGrid/dataGrid.js";
 import Table from "app/core/table/table.js";
 
+import appDetails from '_appDetails.js';
+
 const columns = [
-    { field: 'membershipNumber', type: field_types.text_field, headerName: 'Membership #', width: 100 },
-    { field: 'name', type: field_types.text_field, headerName: 'Name', width: 200 },
-    { field: 'tinNumber', type: field_types.text_field, headerName: 'Tin Number', width: 200 },
-    { field: 'dateAccepted', type: field_types.text_field, headerName: 'Date Accepted', width: 200 },
+    { field: 'MemberKey', type: field_types.text_field, headerName: 'Membership #', width: 100 },
+    { field: 'Name', type: field_types.text_field, headerName: 'Name', width: 200 },
+    { field: 'TinNumber', type: field_types.text_field, headerName: 'Tin Number', width: 200 },
+    { field: 'DateAccepted', type: field_types.text_field, headerName: 'Date Accepted', width: 200 },
     { field: 'BODResolutionNumber', type: field_types.text_field, headerName: 'BOD Resolution Number', width: 200 },
-    { field: 'typeOfMembership', type: field_types.text_field, headerName: 'Type of Membership', width: 200 },
-    { field: 'numberOfSharesSubbed', type: field_types.text_field, headerName: 'Number of Shares Subscribed', width: 200 },
-    { field: 'amountOfSubbed', type: field_types.text_field, headerName: 'Amount Subscribed', width: 200 },
-    { field: 'initialPaidUp', type: field_types.text_field, headerName: 'Initial Paid-Up', width: 200 },
-    { field: 'address', type: field_types.text_field, headerName: 'Address', width: 200 },
+    { field: 'TypeOfMembership', type: field_types.text_field, headerName: 'Type of Membership', width: 200 },
+    { field: 'SharesSubscribed', type: field_types.text_field, headerName: 'Number of Shares Subscribed', width: 200 },
+    { field: 'AmountSubscribed', type: field_types.text_field, headerName: 'Amount Subscribed', width: 200 },
+    { field: 'InitialPaidUp', type: field_types.text_field, headerName: 'Initial Paid-Up', width: 200 },
+    { field: 'Address', type: field_types.text_field, headerName: 'Address', width: 200 },
 ];
 
-var idCounter = 0;
-
-function createData(membershipNumber, name, tinNumber, dateAccepted, BODResolutionNumber, typeOfMembership
-    , numberOfSharesSubbed, amountOfSubbed, initialPaidUp, address) {
-    idCounter++;
-    return {
-        id: idCounter,
-        membershipNumber: membershipNumber, name: name, tinNumber: tinNumber, dateAccepted: dateAccepted, BODResolutionNumber: BODResolutionNumber, typeOfMembership: typeOfMembership
-        , numberOfSharesSubbed: numberOfSharesSubbed, amountOfSubbed: amountOfSubbed, initialPaidUp: initialPaidUp, address: address
-    };
-}
-
-const data = [
-    createData("A1", "Casundo, Loren Hannah", "110-496-185", "7/20/1999", "S4", "Regular", 20, 2000, 500, "Brgy IV"),
-    createData("A1", "Casundo, Loren Hannah", "110-496-185", "7/20/1999", "S4", "Regular", 20, 2000, 500, "Brgy IV"),
-    createData("A1", "Casundo, Loren Hannah", "110-496-185", "7/20/1999", "S4", "Regular", 20, 2000, 500, "Brgy IV"),
-    createData("A1", "Casundo, Loren Hannah", "110-496-185", "7/20/1999", "S4", "Regular", 20, 2000, 500, "Brgy IV"),
-    createData("A1", "Casundo, Loren Hannah", "110-496-185", "7/20/1999", "S4", "Regular", 20, 2000, 500, "Brgy IV"),
-    createData("A1", "Casundo, Loren Hannah", "110-496-185", "7/20/1999", "S4", "Regular", 20, 2000, 500, "Brgy IV"),
-    createData("A1", "Casundo, Loren Hannah", "110-496-185", "7/20/1999", "S4", "Regular", 20, 2000, 500, "Brgy IV"),
-    createData("A1", "Casundo, Loren Hannah", "110-496-185", "7/20/1999", "S4", "Regular", 20, 2000, 500, "Brgy IV"),
-    createData("A1", "Casundo, Loren Hannah", "110-496-185", "7/20/1999", "S4", "Regular", 20, 2000, 500, "Brgy IV"),
-    createData("A1", "Casundo, Loren Hannah", "110-496-185", "7/20/1999", "S4", "Regular", 20, 2000, 500, "Brgy IV"),
-    createData("A1", "Casundo, Loren Hannah", "110-496-185", "7/20/1999", "S4", "Regular", 20, 2000, 500, "Brgy IV"),
-    createData("A1", "Casundo, Loren Hannah", "110-496-185", "7/20/1999", "S4", "Regular", 20, 2000, 500, "Brgy IV"),
-    createData("A1", "Casundo, Loren Hannah", "110-496-185", "7/20/1999", "S4", "Regular", 20, 2000, 500, "Brgy IV"),
-    createData("A1", "Casundo, Loren Hannah", "110-496-185", "7/20/1999", "S4", "Regular", 20, 2000, 500, "Brgy IV"),
-    createData("A1", "Casundo, Loren Hannah", "110-496-185", "7/20/1999", "S4", "Regular", 20, 2000, 500, "Brgy IV"),
-    createData("A1", "Casundo, Loren Hannah", "110-496-185", "7/20/1999", "S4", "Regular", 20, 2000, 500, "Brgy IV"),
-    createData("A1", "Casundo, Loren Hannah", "110-496-185", "7/20/1999", "S4", "Regular", 20, 2000, 500, "Brgy IV"),
-    createData("A1", "Casundo, Loren Hannah", "110-496-185", "7/20/1999", "S4", "Regular", 20, 2000, 500, "Brgy IV"),
-    createData("A1", "Casundo, Loren Hannah", "110-496-185", "7/20/1999", "S4", "Regular", 20, 2000, 500, "Brgy IV"),
-    createData("A1", "Casundo, Loren Hannah", "110-496-185", "7/20/1999", "S4", "Regular", 20, 2000, 500, "Brgy IV"),
-    createData("A1", "Casundo, Loren Hannah", "110-496-185", "7/20/1999", "S4", "Regular", 20, 2000, 500, "Brgy IV"),
-    createData("A1", "Casundo, Loren Hannah", "110-496-185", "7/20/1999", "S4", "Regular", 20, 2000, 500, "Brgy IV"),
-    createData("A1", "Casundo, Loren Hannah", "110-496-185", "7/20/1999", "S4", "Regular", 20, 2000, 500, "Brgy IV"),
-    createData("A1", "Casundo, Loren Hannah", "110-496-185", "7/20/1999", "S4", "Regular", 20, 2000, 500, "Brgy IV"),
-    createData("A1", "Casundo, Loren Hannah", "110-496-185", "7/20/1999", "S4", "Regular", 20, 2000, 500, "Brgy IV"),
-    createData("A1", "Casundo, Loren Hannah", "110-496-185", "7/20/1999", "S4", "Regular", 20, 2000, 500, "Brgy IV"),
-    createData("A1", "Casundo, Loren Hannah", "110-496-185", "7/20/1999", "S4", "Regular", 20, 2000, 500, "Brgy IV"),
-    createData("A1", "Casundo, Loren Hannah", "110-496-185", "7/20/1999", "S4", "Regular", 20, 2000, 500, "Brgy IV"),
-    createData("A1", "Casundo, Loren Hannah", "110-496-185", "7/20/1999", "S4", "Regular", 20, 2000, 500, "Brgy IV"),
-    createData("A1", "Casundo, Loren Hannah", "110-496-185", "7/20/1999", "S4", "Regular", 20, 2000, 500, "Brgy IV"),
-    createData("A1", "Casundo, Loren Hannah", "110-496-185", "7/20/1999", "S4", "Regular", 20, 2000, 500, "Brgy IV"),
-    createData("A1", "Casundo, Loren Hannah", "110-496-185", "7/20/1999", "S4", "Regular", 20, 2000, 500, "Brgy IV"),
-    createData("A1", "Casundo, Loren Hannah", "110-496-185", "7/20/1999", "S4", "Regular", 20, 2000, 500, "Brgy IV"),
-    createData("A1", "Casundo, Loren Hannah", "110-496-185", "7/20/1999", "S4", "Regular", 20, 2000, 500, "Brgy IV"),
-    createData("A1", "Casundo, Loren Hannah", "110-496-185", "7/20/1999", "S4", "Regular", 20, 2000, 500, "Brgy IV"),
-    createData("A1", "Casundo, Loren Hannah", "110-496-185", "7/20/1999", "S4", "Regular", 20, 2000, 500, "Brgy IV"),
-    createData("A1", "Casundo, Loren Hannah", "110-496-185", "7/20/1999", "S4", "Regular", 20, 2000, 500, "Brgy IV"),
-    createData("A1", "Casundo, Loren Hannah", "110-496-185", "7/20/1999", "S4", "Regular", 20, 2000, 500, "Brgy IV"),
-    createData("A1", "Casundo, Loren Hannah", "110-496-185", "7/20/1999", "S4", "Regular", 20, 2000, 500, "Brgy IV"),
-    createData("A1", "Casundo, Loren Hannah", "110-496-185", "7/20/1999", "S4", "Regular", 20, 2000, 500, "Brgy IV"),
-    createData("A1", "Casundo, Loren Hannah", "110-496-185", "7/20/1999", "S4", "Regular", 20, 2000, 500, "Brgy IV"),
-    createData("A1", "Casundo, Loren Hannah", "110-496-185", "7/20/1999", "S4", "Regular", 20, 2000, 500, "Brgy IV"),
-    createData("A1", "Casundo, Loren Hannah", "110-496-185", "7/20/1999", "S4", "Regular", 20, 2000, 500, "Brgy IV"),
-    createData("A1", "Casundo, Loren Hannah", "110-496-185", "7/20/1999", "S4", "Regular", 20, 2000, 500, "Brgy IV"),
-    createData("A1", "Casundo, Loren Hannah", "110-496-185", "7/20/1999", "S4", "Regular", 20, 2000, 500, "Brgy IV"),
-    createData("A1", "Casundo, Loren Hannah", "110-496-185", "7/20/1999", "S4", "Regular", 20, 2000, 500, "Brgy IV"),
-    createData("A1", "Casundo, Loren Hannah", "110-496-185", "7/20/1999", "S4", "Regular", 20, 2000, 500, "Brgy IV"),
-    createData("A1", "Casundo, Loren Hannah", "110-496-185", "7/20/1999", "S4", "Regular", 20, 2000, 500, "Brgy IV"),
-    createData("A1", "Casundo, Loren Hannah", "110-496-185", "7/20/1999", "S4", "Regular", 20, 2000, 500, "Brgy IV"),
-    createData("A1", "Casundo, Loren Hannah", "110-496-185", "7/20/1999", "S4", "Regular", 20, 2000, 500, "Brgy IV"),
-    createData("A1", "Casundo, Loren Hannah", "110-496-185", "7/20/1999", "S4", "Regular", 20, 2000, 500, "Brgy IV"),
-    createData("A1", "Casundo, Loren Hannah", "110-496-185", "7/20/1999", "S4", "Regular", 20, 2000, 500, "Brgy IV"),
-    createData("A1", "Casundo, Loren Hannah", "110-496-185", "7/20/1999", "S4", "Regular", 20, 2000, 500, "Brgy IV"),
-    createData("A1", "Casundo, Loren Hannah", "110-496-185", "7/20/1999", "S4", "Regular", 20, 2000, 500, "Brgy IV"),
-    createData("A1", "Casundo, Loren Hannah", "110-496-185", "7/20/1999", "S4", "Regular", 20, 2000, 500, "Brgy IV"),
-    createData("A1", "Casundo, Loren Hannah", "110-496-185", "7/20/1999", "S4", "Regular", 20, 2000, 500, "Brgy IV"),
-    createData("A1", "Basundo, Loren Hannah", "110-496-185", "7/20/1999", "S4", "Regular", 20, 2000, 500, "Brgy IV"),
-    createData("A1", "Casundo, Loren Hannah", "110-496-185", "7/20/1999", "S4", "Regular", 20, 2000, 500, "Brgy IV"),
-    createData("A1", "Casundo, Loren Hannah", "110-496-185", "7/20/1999", "S4", "Regular", 20, 2000, 500, "Brgy IV"),
-    createData("A1", "Casundo, Loren Hannah", "110-496-185", "7/20/1999", "S4", "Regular", 20, 2000, 500, "Brgy IV"),
-    createData("A1", "Casundo, Loren Hannah", "110-496-185", "7/20/1999", "S4", "Regular", 20, 2000, 500, "Brgy IV"),
-    createData("A1", "Casundo, Loren Hannah", "110-496-185", "7/20/1999", "S4", "Regular", 20, 2000, 500, "Brgy IV"),
-    createData("A1", "Casundo, Loren Hannah", "110-496-185", "7/20/1999", "S4", "Regular", 20, 2000, 500, "Brgy IV"),
-    createData("A1", "Casundo, Loren Hannah", "110-496-185", "7/20/1999", "S4", "Regular", 20, 2000, 500, "Brgy IV"),
-    createData("A1", "Casundo, Loren Hannah", "110-496-185", "7/20/1999", "S4", "Regular", 20, 2000, 500, "Brgy IV"),
-    createData("A1", "Casundo, Loren Hannah", "110-496-185", "7/20/1999", "S4", "Regular", 20, 2000, 500, "Brgy IV"),
-    createData("A1", "Casundo, Loren Hannah", "110-496-185", "7/20/1999", "S4", "Regular", 20, 2000, 500, "Brgy IV"),
-    createData("A1", "Casundo, Loren Hannah", "110-496-185", "7/20/1999", "S4", "Regular", 20, 2000, 500, "Brgy IV"),
-    createData("A1", "Casundo, Loren Hannah", "110-496-185", "7/20/1999", "S4", "Regular", 20, 2000, 500, "Brgy IV"),
-    createData("A1", "Casundo, Loren Hannah", "110-496-185", "7/20/1999", "S4", "Regular", 20, 2000, 500, "Brgy IV"),
-    createData("A1", "Casundo, Loren Hannah", "110-496-185", "7/20/1999", "S4", "Regular", 20, 2000, 500, "Brgy IV"),
-    createData("A1", "Casundo, Loren Hannah", "110-496-185", "7/20/1999", "S4", "Regular", 20, 2000, 500, "Brgy IV"),
-    createData("A1", "Casundo, Loren Hannah", "110-496-185", "7/20/1999", "S4", "Regular", 20, 2000, 500, "Brgy IV"),
-    createData("A1", "Casundo, Loren Hannah", "110-496-185", "7/20/1999", "S4", "Regular", 20, 2000, 500, "Brgy IV"),
-    createData("A1", "Casundo, Loren Hannah", "110-496-185", "7/20/1999", "S4", "Regular", 20, 2000, 500, "Brgy IV"),
-    createData("A1", "Casundo, Loren Hannah", "110-496-185", "7/20/1999", "S4", "Regular", 20, 2000, 500, "Brgy IV"),
-    createData("A1", "Casundo, Loren Hannah", "110-496-185", "7/20/1999", "S4", "Regular", 20, 2000, 500, "Brgy IV"),
-    createData("A1", "Casundo, Loren Hannah", "110-496-185", "7/20/1999", "S4", "Regular", 20, 2000, 500, "Brgy IV"),
-    createData("A1", "Casundo, Loren Hannah", "110-496-185", "7/20/1999", "S4", "Regular", 20, 2000, 500, "Brgy IV"),
-    createData("A1", "Casundo, Loren Hannah", "110-496-185", "7/20/1999", "S4", "Regular", 20, 2000, 500, "Brgy IV"),
-    createData("A1", "Casundo, Loren Hannah", "110-496-185", "7/20/1999", "S4", "Regular", 20, 2000, 500, "Brgy IV"),
-    createData("A1", "Casundo, Loren Hannah", "110-496-185", "7/20/1999", "S4", "Regular", 20, 2000, 500, "Brgy IV"),
-    createData("A1", "Casundo, Loren Hannah", "110-496-185", "7/20/1999", "S4", "Regular", 20, 2000, 500, "Brgy IV"),
-    createData("A1", "Casundo, Loren Hannah", "110-496-185", "7/20/1999", "S4", "Regular", 20, 2000, 500, "Brgy IV"),
-    createData("A1", "Casundo, Loren Hannah", "110-496-185", "7/20/1999", "S4", "Regular", 20, 2000, 500, "Brgy IV"),
-    createData("A1", "Casundo, Loren Hannah", "110-496-185", "7/20/1999", "S4", "Regular", 20, 2000, 500, "Brgy IV"),
-    createData("A1", "Casundo, Loren Hannah", "110-496-185", "7/20/1999", "S4", "Regular", 20, 2000, 500, "Brgy IV"),
-    createData("A1", "Casundo, Loren Hannah", "110-496-185", "7/20/1999", "S4", "Regular", 20, 2000, 500, "Brgy IV"),
-    createData("A1", "Casundo, Loren Hannah", "110-496-185", "7/20/1999", "S4", "Regular", 20, 2000, 500, "Brgy IV"),
-    createData("A1", "Casundo, Loren Hannah", "110-496-185", "7/20/1999", "S4", "Regular", 20, 2000, 500, "Brgy IV"),
-    createData("A1", "Casundo, Loren Hannah", "110-496-185", "7/20/1999", "S4", "Regular", 20, 2000, 500, "Brgy IV"),
-    createData("A1", "Casundo, Loren Hannah", "110-496-185", "7/20/1999", "S4", "Regular", 20, 2000, 500, "Brgy IV"),
-    createData("A1", "Casundo, Loren Hannah", "110-496-185", "7/20/1999", "S4", "Regular", 20, 2000, 500, "Brgy IV"),
-    createData("A1", "Casundo, Loren Hannah", "110-496-185", "7/20/1999", "S4", "Regular", 20, 2000, 500, "Brgy IV"),
-    createData("A1", "Casundo, Loren Hannah", "110-496-185", "7/20/1999", "S4", "Regular", 20, 2000, 500, "Brgy IV"),
-    createData("A1", "Casundo, Loren Hannah", "110-496-185", "7/20/1999", "S4", "Regular", 20, 2000, 500, "Brgy IV"),
-    createData("A1", "Casundo, Loren Hannah", "110-496-185", "7/20/1999", "S4", "Regular", 20, 2000, 500, "Brgy IV"),
-    createData("A1", "Casundo, Loren Hannah", "110-496-185", "7/20/1999", "S4", "Regular", 20, 2000, 500, "Brgy IV"),
-    createData("A1", "Casundo, Loren Hannah", "110-496-185", "7/20/1999", "S4", "Regular", 20, 2000, 500, "Brgy IV"),
-    createData("A1", "Casundo, Loren Hannah", "110-496-185", "7/20/1999", "S4", "Regular", 20, 2000, 500, "Brgy IV"),
-    createData("A1", "Casundo, Loren Hannah", "110-496-185", "7/20/1999", "S4", "Regular", 20, 2000, 500, "Brgy IV"),
-    createData("A1", "Casundo, Loren Hannah", "110-496-185", "7/20/1999", "S4", "Regular", 20, 2000, 500, "Brgy IV"),
-];
+const getMemberList = () => {
+    return fetch(appDetails.apiRoute + 'membership/list')
+        .then(data => data.json())
+};
 
 export default function MembersList(props) {
     const classes = useStyles();
+    const [list, setList] = useState([]);
 
+    // Get Members List - Start
+    useEffect(() => {
+        let mounted = true;
+        getMemberList()
+            .then(items => {
+                if (mounted) {
+                    setList(items)
+                }
+            })
+        return () => mounted = false;
+    }, []);
+    // End
     return (
         <Layout appName={props.appName}>
-            {/* <Grid columns={columns} data={data} /> */}
-            <Table data={data} columns={columns} isMultiSelect={false} title="Members" editable={true}/>
+            <Table data={list} columns={columns} isMultiSelect={false} title="Members" editable={true}
+                searchBy="Name"
+             />
         </Layout>
     );
 };

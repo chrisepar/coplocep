@@ -4,7 +4,7 @@ import useStyles from 'styles/core/fields/_formControl.js';
 
 function MultilineFieldCore(props) {
     const classes = useStyles();
-    const { id, label } = props;
+    const { id, label, value, onChange } = props;
     return (
         <TextField key={id + "Key"} multiline
             id={id} label={label}
@@ -13,18 +13,21 @@ function MultilineFieldCore(props) {
             rows={4}
             InputLabelProps={{
                 shrink: true,
-                // className: classes.labelCore
                 classes: {
                     root: classes.labelRoot
                 }
             }}
+            value={(value !== null) ? value : ""}
+            onChange={onChange}
         />
     );
 };
 
 MultilineFieldCore.defaultProps = {
     id: "",
-    label: ""
+    label: "",
+    value: "",
+    onChange: () => { },
 };
 
 export default MultilineFieldCore;

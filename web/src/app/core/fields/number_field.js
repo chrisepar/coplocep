@@ -6,7 +6,7 @@ import useStyles from 'styles/core/fields/_formControl.js';
 
 function NumberFieldCore(props) {
     const classes = useStyles();
-    const { id, label, thousandSeparator, format, maxLength } = props;
+    const { id, label, thousandSeparator, format, maxLength, value, onChange } = props;
 
     return (
         <NumberFormat key={id + "Key"}
@@ -15,22 +15,15 @@ function NumberFieldCore(props) {
             variant="outlined"
             margin="normal" fullWidth
             customInput={TextField}
-            // onValueChange={(values) => {
-            //     onChange({
-            //         target: {
-            //             name: props.name,
-            //             value: values.value,
-            //         },
-            //     });
-            // }}
             InputLabelProps={{
                 shrink: true,
-                // className: classes.labelCore
             }}
             thousandSeparator={thousandSeparator}
             isNumericString
             format={format}
             inputProps={{ maxLength: maxLength }}
+            value={value}
+            onChange={onChange}
         />
     );
 };
@@ -39,8 +32,10 @@ NumberFieldCore.defaultProps = {
     id: "",
     label: "",
     thousandSeparator: false,
-    format: null, 
-    maxLength: null
+    format: null,
+    maxLength: null,
+    value: "",
+    onChange: () => { },
 };
 
 export default NumberFieldCore;

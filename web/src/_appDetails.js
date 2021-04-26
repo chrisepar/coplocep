@@ -1,3 +1,4 @@
 export default {
-    baseRoute: "/coplocep"
+    baseRoute: "/coploan/app",
+    apiRoute: "http://localhost/coploan/api/"
 };

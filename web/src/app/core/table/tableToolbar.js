@@ -9,56 +9,28 @@ import Tooltip from '@material-ui/core/Tooltip';
 import DeleteIcon from '@material-ui/icons/Delete';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import TextField from '@material-ui/core/TextField';
+import { debounce } from 'throttle-debounce';
 
 import { useToolbarStyles } from 'styles/core/_table.js';
 
-// function TableToolbar(props) {
-//     const classes = useToolbarStyles();
-//     const { numSelected, isMultiSelect, title } = props;
-
-//     return (
-//         <Toolbar
-//             className={clsx(classes.root, {
-//                 [classes.highlight]: (numSelected > 0 && isMultiSelect),
-//             })}
-//         >
-//             {(numSelected > 0 && isMultiSelect) ? (
-//                 <Typography className={classes.title} color="inherit" variant="subtitle1" component="div">
-//                     {numSelected} selected
-//                 </Typography>
-//             ) : (
-//                     <Typography className={classes.title} variant="h6" id="tableTitle" component="div">
-//                         {title}
-//                     </Typography>
-//                 )}
-
-//             {(numSelected > 0 && isMultiSelect) ? (
-//                 <Tooltip title="Delete">
-//                     <IconButton aria-label="delete">
-//                         <DeleteIcon />
-//                     </IconButton>
-//                 </Tooltip>
-//             ) : (
-//                     <Tooltip title="Filter list">
-//                         <IconButton aria-label="filter list">
-//                             <FilterListIcon />
-//                         </IconButton>
-//                     </Tooltip>
-//                 )}
-//         </Toolbar>
-//     );
-// };
-
 function TableToolbar(props) {
     const classes = useToolbarStyles();
-    const { numSelected, isMultiSelect, title } = props;
+    const { numSelected, isMultiSelect, title, searchPlaceHolder, setSearchValue, searchValue } = props;
+
+    const searchDebounce = debounce(750, true, (e) => {
+        setTimeout(() => {
+            setSearchValue(e.target.value);
+        }, 1200);
+    });
+
     return (
         <Toolbar
             className={clsx(classes.root, {
                 [classes.highlight]: (numSelected > 0 && isMultiSelect),
             })}
         >
-            <TextField id="table-search" placeholder="Search field" type="search" variant="outlined" size="small" />
+            <TextField id="table-search" placeholder={searchPlaceHolder} type="search" variant="outlined" size="small"
+                onChange={(e) => searchDebounce(e)} />
         </Toolbar>
     );
 };
@@ -68,7 +40,8 @@ TableToolbar.propTypes = {
 };
 
 TableToolbar.defaultProps = {
-    title: ""
+    title: "",
+    searchPlaceHolder: "Search Member",
 };
 
 export default TableToolbar;

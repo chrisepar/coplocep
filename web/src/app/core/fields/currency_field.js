@@ -6,7 +6,7 @@ import useStyles from 'styles/core/fields/_formControl.js';
 
 function CurrencyFieldCore(props) {
     const classes = useStyles();
-    const { id, label, prefix,  } = props;
+    const { id, label, prefix, value, onChange } = props;
 
     return (
         <NumberFormat key={id + "Key"}
@@ -15,21 +15,14 @@ function CurrencyFieldCore(props) {
             variant="outlined"
             margin="normal" fullWidth
             customInput={TextField}
-            // onValueChange={(values) => {
-            //     onChange({
-            //         target: {
-            //             name: props.name,
-            //             value: values.value,
-            //         },
-            //     });
-            // }}
             InputLabelProps={{
                 shrink: true,
-                // className: classes.labelCore
             }}
             thousandSeparator
             isNumericString
             prefix={prefix}
+            value={value}
+            onChange={onChange}
         />
     );
 };
@@ -37,7 +30,9 @@ function CurrencyFieldCore(props) {
 CurrencyFieldCore.defaultProps = {
     id: "",
     label: "",
-    prefix: "Php "
+    prefix: "Php ",
+    value: "",
+    onChange: () => { },
 };
 
 export default CurrencyFieldCore;

@@ -60,7 +60,7 @@ export default makeStyles((theme) => ({
     },
     contentContainer: {        
         // display: 'flex',
-        height: '88vh', 
+        height: '86vh', 
         width: '100%',
     }
 }));

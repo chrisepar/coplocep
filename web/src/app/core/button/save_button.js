@@ -15,15 +15,11 @@ function SaveButtonCore(props) {
             size="large"
             className={classes.button}
             startIcon={<SaveIcon />}
+            {...props}
         >
             Save
         </Button>
     );
-};
-
-SaveButtonCore.defaultProps = {
-    id: "",
-    label: ""
 };
 
 export default SaveButtonCore;
