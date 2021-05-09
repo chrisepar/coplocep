@@ -3,6 +3,7 @@ import appDetails from '_appDetails.js';
 import MemberDetailView from "app/membership/member_detail_view.js";
 import Membership from "app/membership/members_list.js";
 import Loans from "app/loans/loans_list.js";
+import LoansDetailView from "app/loans/loans_detail_view.js";
 
 export default [
     {
@@ -26,7 +27,7 @@ export default [
         "id": "addLoan",
         "name": "Loan Details",
         "navLabel": "Add New Loan",
-        "component": Loans,
+        "component": LoansDetailView,
         "hasDetail": true,
         "path": appDetails.baseRoute + "/loans/:detailID",
         "navPath": appDetails.baseRoute + "/loans/~"

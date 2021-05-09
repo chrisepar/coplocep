@@ -4,6 +4,7 @@ import clsx from 'clsx';
 
 //Material UI
 import field_types from 'app/core/fields/field_types.js';
+import Loading from 'app/core/helpers/loading_screen.js';
 
 // Styles
 import useStyles from 'styles/_membersList.js';
@@ -36,6 +37,7 @@ const getMemberList = () => {
 export default function MembersList(props) {
     const classes = useStyles();
     const [list, setList] = useState([]);
+    const [isLoading, setLoading] = useState(true);
 
     // Get Members List - Start
     useEffect(() => {
@@ -45,15 +47,20 @@ export default function MembersList(props) {
                 if (mounted) {
                     setList(items)
                 }
-            })
+                setLoading(false);
+            });
         return () => mounted = false;
     }, []);
     // End
+
     return (
         <Layout appName={props.appName}>
-            <Table data={list} columns={columns} isMultiSelect={false} title="Members" editable={true}
-                searchBy="Name"
-             />
+            {
+                (isLoading) ? <Loading /> :
+                    <Table data={list} columns={columns} isMultiSelect={false} title="Members" editable={true}
+                        searchBy="Name"
+                    />
+            }
         </Layout>
     );
 };

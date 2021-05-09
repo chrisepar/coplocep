@@ -4,6 +4,7 @@ import clsx from 'clsx';
 
 //Material UI
 import field_types from 'app/core/fields/field_types.js';
+import Loading from 'app/core/helpers/loading_screen.js';
 
 // Styles
 import useStyles from 'styles/_loansList.js';
@@ -34,6 +35,8 @@ export default function LoansList(props) {
 
     // Get Members Loan List - Start
     const [list, setList] = useState([]);
+    const [isLoading, setLoading] = useState(true);
+
     useEffect(() => {
         let mounted = true;
         getMemberLoanList()
@@ -41,6 +44,7 @@ export default function LoansList(props) {
                 if (mounted) {
                     setList(items)
                 }
+                setLoading(false);
             })
         return () => mounted = false;
     }, []);
@@ -48,8 +52,11 @@ export default function LoansList(props) {
 
     return (
         <Layout appName={props.appName}>
-            <Table data={list} columns={columns} isMultiSelect={false} title="Loans" editable={true}
-            searchBy="Name"/>
+            {
+                (isLoading) ? <Loading /> :
+                    <Table data={list} columns={columns} isMultiSelect={false} title="Loans" editable={true}
+                        searchBy="Name" />
+            }
         </Layout>
     );
 };

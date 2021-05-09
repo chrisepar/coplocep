@@ -18,7 +18,7 @@ function MultilineFieldCore(props) {
                 }
             }}
             value={(value !== null) ? value : ""}
-            onChange={onChange}
+            onChange={(event) => onChange(event.target.value)}
         />
     );
 };

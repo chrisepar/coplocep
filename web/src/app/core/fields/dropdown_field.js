@@ -14,7 +14,7 @@ function DropdownCore(props) {
             select
             label={label}
             value={value}
-            onChange={onChange}
+            onChange={(event) => onChange(event.target.value)}
             helperText={helperText}
             variant="outlined"
             fullWidth

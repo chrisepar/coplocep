@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Reflection;
 using System.Text;
 
 namespace coploan.Models
@@ -27,7 +28,7 @@ namespace coploan.Models
         public DateTime Birthdate { get; set; }
         public string Birthplace { get; set; }
         public string Occupation { get; set; }
-        public int Salary { get; set; }
+        public decimal Salary { get; set; }
         public string OtherIncome { get; set; }
         public string EducationalAttainment { get; set; }
         public string SpouseName { get; set; }
@@ -46,7 +47,7 @@ namespace coploan.Models
 
         public Membership(IConfiguration configuration)
         {
-            sql = new SQLQueries(configuration);
+            sql = new SQLQueries(configuration, typeof(Member));
         }
         public string GetMembers(string memberKey)
         {
@@ -62,7 +63,7 @@ namespace coploan.Models
             }
 
             command.CommandText = sb.ToString();
-            return sql.Query(command);
+            return sql.ExecuteReader(command);
         }
 
         public string GetMembersWithLoan()
@@ -88,19 +89,16 @@ namespace coploan.Models
                         [Share])) AS PivotTable"
             );
             command.CommandText = sb.ToString();
-            return sql.Query(command);
+            return sql.ExecuteReader(command);
         }
 
-        public bool UpdateMemberDetails(dynamic data, string memberKey)
+        public bool UpdateMemberDetails(Member data, string memberKey)
         {
-            bool isSuccess = false;
             SqlCommand command = new SqlCommand();
             StringBuilder sb = new StringBuilder();
 
-            Dictionary<string, string> obj = JsonConvert.DeserializeObject<Dictionary<string, string>>(Convert.ToString(data));
-
-            sb.Append("UPDATE [dbo].[Members] SET ");
-            sb.Append(@"[FirstName] = @FirstName
+            sb.AppendLine("UPDATE [dbo].[Members] SET ");
+            sb.AppendLine(@"[FirstName] = @FirstName
                       ,[MiddleName] = @MiddleName
                       ,[LastName] = @LastName
                       ,[TinNumber] = @TinNumber
@@ -130,16 +128,57 @@ namespace coploan.Models
                       ,[ModifiedDate] = @ModifiedDate
                  WHERE MemberKey = @MemberKey");
 
-            foreach(KeyValuePair<string, string> item in obj)
+            foreach (PropertyInfo item in typeof(Member).GetProperties())
             {
                 StringBuilder itemSB = new StringBuilder();
-                itemSB.Append("@").Append(item.Key);
-                command.Parameters.Add(new SqlParameter(itemSB.ToString(), item.Value is null ? DBNull.Value : item.Value));                    
+                itemSB.Append("@").Append(item.Name);
+                command.Parameters.Add(new SqlParameter(itemSB.ToString(), item.GetValue(data) is null ? DBNull.Value : item.GetValue(data)));
             }
 
             command.CommandText = sb.ToString();
-            sql.Query(command);
-            return isSuccess;
+            return sql.ExecuteNonQuery(command);
+        }
+        public int CreateMember(Member data)
+        {
+            SqlCommand command = new SqlCommand();
+            StringBuilder sb = new StringBuilder();
+
+            sb.AppendLine("INSERT INTO [dbo].[Members] ");
+            sb.AppendLine(@"([FirstName] ,[MiddleName] ,[LastName] ,[TinNumber] ,[Address] ,[CivilStatus] ,[Birthdate] ,[Birthplace] ,[Occupation] ,[Salary] ,[OtherIncome]
+                       ,[EducationalAttainment] ,[SpouseName] ,[Dependencies] ,[OtherCooperative] ,[Trainings] ,[CreditReferences] ,[CreatedBy] ,[CreatedDate]
+                       ,[ModifiedBy] ,[ModifiedDate])");
+            sb.AppendLine(@"VALUES
+                       (@FirstName
+                       ,@MiddleName
+                       ,@LastName
+                       ,@TinNumber
+                       ,@Address
+                       ,@CivilStatus
+                       ,@Birthdate
+                       ,@Birthplace
+                       ,@Occupation
+                       ,@Salary
+                       ,@OtherIncome
+                       ,@EducationalAttainment
+                       ,@SpouseName
+                       ,@Dependencies
+                       ,@OtherCooperative
+                       ,@Trainings
+                       ,@CreditReferences
+                       ,@CreatedBy
+                       ,@CreatedDate
+                       ,@ModifiedBy
+                       ,@ModifiedDate);SELECT SCOPE_IDENTITY();");
+
+            foreach (PropertyInfo item in typeof(Member).GetProperties())
+            {
+                StringBuilder itemSB = new StringBuilder();
+                itemSB.Append("@").Append(item.Name);
+                command.Parameters.Add(new SqlParameter(itemSB.ToString(), item.GetValue(data) is null ? DBNull.Value : item.GetValue(data)));
+            }
+
+            command.CommandText = sb.ToString();
+            return sql.ExecuteNonQueryInsert(command);
         }
     }
 }

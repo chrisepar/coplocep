@@ -7,7 +7,6 @@ namespace coploan.Models
 {
     public class Loan
     {
-        private readonly IConfiguration _configuration;
         private SQLQueries sql;
 
         public Loan(IConfiguration configuration)
@@ -24,7 +23,7 @@ namespace coploan.Models
             command.Parameters.Add(new SqlParameter("@memberKey", memberKey));
 
             command.CommandText = sb.ToString();
-            return sql.Query(command);
+            return sql.ExecuteReader(command);
         }
     }
 }

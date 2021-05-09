@@ -18,7 +18,7 @@ function TextFieldCore(props) {
                 }
             }}
             value={value}
-            onChange={onChange}
+            onChange={(event) => onChange(event.target.value)}
             disabled={disabled}
         />
     );

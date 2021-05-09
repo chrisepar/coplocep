@@ -31,11 +31,15 @@ namespace coploan.Controllers
         {
             return membership.GetMembersWithLoan();
         }
-        [ActionName("edit"), HttpPost("{memberKey}")]
-        public ActionResult<string> UpdateMemberDetails([FromBody]dynamic data, string memberKey)
+        [ActionName("edit"), HttpPut("{memberKey}")]
+        public ActionResult<bool> UpdateMemberDetails([FromBody]Member data, string memberKey)
         {
-            membership.UpdateMemberDetails(data, memberKey);
-            return "Strong";
+            return membership.UpdateMemberDetails(data, memberKey);
+        }
+        [ActionName("create"), HttpPost("")]
+        public ActionResult<int> CreateMember([FromBody] Member data)
+        {
+            return membership.CreateMember(data);
         }
     }
 }

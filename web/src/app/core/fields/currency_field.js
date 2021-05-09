@@ -8,6 +8,11 @@ function CurrencyFieldCore(props) {
     const classes = useStyles();
     const { id, label, prefix, value, onChange } = props;
 
+    const onValueChange = (values) => {
+        const {formattedValue, value} = values;
+        onChange(value);
+    };
+
     return (
         <NumberFormat key={id + "Key"}
             name={id + "Currency"}
@@ -22,7 +27,7 @@ function CurrencyFieldCore(props) {
             isNumericString
             prefix={prefix}
             value={value}
-            onChange={onChange}
+            onValueChange={(values) => onValueChange(values)}
         />
     );
 };

@@ -23,7 +23,7 @@ function NumberFieldCore(props) {
             format={format}
             inputProps={{ maxLength: maxLength }}
             value={value}
-            onChange={onChange}
+            onChange={(event) => onChange(event.target.value)}
         />
     );
 };
