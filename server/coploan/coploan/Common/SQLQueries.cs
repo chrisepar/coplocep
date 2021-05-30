@@ -37,15 +37,16 @@ namespace coploan.Common
             return dt;
         }
 
-        public string ExecuteReader(SqlCommand command)
+        public string ExecuteReader(string storeProcedureName)
         {
             try
             {
                 using (SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("DBMain")))
                 {
                     connection.Open();
+                    SqlCommand command = new SqlCommand(storeProcedureName, connection);
+                    command.CommandType = CommandType.StoredProcedure;
 
-                    command.Connection = connection;
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
                         results.Load(reader);
@@ -55,24 +56,23 @@ namespace coploan.Common
             catch (SqlException e)
             {
                 Console.WriteLine(e.ToString());
-                return e.ToString();
             }
             return JsonConvert.SerializeObject(results);
         }
-        public int ExecuteQueryInteger(SqlCommand command)
+        public string ExecuteReader(string storeProcedureName, List<SqlParameter> sqlParam)
         {
-            int value = 0;
             try
             {
                 using (SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("DBMain")))
                 {
                     connection.Open();
+                    SqlCommand command = new SqlCommand(storeProcedureName, connection);
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.AddRange(sqlParam.ToArray());
 
-                    command.Connection = connection;
-                    var sqlCol = command.ExecuteScalar();
-                    if (sqlCol != null)
+                    using (SqlDataReader reader = command.ExecuteReader())
                     {
-                        Int32.TryParse(sqlCol.ToString(), out value);
+                        results.Load(reader);
                     }
                 }
             }
@@ -80,10 +80,10 @@ namespace coploan.Common
             {
                 Console.WriteLine(e.ToString());
             }
-            return value;
+            return JsonConvert.SerializeObject(results);
         }
 
-        public bool ExecuteNonQuery(SqlCommand command)
+        public bool ExecuteNonQuery(string storeProcedureName, List<SqlParameter> sqlParam)
         {
             bool isSuccess = false;
             try
@@ -91,9 +91,11 @@ namespace coploan.Common
                 using (SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("DBMain")))
                 {
                     connection.Open();
-
-                    command.Connection = connection;
-                    isSuccess = command.ExecuteNonQuery() > 0 ? true : false;
+                    SqlCommand command = new SqlCommand(storeProcedureName, connection);
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.AddRange(sqlParam.ToArray());
+                    int test = command.ExecuteNonQuery();
+                    isSuccess = test > 0 ? true : false;
                 }
             }
             catch (SqlException e)
@@ -103,7 +105,7 @@ namespace coploan.Common
             return isSuccess;
         }
 
-        public int ExecuteNonQueryInsert(SqlCommand command)
+        public int ExecuteNonQueryInsert(string storeProcedureName, List<SqlParameter> sqlParam, string keyName)
         {
             int id = 0;
             try
@@ -111,13 +113,11 @@ namespace coploan.Common
                 using (SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("DBMain")))
                 {
                     connection.Open();
-
-                    command.Connection = connection;
-                    var sqlCol = command.ExecuteScalar();
-                    if (sqlCol != null)
-                    {
-                        Int32.TryParse(sqlCol.ToString(), out id);
-                    }
+                    SqlCommand command = new SqlCommand(storeProcedureName, connection);
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.AddRange(sqlParam.ToArray());
+                    command.ExecuteNonQuery();
+                    id = Convert.ToInt32(command.Parameters["@" + keyName].Value);
                 }
             }
             catch (SqlException e)

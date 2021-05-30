@@ -7,11 +7,10 @@ import field_types from 'app/core/fields/field_types.js';
 import Loading from 'app/core/helpers/loading_screen.js';
 
 // Styles
-import useStyles from 'styles/_loansList.js';
+import useStyles from 'styles/transaction/_transactionList.js';
 
 //Apps
 import Layout from "app/core/layout/layout.js";
-// import Grid from "app/core/dataGrid/dataGrid.js";
 import Table from "app/core/table/table.js";
 
 import appDetails from '_appDetails.js';
@@ -19,27 +18,27 @@ import appDetails from '_appDetails.js';
 const columns = [
     { field: 'MemberKey', type: field_types.text_field, headerName: 'Membership #', width: 100 },
     { field: 'Name', type: field_types.text_field, headerName: 'Name', width: 200 },
-    { field: 'DepositAmount', type: field_types.number_field, headerName: 'Fixed Deposit as of <month year>', width: 200, hasTotal: true },
-    { field: 'LoanAmount', type: field_types.number_field, headerName: 'Loan as of <month year>', width: 200, hasTotal: true },
-    { field: 'InterestPaidAmount', type: field_types.number_field, headerName: 'Interest Paid for <year>', width: 200, hasTotal: true },
-    { field: 'AverageShareAmount', type: field_types.number_field, headerName: 'Average Share', width: 200, hasTotal: true }
+    { field: 'DepositAmount', type: field_types.number_field, headerName: 'Fixed Deposit as of <month year>', width: 200},
+    { field: 'LoanAmount', type: field_types.number_field, headerName: 'Loan as of <month year>', width: 200},
+    { field: 'InterestPaidAmount', type: field_types.number_field, headerName: 'Interest Paid for <year>', width: 200 },
+    { field: 'AverageShareAmount', type: field_types.number_field, headerName: 'Average Share', width: 200 }
 ];
 
-const getMemberLoanList = () => {
-    return fetch(appDetails.apiRoute + 'membership/loans')
+const getMembersWithTransaction = () => {
+    return fetch(appDetails.apiRoute + 'transaction/list')
         .then(data => data.json())
 };
 
-export default function LoansList(props) {
+export default (props) => {
     const classes = useStyles();
 
-    // Get Members Loan List - Start
+    // Get Members Transaction List - Start
     const [list, setList] = useState([]);
     const [isLoading, setLoading] = useState(true);
 
     useEffect(() => {
         let mounted = true;
-        getMemberLoanList()
+        getMembersWithTransaction()
             .then(items => {
                 if (mounted) {
                     setList(items)
@@ -54,7 +53,7 @@ export default function LoansList(props) {
         <Layout appName={props.appName}>
             {
                 (isLoading) ? <Loading /> :
-                    <Table data={list} columns={columns} isMultiSelect={false} title="Loans" editable={true}
+                    <Table data={list} columns={columns} isMultiSelect={false} title="Transactions" editable={true}
                         searchBy="Name" />
             }
         </Layout>

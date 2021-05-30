@@ -11,7 +11,7 @@ namespace coploan.Controllers
 {
     [ApiController]
     [Route("api/[controller]/[action]")]
-    public class MembershipController : Controller
+    public class MembershipController : ControllerBase
     {
         private Membership membership;
 
@@ -25,12 +25,7 @@ namespace coploan.Controllers
         { 
             return membership.GetMembers(memberKey);
         }
-
-        [ActionName("loans"), HttpGet]
-        public ActionResult<string> GetMembersWithLoan()
-        {
-            return membership.GetMembersWithLoan();
-        }
+        
         [ActionName("edit"), HttpPut("{memberKey}")]
         public ActionResult<bool> UpdateMemberDetails([FromBody]Member data, string memberKey)
         {

@@ -20,8 +20,7 @@ function DropdownCore(props) {
             fullWidth
             margin="normal"
             InputLabelProps={{
-                shrink: true,
-                // className: classes.labelCore
+                shrink: true
             }}
         >
             {

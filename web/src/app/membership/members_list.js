@@ -7,7 +7,7 @@ import field_types from 'app/core/fields/field_types.js';
 import Loading from 'app/core/helpers/loading_screen.js';
 
 // Styles
-import useStyles from 'styles/_membersList.js';
+import useStyles from 'styles/membership/_membersList.js';
 
 //Apps
 import Layout from "app/core/layout/layout.js";

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import {
-    useParams, useHistory
+    useParams, useHistory, withRouter
 } from "react-router-dom";
 import _ from 'lodash';
 
@@ -19,7 +19,7 @@ import moment from 'moment';
 //Apps
 import Layout from "app/core/layout/layout.js";
 // Styles
-import useStyles from 'styles/_memberDetailsView.js';
+import useStyles from 'styles/membership/_memberDetailsView.js';
 
 import { postData, putData } from 'app/core/helpers/fetch.js';
 import appDetails from '_appDetails.js';
@@ -35,8 +35,8 @@ const civilStatusList = [
         value: "Married",
         label: "Married"
     }, {
-        value: "Windowed",
-        label: "Windowed"
+        value: "Widowed",
+        label: "Widowed"
     }
 ];
 
@@ -91,8 +91,8 @@ const prepDataBeforeSave = (detail, user) => {
     return detail;
 };
 
-function memberDetails(props) {
-    let { detailID } = useParams();
+function MemberDetails(props) {
+    let { detailID } = props.match.params;
     const classes = useStyles();
     const history = useHistory();
     const isCreateMode = (detailID === "~");
@@ -117,10 +117,11 @@ function memberDetails(props) {
                     setLoading(false);
                 });
         } else {
+            setDetail(MemberModel);
             setLoading(false);
         }
         return () => mounted = false;
-    }, []);
+    }, [detailID]);
     // End
 
 
@@ -163,110 +164,137 @@ function memberDetails(props) {
         }
     };
 
-    return (
-        <Layout appName={props.appName}>
-            {
-                (isLoading === null) ? <Loading /> :
-                    <Grid container spacing={3} >
-                        {
-                            (isLoading) ? <Loading /> : null
-                        }
-                        <Grid item xs={11}>
-                            <Typography variant="h4" gutterBottom >
-                                Personal Data {(isCreateMode) ? " - New Member" : " - " + detailID}
-                            </Typography>
-                        </Grid>
-                        <Grid item xs={1} >
-                            <SaveButton onClick={handleSave} />
-                        </Grid>
+    if (isLoading === null) {
+        return (<Loading />);
+    } else {
+        return (
+            <Grid container spacing={3} >
+                {
+                    (isLoading) ? <Loading /> : null
+                }
 
-                        <Grid item xs={3}>
-                            <TextField id="LastName" label="Last Name"
-                                value={detail["LastName"]} onChange={(value) => handleChange(value, "LastName")} />
-                        </Grid>
-                        <Grid item xs={3}>
-                            <TextField id="FirstName" label="First Name"
-                                value={detail["FirstName"]} onChange={(value) => handleChange(value, "FirstName")} />
-                        </Grid>
-                        <Grid item xs={3}>
-                            <TextField id="MiddleName" label="Middle Name"
-                                value={detail["MiddleName"]} onChange={(value) => handleChange(value, "MiddleName")} />
-                        </Grid>
-                        <Grid item xs={3}>
-                            <Dropdown id="CivilStatus" label="Civil Status" list={civilStatusList} defaultVal="S"
-                                value={detail["CivilStatus"]} onChange={(value) => handleChange(value, "CivilStatus")} />
-                        </Grid>
+                {
+                    (!props.isModule) ?
+                        (
+                            <Grid item xs={11}>
+                                <Typography variant="h4" gutterBottom >
+                                    Personal Details {(isCreateMode) ? " - New Member" : " - " + detailID}
+                                </Typography>
+                            </Grid>
+                        ) : null
+                }
 
+                {
+                    (!props.isModule) ?
+                        (
+                            <Grid item xs={1} >
+                                <SaveButton onClick={handleSave} />
+                            </Grid>
+                        ) : null
+                }
 
-
-                        <Grid item xs={6}>
-                            <TextField id="Address" label="Address"
-                                value={detail["Address"]} onChange={(value) => handleChange(value, "Address")} />
-                        </Grid>
-                        <Grid item xs={6} />
-
-
-                        <Grid item xs={3}>
-                            <DateField id="Birthdate" label="Birthdate" disableFuture={true}
-                                value={detail["Birthdate"]} onChange={(value) => handleChange(value, "Birthdate")} />
-                        </Grid>
-                        <Grid item xs={3}>
-                            <TextField id="Age" label="Age" disabled={true} value={getAge()} />
-                        </Grid>
-                        <Grid item xs={6}>
-                            <TextField id="Birthplace" label="Birthplace"
-                                value={detail["Birthplace"]} onChange={(value) => handleChange(value, "Birthplace")} />
-                        </Grid>
+                <Grid item xs={3}>
+                    <TextField id="LastName" label="Last Name"
+                        value={detail["LastName"]} onChange={(value) => handleChange(value, "LastName")} />
+                </Grid>
+                <Grid item xs={3}>
+                    <TextField id="FirstName" label="First Name"
+                        value={detail["FirstName"]} onChange={(value) => handleChange(value, "FirstName")} />
+                </Grid>
+                <Grid item xs={3}>
+                    <TextField id="MiddleName" label="Middle Name"
+                        value={detail["MiddleName"]} onChange={(value) => handleChange(value, "MiddleName")} />
+                </Grid>
+                <Grid item xs={3}>
+                    <Dropdown id="CivilStatus" label="Civil Status" list={civilStatusList}
+                        value={detail["CivilStatus"]} onChange={(value) => handleChange(value, "CivilStatus")} />
+                </Grid>
 
 
-                        <Grid item xs={3}>
-                            <TextField id="Occupation" label="Occupation"
-                                value={detail["Occupation"]} onChange={(value) => handleChange(value, "Occupation")} />
-                        </Grid>
-                        <Grid item xs={3}>
-                            <CurrencyField id="Salary" label="Salary"
-                                value={detail["Salary"]} onChange={(value) => handleChange(value, "Salary")} />
-                        </Grid>
-                        <Grid item xs={3}>
-                            <TextField id="OtherIncome" label="Other Source of Income"
-                                value={detail["OtherIncome"]} onChange={(value) => handleChange(value, "OtherIncome")} />
-                        </Grid>
-                        <Grid item xs={3}>
-                            <NumberField id="TinNumber" label="Tin Number" maxLength={9}
-                                value={detail["TinNumber"]} onChange={(value) => handleChange(value, "TinNumber")} />
-                        </Grid>
+
+                <Grid item xs={6}>
+                    <TextField id="Address" label="Address"
+                        value={detail["Address"]} onChange={(value) => handleChange(value, "Address")} />
+                </Grid>
+                <Grid item xs={6} />
 
 
-                        <Grid item xs={3}>
-                            <Dropdown id="EducationalAttainment" label="Educational Attainment" list={educationalAttainment} defaultVal="NA"
-                                value={detail["EducationalAttainment"]} onChange={(value) => handleChange(value, "EducationalAttainment")} />
-                        </Grid>
-                        <Grid item xs={6}>
-                            <TextField id="SpouseName" label="Name of Spouse"
-                                value={detail["SpouseName"]} onChange={(value) => handleChange(value, "SpouseName")} />
-                        </Grid>
-                        <Grid item xs={3}>
-                            <NumberField id="Dependencies" label="No. of Dependencies" maxLength={2}
-                                value={detail["Dependencies"]} onChange={(value) => handleChange(value, "Dependencies")} />
-                        </Grid>
+                <Grid item xs={3}>
+                    <DateField id="Birthdate" label="Birthdate" disableFuture={true} openTo="year" views={["year", "month", "date"]}
+                        value={detail["Birthdate"]} onChange={(value) => handleChange(value, "Birthdate")} />
+                </Grid>
+                <Grid item xs={3}>
+                    <TextField id="Age" label="Age" disabled={true} value={getAge()} />
+                </Grid>
+                <Grid item xs={6}>
+                    <TextField id="Birthplace" label="Birthplace"
+                        value={detail["Birthplace"]} onChange={(value) => handleChange(value, "Birthplace")} />
+                </Grid>
 
 
-                        <Grid item xs={4}>
-                            <MultilineField id="OtherCooperative" label="Indicate Other Affiliated Cooperative"
-                                value={detail["OtherCooperative"]} onChange={(value) => handleChange(value, "OtherCooperative")} />
-                        </Grid>
-                        <Grid item xs={4}>
-                            <MultilineField id="Trainings" label="Indicate Trainings, When, and Who conducted"
-                                value={detail["Trainings"]} onChange={(value) => handleChange(value, "Trainings")} />
-                        </Grid>
-                        <Grid item xs={4}>
-                            <MultilineField id="CreditReferences" label="Credit References"
-                                value={detail["CreditReferences"]} onChange={(value) => handleChange(value, "CreditReferences")} />
-                        </Grid>
-                    </Grid>
-            }
-        </Layout>
-    );
+                <Grid item xs={3}>
+                    <TextField id="Occupation" label="Occupation"
+                        value={detail["Occupation"]} onChange={(value) => handleChange(value, "Occupation")} />
+                </Grid>
+                <Grid item xs={3}>
+                    <CurrencyField id="Salary" label="Salary"
+                        value={detail["Salary"]} onChange={(value) => handleChange(value, "Salary")} />
+                </Grid>
+                <Grid item xs={3}>
+                    <TextField id="OtherIncome" label="Other Source of Income"
+                        value={detail["OtherIncome"]} onChange={(value) => handleChange(value, "OtherIncome")} />
+                </Grid>
+                <Grid item xs={3}>
+                    <NumberField id="TinNumber" label="Tin Number" maxLength={9}
+                        value={detail["TinNumber"]} onChange={(value) => handleChange(value, "TinNumber")} />
+                </Grid>
+
+
+                <Grid item xs={3}>
+                    <Dropdown id="EducationalAttainment" label="Educational Attainment" list={educationalAttainment} defaultVal="NA"
+                        value={detail["EducationalAttainment"]} onChange={(value) => handleChange(value, "EducationalAttainment")} />
+                </Grid>
+                <Grid item xs={6}>
+                    <TextField id="SpouseName" label="Name of Spouse"
+                        value={detail["SpouseName"]} onChange={(value) => handleChange(value, "SpouseName")} />
+                </Grid>
+                <Grid item xs={3}>
+                    <NumberField id="Dependencies" label="No. of Dependencies" maxLength={2}
+                        value={detail["Dependencies"]} onChange={(value) => handleChange(value, "Dependencies")} />
+                </Grid>
+
+
+                <Grid item xs={4}>
+                    <MultilineField id="OtherCooperative" label="Indicate Other Affiliated Cooperative"
+                        value={detail["OtherCooperative"]} onChange={(value) => handleChange(value, "OtherCooperative")} />
+                </Grid>
+                <Grid item xs={4}>
+                    <MultilineField id="Trainings" label="Indicate Trainings, When, and Who conducted"
+                        value={detail["Trainings"]} onChange={(value) => handleChange(value, "Trainings")} />
+                </Grid>
+                <Grid item xs={4}>
+                    <MultilineField id="CreditReferences" label="Credit References"
+                        value={detail["CreditReferences"]} onChange={(value) => handleChange(value, "CreditReferences")} />
+                </Grid>
+            </Grid>
+        );
+    }
 };
 
-export default memberDetails;
+function MemberDetailContianer(props) {
+    if (!props.isModule) {
+        return (
+            <Layout appName={props.appName}>
+                <MemberDetails {...props} />
+            </Layout>
+        );
+    } else {
+        return (<MemberDetails {...props} />);
+    }
+};
+
+MemberDetailContianer.defaultProps = {
+    isModule: false
+};
+
+export default withRouter(MemberDetailContianer);

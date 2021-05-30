@@ -2,8 +2,8 @@
 import appDetails from '_appDetails.js';
 import MemberDetailView from "app/membership/member_detail_view.js";
 import Membership from "app/membership/members_list.js";
-import Loans from "app/loans/loans_list.js";
-import LoansDetailView from "app/loans/loans_detail_view.js";
+import Transaction from "app/transaction/transaction_list.js";
+import TransactionDetailView from "app/transaction/transaction_detail_view.js";
 
 export default [
     {
@@ -26,17 +26,15 @@ export default [
     {
         "id": "addLoan",
         "name": "Loan Details",
-        "navLabel": "Add New Loan",
-        "component": LoansDetailView,
+        "component": TransactionDetailView,
         "hasDetail": true,
-        "path": appDetails.baseRoute + "/loans/:detailID",
-        "navPath": appDetails.baseRoute + "/loans/~"
+        "path": appDetails.baseRoute + "/loans/:detailID"
     },
     {
         "id": "loans",
         "name": "Loans",
         "navLabel": "Loans",
-        "component": Loans,
+        "component": Transaction,
         "hasDetail": true,
         "path": appDetails.baseRoute + "/loans"
     }

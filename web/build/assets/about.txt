@@ -1,0 +1,6 @@
+This favicon was generated using the following font:
+
+- Font Title: Jolly Lodger
+- Font Author: Copyright (c) 2012 by Font Diner, Inc (diner@fontdiner.com) with Reseved Font Name "Jolly Lodger"
+- Font Source: http://fonts.gstatic.com/s/jollylodger/v10/BXRsvFTAh_bGkA1uQ48dlB3VWerT3ZyuqA.ttf
+- Font License: SIL Open Font License, 1.1 (http://scripts.sil.org/OFL)

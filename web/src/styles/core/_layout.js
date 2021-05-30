@@ -23,6 +23,9 @@ export default makeStyles((theme) => ({
     menuButton: {
         marginRight: theme.spacing(2),
     },
+    logoutBtn: {
+        marginLeft: 'auto'
+    },
     hide: {
         display: 'none',
     },

@@ -5,6 +5,7 @@ import useStyles from 'styles/core/fields/_formControl.js';
 function TextFieldCore(props) {
     const classes = useStyles();
     const { id, label, value, onChange, disabled} = props;
+
     return (
         <TextField key={id + "Key"}
             id={id} label={label}
@@ -12,7 +13,6 @@ function TextFieldCore(props) {
             margin="normal" fullWidth
             InputLabelProps={{
                 shrink: true,
-                // className: classes.labelCore
                 classes: {
                     root: classes.labelRoot
                 }

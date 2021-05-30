@@ -22,11 +22,12 @@ module.exports = {
     },
     plugins: [
         new CleanWebpackPlugin({
-            cleanOnceBeforeBuildPatterns: ['**/*', "!web.config", "!index.html"],
+            cleanOnceBeforeBuildPatterns: ['**/*', "!web.config", "!index.html", "!assets/**"],
             cleanStaleWebpackAssets: false
         }),
         new HtmlWebpackPlugin({
-            title: 'Development',
+            title: 'Cooperative',
+            template: 'index.back.html'
         }),
         new MiniCssExtractPlugin({
             filename: '[name].bundle.css',

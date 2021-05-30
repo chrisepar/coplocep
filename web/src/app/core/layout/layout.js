@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import clsx from 'clsx';
 import { useHistory, useLocation } from "react-router-dom";
+import { getUser, removeUser } from "app/core/helpers/session_storage.js";
 import appDetails from '_appDetails.js';
 
 //Material UI
@@ -20,6 +21,8 @@ import ListItemText from '@material-ui/core/ListItemText';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
 import MailIcon from '@material-ui/icons/Mail';
 import MenuIcon from '@material-ui/icons/Menu';
+import Button from '@material-ui/core/Button';
+import AccountCircle from '@material-ui/icons/AccountCircle';
 
 // Styles
 import { useTheme } from '@material-ui/core/styles';
@@ -47,6 +50,12 @@ export default function Layout(props) {
         history.push(path);
     }
 
+    const handleLogout = () => {
+        if (removeUser()) {
+            history.push(appDetails.baseRoute);
+        }
+    };
+
     return (
         <div className={classes.root}>
             <AppBar
@@ -68,6 +77,12 @@ export default function Layout(props) {
                     <Typography variant="h6" noWrap>
                         {props.appName}
                     </Typography>
+                    <div className={classes.logoutBtn}>
+                        <Typography variant="h6" noWrap>
+                            {getUser().Name}
+                        </Typography>
+                        <Button color="inherit" onClick={handleLogout} >Logout</Button>
+                    </div>
                 </Toolbar>
             </AppBar>
             <Drawer
@@ -87,17 +102,20 @@ export default function Layout(props) {
                 <Divider />
                 <List>
                     {appList.map((app, index) => {
-
-                        return (
-                            <ListItem
-                                button
-                                key={app.id}
-                                selected={props.appName === app.name}
-                                onClick={(event) => handleListItemClick(event, (app.navPath) ? app.navPath : app.path)}>
-                                <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-                                <ListItemText primary={app.navLabel} />
-                            </ListItem>
-                        );
+                        if (app.navLabel) {
+                            return (
+                                <ListItem
+                                    button
+                                    key={app.id}
+                                    selected={props.appName === app.name}
+                                    onClick={(event) => handleListItemClick(event, (app.navPath) ? app.navPath : app.path)}>
+                                    <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
+                                    <ListItemText primary={app.navLabel} />
+                                </ListItem>
+                            );
+                        } else {
+                            return (null);
+                        }
                     }
                     )}
                 </List>

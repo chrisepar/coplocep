@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using System.Reflection;
 using System.Text;
@@ -11,7 +12,7 @@ namespace coploan.Models
 {
     public class Member
     {
-        public string MemberKey { get; set; }
+        public int MemberKey { get; set; }
         public string FirstName { get; set; }
         public string MiddleName { get; set; }
         public string LastName { get; set; }
@@ -20,12 +21,12 @@ namespace coploan.Models
         public string IsAccepted { get; set; }
         public string BODResolutionNumber { get; set; }
         public string TypeOfMembership { get; set; }
-        public string SharesSubscribed { get; set; }
-        public string AmountSubscribed { get; set; }
-        public string InitialPaidUp { get; set; }
+        public decimal SharesSubscribed { get; set; }
+        public decimal AmountSubscribed { get; set; }
+        public decimal InitialPaidUp { get; set; }
         public string Address { get; set; }
         public string CivilStatus { get; set; }
-        public DateTime Birthdate { get; set; }
+        public string Birthdate { get; set; }
         public string Birthplace { get; set; }
         public string Occupation { get; set; }
         public decimal Salary { get; set; }
@@ -51,134 +52,47 @@ namespace coploan.Models
         }
         public string GetMembers(string memberKey)
         {
-            SqlCommand command = new SqlCommand();
-            StringBuilder sb = new StringBuilder();
-            sb.Append(@"SELECT *, 
-                        LastName + ', ' + FirstName + ' ' + MiddleName AS [Name] FROM Members");
+            List<SqlParameter> sqlParam = new List<SqlParameter>();
 
             if (!string.IsNullOrEmpty(memberKey))
             {
-                sb.Append(" Where MemberKey = @memberKey");
-                command.Parameters.Add(new SqlParameter("@memberKey", memberKey));
+                sqlParam.Add(new SqlParameter("@memberKey", memberKey));
             }
-
-            command.CommandText = sb.ToString();
-            return sql.ExecuteReader(command);
-        }
-
-        public string GetMembersWithLoan()
-        {
-            SqlCommand command = new SqlCommand();
-            StringBuilder sb = new StringBuilder();
-            sb.Append(@"SELECT [MemberKey],
-                        [Name],
-                        CONVERT(DECIMAL(18,2),[Loan]) AS [LoanAmount],
-                        CONVERT(DECIMAL(18,2),[Deposit]) AS [DepositAmount],
-                        CONVERT(DECIMAL(18,2),[Interest]) AS [InterestPaidAmount],
-                        CONVERT(DECIMAL(18,2),[Share]) AS [AverageShareAmount]
-                        FROM
-                        (
-	                        SELECT T.MemberKey AS [MemberKey],
-	                        LastName + ', ' + FirstName + ' ' + MiddleName AS [Name], 
-	                        [Category], [Amount] FROM Transactions T
-	                        LEFT JOIN Members M ON M.MemberKey = T.MemberKey
-                        ) AS SourceTable PIVOT(AVG([Amount]) FOR [Category] IN (
-                        [Loan], 
-                        [Deposit], 
-                        [Interest], 
-                        [Share])) AS PivotTable"
-            );
-            command.CommandText = sb.ToString();
-            return sql.ExecuteReader(command);
-        }
+            return sql.ExecuteReader("[dbo].[GetMemberhip]", sqlParam);
+        }        
 
         public bool UpdateMemberDetails(Member data, string memberKey)
         {
-            SqlCommand command = new SqlCommand();
-            StringBuilder sb = new StringBuilder();
-
-            sb.AppendLine("UPDATE [dbo].[Members] SET ");
-            sb.AppendLine(@"[FirstName] = @FirstName
-                      ,[MiddleName] = @MiddleName
-                      ,[LastName] = @LastName
-                      ,[TinNumber] = @TinNumber
-                      ,[DateAccepted] = @DateAccepted
-                      ,[IsAccepted] = @IsAccepted
-                      ,[BODResolutionNumber] = @BODResolutionNumber
-                      ,[TypeOfMembership] = @TypeOfMembership
-                      ,[SharesSubscribed] = @SharesSubscribed
-                      ,[AmountSubscribed] = @AmountSubscribed
-                      ,[InitialPaidUp] = @InitialPaidUp
-                      ,[Address] = @Address
-                      ,[CivilStatus] = @CivilStatus
-                      ,[Birthdate] = @Birthdate
-                      ,[Birthplace] = @Birthplace
-                      ,[Occupation] = @Occupation
-                      ,[Salary] = @Salary
-                      ,[OtherIncome] = @OtherIncome
-                      ,[EducationalAttainment] = @EducationalAttainment
-                      ,[SpouseName] = @SpouseName
-                      ,[Dependencies] = @Dependencies
-                      ,[OtherCooperative] = @OtherCooperative
-                      ,[Trainings] = @Trainings
-                      ,[CreditReferences] = @CreditReferences
-                      ,[CreatedBy] = @CreatedBy
-                      ,[CreatedDate] =  @CreatedDate
-                      ,[ModifiedBy] = @ModifiedBy
-                      ,[ModifiedDate] = @ModifiedDate
-                 WHERE MemberKey = @MemberKey");
+            List<SqlParameter> sqlParam = new List<SqlParameter>();
 
             foreach (PropertyInfo item in typeof(Member).GetProperties())
             {
                 StringBuilder itemSB = new StringBuilder();
                 itemSB.Append("@").Append(item.Name);
-                command.Parameters.Add(new SqlParameter(itemSB.ToString(), item.GetValue(data) is null ? DBNull.Value : item.GetValue(data)));
+                sqlParam.Add(new SqlParameter(itemSB.ToString(), Helpers.isEmpty(item.GetValue(data)) ? DBNull.Value : item.GetValue(data)));
             }
 
-            command.CommandText = sb.ToString();
-            return sql.ExecuteNonQuery(command);
+            return sql.ExecuteNonQuery("[dbo].[UpdateMembership]", sqlParam);
         }
         public int CreateMember(Member data)
         {
-            SqlCommand command = new SqlCommand();
-            StringBuilder sb = new StringBuilder();
-
-            sb.AppendLine("INSERT INTO [dbo].[Members] ");
-            sb.AppendLine(@"([FirstName] ,[MiddleName] ,[LastName] ,[TinNumber] ,[Address] ,[CivilStatus] ,[Birthdate] ,[Birthplace] ,[Occupation] ,[Salary] ,[OtherIncome]
-                       ,[EducationalAttainment] ,[SpouseName] ,[Dependencies] ,[OtherCooperative] ,[Trainings] ,[CreditReferences] ,[CreatedBy] ,[CreatedDate]
-                       ,[ModifiedBy] ,[ModifiedDate])");
-            sb.AppendLine(@"VALUES
-                       (@FirstName
-                       ,@MiddleName
-                       ,@LastName
-                       ,@TinNumber
-                       ,@Address
-                       ,@CivilStatus
-                       ,@Birthdate
-                       ,@Birthplace
-                       ,@Occupation
-                       ,@Salary
-                       ,@OtherIncome
-                       ,@EducationalAttainment
-                       ,@SpouseName
-                       ,@Dependencies
-                       ,@OtherCooperative
-                       ,@Trainings
-                       ,@CreditReferences
-                       ,@CreatedBy
-                       ,@CreatedDate
-                       ,@ModifiedBy
-                       ,@ModifiedDate);SELECT SCOPE_IDENTITY();");
+            List<SqlParameter> sqlParam = new List<SqlParameter>();
+            string keyName = "MemberKey";
 
             foreach (PropertyInfo item in typeof(Member).GetProperties())
             {
                 StringBuilder itemSB = new StringBuilder();
-                itemSB.Append("@").Append(item.Name);
-                command.Parameters.Add(new SqlParameter(itemSB.ToString(), item.GetValue(data) is null ? DBNull.Value : item.GetValue(data)));
+                if (item.Name != keyName)
+                {
+                    itemSB.Append("@").Append(item.Name);
+                    sqlParam.Add(new SqlParameter(itemSB.ToString(), Helpers.isEmpty(item.GetValue(data)) ? DBNull.Value : item.GetValue(data)));
+                } else
+                {
+                    itemSB.Append("@").Append(item.Name);
+                    sqlParam.Add(new SqlParameter(itemSB.ToString(), Helpers.isEmpty(item.GetValue(data)) ? DBNull.Value : item.GetValue(data)) { Direction = ParameterDirection.Output, DbType = DbType.Int32 });
+                }
             }
-
-            command.CommandText = sb.ToString();
-            return sql.ExecuteNonQueryInsert(command);
+            return sql.ExecuteNonQueryInsert("[dbo].[InsertMembership]", sqlParam, keyName);
         }
     }
 }
