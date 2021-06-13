@@ -20,7 +20,7 @@ const columns = [
     { field: 'MemberKey', type: field_types.text_field, headerName: 'Membership #', width: 100 },
     { field: 'Name', type: field_types.text_field, headerName: 'Name', width: 200 },
     { field: 'TinNumber', type: field_types.text_field, headerName: 'Tin Number', width: 200 },
-    { field: 'DateAccepted', type: field_types.text_field, headerName: 'Date Accepted', width: 200 },
+    { field: 'ApprovedDate', type: field_types.date_field, headerName: 'Date Accepted', width: 200 },
     { field: 'BODResolutionNumber', type: field_types.text_field, headerName: 'BOD Resolution Number', width: 200 },
     { field: 'TypeOfMembership', type: field_types.text_field, headerName: 'Type of Membership', width: 200 },
     { field: 'SharesSubscribed', type: field_types.text_field, headerName: 'Number of Shares Subscribed', width: 200 },

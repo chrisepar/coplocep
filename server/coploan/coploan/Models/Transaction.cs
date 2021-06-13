@@ -13,25 +13,26 @@ namespace coploan.Models
 {
     public class TransactionDetails
     {
-        public string TransactionKey { get; set; }
-        public string MemberKey { get; set; }
+        public int TransactionKey { get; set; }
+        public int MemberKey { get; set; }
         public decimal Amount { get; set; }
         public string Category { get; set; }
-        public string IsApproved { get; set; }
-        public string ApprovedDate { get; set; }
         public string CreatedBy { get; set; }
         public DateTime CreatedDate { get; set; }
         public string ModifiedBy { get; set; }
         public DateTime ModifiedDate { get; set; }
+
     }
 
     public class Transaction
     {
         private SQLQueries sql;
+        private IConfiguration config;
 
         public Transaction(IConfiguration configuration)
         {
-            sql = new SQLQueries(configuration, typeof(TransactionDetails));
+            config = configuration;
+            sql = new SQLQueries(config, typeof(TransactionDetails));
         }
         public string GetMembersWithTransactions()
         {
@@ -63,6 +64,8 @@ namespace coploan.Models
         public string GetMemberLoan(string memberKey)
         {
             List<SqlParameter> sqlParam = new List<SqlParameter>();
+
+            sql = new SQLQueries(config, new Type[] { typeof(TransactionDetails), typeof(Approval) });
 
             if (!string.IsNullOrEmpty(memberKey))
             {

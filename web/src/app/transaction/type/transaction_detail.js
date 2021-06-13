@@ -10,10 +10,11 @@ import appDetails from '_appDetails.js';
 
 import TransactionTable from "app/transaction/components/transaction_table.js";
 import { getMemberTransactionList, addTransaction, deleteTransaction } from 'app/transaction/transaction_model.js';
+import { approveRecord, rejectRecord } from "app/approval_workflow/approval_workflow_model.js";
 
 function TransactionDetail(props) {
     const { category, categoryTitle } = props;
-    
+
     let { detailID } = useParams();
     const [list, setList] = useState([]);
     const [isLoading, setLoading] = useState(true);
@@ -35,8 +36,16 @@ function TransactionDetail(props) {
         });
     };
 
-    const approveCallback = (transactionKey) => {
-        return approveTransaction(transactionKey).then((data) => {
+    const approveCallback = (transactionKey, comment) => {
+        return approveRecord(transactionKey, category, comment).then((data) => {
+            if (data) {
+                setTrigger(data);
+            }
+        });
+    };
+
+    const rejectCallback = (transactionKey, comment) => {
+        return rejectRecord(transactionKey, category, comment).then((data) => {
             if (data) {
                 setTrigger(data);
             }
@@ -61,7 +70,7 @@ function TransactionDetail(props) {
     } else {
         return (
             <TransactionTable category={category} rows={list} addCallback={addCallback}
-                deleteCallback={deleteCallback} approveCallback={approveCallback} categoryTitle={categoryTitle} />
+                deleteCallback={deleteCallback} approveCallback={approveCallback} rejectCallback={rejectCallback} categoryTitle={categoryTitle} />
         );
     }
 };

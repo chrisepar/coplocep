@@ -36,8 +36,8 @@ BEGIN
 	                        SELECT M.MemberKey AS [MemberKey],
 	                        LastName + ', ' + FirstName + ' ' + MiddleName AS [Name], 
 	                        [Category], [Amount] FROM Transactions T
-	                        RIGHT JOIN Members M ON M.MemberKey = T.MemberKey
-							WHERE M.IsAccepted = 'Y'
+	                        RIGHT JOIN [Membership Approval] M ON M.MemberKey = T.MemberKey
+							WHERE M.IsApproved = 'Y'
                         ) AS SourceTable PIVOT(SUM([Amount]) FOR [Category] IN (
                         [Loan], 
                         [Deposit], 

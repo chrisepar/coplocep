@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import TextField from '@material-ui/core/TextField';
 import NumberFormat from 'react-number-format';
 import useStyles from 'styles/core/fields/_formControl.js';
+import field_types from 'app/core/fields/field_types.js';
+import FormatValue from "app/core/helpers/format_value.js";
 
 function NumberFieldCore(props) {
     const classes = useStyles();
@@ -22,7 +24,7 @@ function NumberFieldCore(props) {
             isNumericString
             format={format}
             inputProps={{ maxLength: maxLength }}
-            value={value}
+            value={FormatValue(field_types.number_field, value)}
             onChange={(event) => onChange(event.target.value)}
         />
     );

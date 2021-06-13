@@ -4,9 +4,6 @@ GO
 ALTER TABLE [dbo].[Members] DROP CONSTRAINT [DF_Members_TypeOfMembership]
 GO
 
-ALTER TABLE [dbo].[Members] DROP CONSTRAINT [DF__Members__IsAccep__72C60C4A]
-GO
-
 /****** Object:  Table [dbo].[Members]    Script Date: 09/05/2021 3:17:25 pm ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Members]') AND type in (N'U'))
 DROP TABLE [dbo].[Members]
@@ -25,13 +22,11 @@ CREATE TABLE [dbo].[Members](
 	[MiddleName] [nvarchar](250) NULL,
 	[LastName] [nvarchar](250) NULL,
 	[TinNumber] [nvarchar](12) NULL,
-	[DateAccepted] [datetime] NULL,
-	[IsAccepted] [nvarchar](1) NOT NULL,
 	[BODResolutionNumber] [nvarchar](10) NULL,
 	[TypeOfMembership] [nvarchar](50) NOT NULL,
-	[SharesSubscribed] [numeric](4, 0) NULL,
-	[AmountSubscribed] [numeric](18, 2) NULL,
-	[InitialPaidUp] [numeric](18, 2) NULL,
+	[SharesSubscribed] [numeric](4, 0) NOT NULL DEFAULT 0,
+	[AmountSubscribed] [numeric](18, 2) NOT NULL DEFAULT 0,
+	[InitialPaidUp] [numeric](18, 2) NOT NULL DEFAULT 0,
 	[Address] [nvarchar](250) NULL,
 	[CivilStatus] [nvarchar](50) NULL,
 	[Birthdate] [date] NULL,
@@ -54,9 +49,6 @@ CREATE TABLE [dbo].[Members](
 	[MemberKey] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
-GO
-
-ALTER TABLE [dbo].[Members] ADD  DEFAULT ('N') FOR [IsAccepted]
 GO
 
 ALTER TABLE [dbo].[Members] ADD  CONSTRAINT [DF_Members_TypeOfMembership]  DEFAULT (N'Regular') FOR [TypeOfMembership]

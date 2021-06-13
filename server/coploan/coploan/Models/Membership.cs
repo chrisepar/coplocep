@@ -17,8 +17,6 @@ namespace coploan.Models
         public string MiddleName { get; set; }
         public string LastName { get; set; }
         public string TinNumber { get; set; }
-        public string DateAccepted { get; set; }
-        public string IsAccepted { get; set; }
         public string BODResolutionNumber { get; set; }
         public string TypeOfMembership { get; set; }
         public decimal SharesSubscribed { get; set; }
@@ -26,7 +24,7 @@ namespace coploan.Models
         public decimal InitialPaidUp { get; set; }
         public string Address { get; set; }
         public string CivilStatus { get; set; }
-        public string Birthdate { get; set; }
+        public DateTime Birthdate { get; set; }
         public string Birthplace { get; set; }
         public string Occupation { get; set; }
         public decimal Salary { get; set; }
@@ -45,14 +43,18 @@ namespace coploan.Models
     public class Membership
     {
         private SQLQueries sql;
+        private IConfiguration config;
 
         public Membership(IConfiguration configuration)
         {
-            sql = new SQLQueries(configuration, typeof(Member));
+            config = configuration;
+            sql = new SQLQueries(config, typeof(Member));
         }
         public string GetMembers(string memberKey)
         {
             List<SqlParameter> sqlParam = new List<SqlParameter>();
+
+            sql = new SQLQueries(config, new Type[] { typeof(Member), typeof(Approval) });
 
             if (!string.IsNullOrEmpty(memberKey))
             {

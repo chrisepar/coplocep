@@ -21,11 +21,9 @@ import Layout from "app/core/layout/layout.js";
 // Styles
 import useStyles from 'styles/membership/_memberDetailsView.js';
 
-import { postData, putData } from 'app/core/helpers/fetch.js';
 import appDetails from '_appDetails.js';
 
-import MemberModel from 'app/membership/member_model.js';
-import { useStaticState } from '@material-ui/pickers';
+import { model, saveMember, getMember } from 'app/membership/member_model.js';
 
 const civilStatusList = [
     {
@@ -54,50 +52,13 @@ const educationalAttainment = [
     }
 ];
 
-const getMember = (memberKey) => {
-    return fetch(appDetails.apiRoute + 'membership/list?memberKey=' + memberKey)
-        .then(data => data.json());
-};
-
-const saveMember = (isCreateMode, memberKey, data) => {
-    data = prepDataBeforeSave(data, "Cashier");
-    if (isCreateMode) {
-        var url = appDetails.apiRoute + 'membership/create';
-        return postData(url, data).then((data) => {
-            if (data && data.ok) {
-                return data.json();
-            } else {
-                return false;
-            }
-        });
-    } else {
-        var url = appDetails.apiRoute + 'membership/edit/' + memberKey;
-        return putData(url, data).then((data) => {
-            if (data && data.ok) {
-                return data.json();
-            } else {
-                return false;
-            }
-        });
-
-    }
-};
-
-const prepDataBeforeSave = (detail, user) => {
-    detail["CreatedBy"] = user;
-    detail["CreatedDate"] = new Date();
-    detail["ModifiedBy"] = user;
-    detail["ModifiedDate"] = new Date();
-    return detail;
-};
-
 function MemberDetails(props) {
     let { detailID } = props.match.params;
     const classes = useStyles();
     const history = useHistory();
     const isCreateMode = (detailID === "~");
 
-    const [detail, setDetail] = useState(MemberModel);
+    const [detail, setDetail] = useState(model);
     const [isLoading, setLoading] = useState(null);
 
     // Get Member Details - Start
@@ -117,7 +78,7 @@ function MemberDetails(props) {
                     setLoading(false);
                 });
         } else {
-            setDetail(MemberModel);
+            setDetail(model);
             setLoading(false);
         }
         return () => mounted = false;

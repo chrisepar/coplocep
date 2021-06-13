@@ -9,9 +9,9 @@ const model = {
     IsApproved: "",
     ApprovedDate: "",
     CreatedBy: "",
-    CreatedDate: "",
+    CreatedDate: null,
     ModifiedBy: "",
-    ModifiedDate: ""
+    ModifiedDate: null
 };
 
 const prepData = (detailID, amount, category) => {
@@ -49,11 +49,6 @@ const deleteTransaction = (transactionKey) => {
     });
 };
 
-const approveTransaction = (transactionKey) => {
-    var url = appDetails.apiRoute + 'transaction/approve/' + transactionKey;
-    return false;
-};
-
 const getMemberTransactionList = (memberKey, type) => {
     return fetch(appDetails.apiRoute + 'transaction/' + type + '/' + memberKey)
         .then(data => data.json())
@@ -63,6 +58,5 @@ export {
     model,
     getMemberTransactionList,
     addTransaction,
-    deleteTransaction,
-    approveTransaction
+    deleteTransaction
 };

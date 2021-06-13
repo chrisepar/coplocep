@@ -5,12 +5,11 @@ import {
     KeyboardDatePicker,
 } from '@material-ui/pickers';
 import useStyles from 'styles/core/fields/_formControl.js';
-import { FormatDate } from 'app/core/helpers/date_format.js';
+import { FormatDateFromISO } from 'app/core/helpers/date_format.js';
 
 function DateFieldCore(props) {
     const classes = useStyles();
     const { id, label, value, onChange, disabled, disableFuture, openTo, views } = props;
-    
     return (
         <MuiPickersUtilsProvider utils={DateFnsUtils}>
             <KeyboardDatePicker
@@ -22,7 +21,7 @@ function DateFieldCore(props) {
                 margin="normal" fullWidth
                 format="MM/dd/yyyy"
                 id={id} label={label}
-                value={FormatDate(value)}
+                value={FormatDateFromISO(value)}
                 onChange={onChange}
                 openTo={openTo}
                 views={views}

@@ -24,8 +24,6 @@ CREATE PROCEDURE [dbo].[InsertMembership]
 	@MiddleName nvarchar(250),
 	@LastName nvarchar(250),
 	@TinNumber nvarchar(12),
-	@DateAccepted datetime,
-	@IsAccepted nvarchar(1),
 	@BODResolutionNumber nvarchar(10),
 	@TypeOfMembership nvarchar(50),
 	@SharesSubscribed numeric(4,0),

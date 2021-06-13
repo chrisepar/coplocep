@@ -25,6 +25,12 @@ namespace coploan.Common
             results = CreateEmptyDataTable(myType);
         }
 
+        public SQLQueries(IConfiguration configuration, Type[] myType)
+        {
+            _configuration = configuration;
+            results = CreateEmptyDataTable(myType);
+        }
+
         private static DataTable CreateEmptyDataTable(Type myType)
         {
             DataTable dt = new DataTable();
@@ -32,6 +38,23 @@ namespace coploan.Common
             foreach (PropertyInfo info in myType.GetProperties())
             {
                 dt.Columns.Add(new DataColumn(info.Name, info.PropertyType));
+            }
+
+            return dt;
+        }
+
+        private static DataTable CreateEmptyDataTable(Type[] myType)
+        {
+            DataTable dt = new DataTable();
+            foreach(Type type in myType)
+            {
+                foreach (PropertyInfo info in type.GetProperties())
+                {
+                    if (!dt.Columns.Contains(info.Name))
+                    {
+                        dt.Columns.Add(new DataColumn(info.Name, info.PropertyType));
+                    }
+                }
             }
 
             return dt;

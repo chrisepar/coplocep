@@ -22,8 +22,6 @@ CREATE PROCEDURE [dbo].[AddTransaction]
 	@MemberKey int,
 	@Amount numeric(18,2),
 	@Category nvarchar(50),
-	@IsApproved nvarchar(1),
-	@ApprovedDate datetime,
 	@CreatedBy nvarchar(250),
 	@CreatedDate datetime,
 	@ModifiedBy nvarchar(250),

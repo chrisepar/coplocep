@@ -27,7 +27,20 @@ BEGIN
 	SET NOCOUNT ON;
 
     -- Insert statements for procedure here
-	SELECT * FROM Transactions WHERE Category = 'Loan' AND MemberKey = @memberKey
+	SELECT [TransactionKey]
+      ,[MemberKey]
+      ,[Amount]
+      ,[Category]
+      ,[CreatedBy]
+      ,[CreatedDate]
+      ,[ModifiedBy]
+      ,[ModifiedDate]
+      ,[ApprovalID]
+      ,[ApprovedBy]
+      ,[ApprovedDate]
+      ,[IsApproved]
+      ,[Comment] FROM [Transaction Approval] AS TA
+	WHERE Category = 'Loan' AND MemberKey = @memberKey
 END
 GO
 

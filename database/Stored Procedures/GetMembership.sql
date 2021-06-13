@@ -27,7 +27,7 @@ BEGIN
 	SET NOCOUNT ON;
 
     -- Insert statements for procedure here
-	SELECT *,  LastName + ', ' + FirstName + ' ' + MiddleName AS [Name] FROM Members 
+	SELECT *,  LastName + ', ' + FirstName + ' ' + MiddleName AS [Name] FROM [Membership Approval] 
 	WHERE  (MemberKey = @memberKey OR @memberKey IS NULL) 
 END
 GO

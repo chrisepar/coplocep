@@ -20,9 +20,11 @@ import moment from 'moment';
 
 import useTableStyles from 'styles/transaction/components/_transactionTable.js';
 import { FormatDateTime } from 'app/core/helpers/date_format.js';
+import isTruthy from "app/core/helpers/is_truthy.js";
 
 import DeleteButton from "app/transaction/components/delete_button.js";
 import ApproveButton from "app/transaction/components/approve_button.js";
+import RejectButton from "app/transaction/components/reject_button.js";
 
 const filterOptions = [
     {
@@ -93,7 +95,7 @@ function TransactionToolbar(props) {
 
 function TransactionTable(props) {
     const classes = useTableStyles();
-    const { rows, addCallback, deleteCallback, approveCallback, categoryTitle, category } = props;
+    const { rows, addCallback, deleteCallback, approveCallback, rejectCallback, categoryTitle, category } = props;
     return (
         <Grid container>
             <Grid item xs={12}>
@@ -105,33 +107,40 @@ function TransactionTable(props) {
                                 <TableCell />
                                 <TableCell />
                                 <TableCell align="right">Loan Amount</TableCell>
-                                <TableCell >Modified By</TableCell>
-                                <TableCell >Modified Date</TableCell>
                                 <TableCell >Created By</TableCell>
                                 <TableCell >Created Date</TableCell>
-                                <TableCell >Approved Date</TableCell>
                                 <TableCell >Approved By</TableCell>
+                                <TableCell >Approved Date</TableCell>
+                                <TableCell />
                             </TableRow>
                         </TableHead>
                         <TableBody>
                             {
                                 rows.map((row, index) => (
                                     <TableRow key={index}>
-                                        <TableCell>
-                                            <DeleteButton callback={deleteCallback} categoryTitle={categoryTitle} category={category}
-                                                transactionKey={row.TransactionKey} amount={row.Amount} />
+                                        <TableCell >
+                                            {
+                                                <RejectButton callback={rejectCallback} categoryTitle={categoryTitle} category={category}
+                                                    transactionKey={row.TransactionKey} amount={row.Amount} />
+
+                                            }
                                         </TableCell>
                                         <TableCell>
-                                            <ApproveButton callback={approveCallback} categoryTitle={categoryTitle} category={category}
-                                                transactionKey={row.TransactionKey} amount={row.Amount} />
+                                            {
+                                                (!isTruthy(row.IsApproved)) && <ApproveButton callback={approveCallback} categoryTitle={categoryTitle} category={category}
+                                                    transactionKey={row.TransactionKey} amount={row.Amount} />
+
+                                            }
                                         </TableCell>
                                         <TableCell align="right">{row.Amount}</TableCell>
                                         <TableCell>{row.CreatedBy}</TableCell>
                                         <TableCell>{FormatDateTime(row.CreatedDate)}</TableCell>
-                                        <TableCell>{row.ModifiedBy}</TableCell>
-                                        <TableCell>{FormatDateTime(row.ModifiedDate)}</TableCell>
                                         <TableCell>{row.ApprovedBy}</TableCell>
                                         <TableCell>{FormatDateTime(row.ApprovedDate)}</TableCell>
+                                        <TableCell>
+                                            <DeleteButton callback={deleteCallback} categoryTitle={categoryTitle} category={category}
+                                                transactionKey={row.TransactionKey} amount={row.Amount} />
+                                        </TableCell>
                                     </TableRow>
                                 ))
                             }

@@ -24,8 +24,6 @@ CREATE PROCEDURE [dbo].[UpdateMembership]
 	@MiddleName nvarchar(250),
 	@LastName nvarchar(250),
 	@TinNumber nvarchar(12),
-	@DateAccepted datetime,
-	@IsAccepted nvarchar(1),
 	@BODResolutionNumber nvarchar(10),
 	@TypeOfMembership nvarchar(50),
 	@SharesSubscribed numeric(4,0),
@@ -61,8 +59,6 @@ BEGIN
                       ,[MiddleName] = @MiddleName
                       ,[LastName] = @LastName
                       ,[TinNumber] = @TinNumber
-                      ,[DateAccepted] = @DateAccepted
-                      ,[IsAccepted] = @IsAccepted
                       ,[BODResolutionNumber] = @BODResolutionNumber
                       ,[TypeOfMembership] = @TypeOfMembership
                       ,[SharesSubscribed] = @SharesSubscribed

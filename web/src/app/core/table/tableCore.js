@@ -19,7 +19,7 @@ import EditIcon from '@material-ui/icons/Edit';
 import TableHeader from "app/core/table/tableHeader.js";
 import TableToolbar from "app/core/table/tableToolbar.js";
 
-import field_types from 'app/core/fields/field_types.js';
+import FormatValue from "app/core/helpers/format_value.js";
 
 //Table
 function descendingComparator(a, b, orderBy) {
@@ -49,31 +49,16 @@ function stableSort(array, comparator) {
 }
 
 function searchItem(searchBy, data, value) {
-    var foundData = data.filter(function(item, index){
+    var foundData = data.filter(function (item, index) {
         return item[searchBy].toLowerCase().includes(value.toLowerCase());
     });
     return (value === "") ? data : (foundData && foundData.length > 0) ? foundData : [];
 };
 
-function valueEmpty(fieldType, value) {
-    if (value === "") {
-        switch (fieldType) {
-            case field_types.text_field:
-                return "";
-            case field_types.number_field:
-                return 0;
-            default:
-                return "";
-        }
-    } else {
-        return value;
-    }
-}
-
 function dataCell(col, row) {
     return (
         col.map((cell, cellIndex) => (
-            <TableCell key={row.MemberKey + "_" + cellIndex} align="left">{valueEmpty(cell.field, row[cell.field])}</TableCell>
+            <TableCell key={row.MemberKey + "_" + cellIndex} align="left">{FormatValue(cell.type, row[cell.field])}</TableCell>
         ))
     );
 }

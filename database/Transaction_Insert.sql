@@ -4,9 +4,6 @@ GO
 ALTER TABLE [dbo].[Transactions] DROP CONSTRAINT [FK_Transactions_Members]
 GO
 
-ALTER TABLE [dbo].[Transactions] DROP CONSTRAINT [DF__Transacti__IsApp__06CD04F7]
-GO
-
 ALTER TABLE [dbo].[Transactions] DROP CONSTRAINT [DF_Transactions_Category]
 GO
 
@@ -23,27 +20,22 @@ SET QUOTED_IDENTIFIER ON
 GO
 
 CREATE TABLE [dbo].[Transactions](
-	[LoanKey] [int] IDENTITY(1,1) NOT NULL,
+	[TransactionKey] [int] IDENTITY(1,1) NOT NULL,
 	[MemberKey] [int] NULL,
 	[Amount] [numeric](18, 2) NULL,
 	[Category] [nvarchar](50) NULL,
-	[IsApproved] [nvarchar](1) NOT NULL,
-	[ApprovedDate] [datetime] NULL,
 	[CreatedBy] [nvarchar](255) NOT NULL,
 	[CreatedDate] [datetime] NOT NULL,
 	[ModifiedBy] [nvarchar](255) NOT NULL,
 	[ModifiedDate] [datetime] NOT NULL,
  CONSTRAINT [PK_Transactions] PRIMARY KEY CLUSTERED 
 (
-	[LoanKey] ASC
+	[TransactionKey] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
 
 ALTER TABLE [dbo].[Transactions] ADD  CONSTRAINT [DF_Transactions_Category]  DEFAULT (N'Loan') FOR [Category]
-GO
-
-ALTER TABLE [dbo].[Transactions] ADD  DEFAULT ('N') FOR [IsApproved]
 GO
 
 ALTER TABLE [dbo].[Transactions]  WITH CHECK ADD  CONSTRAINT [FK_Transactions_Members] FOREIGN KEY([MemberKey])

@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import TextField from '@material-ui/core/TextField';
 import useStyles from 'styles/core/fields/_formControl.js';
+import field_types from 'app/core/fields/field_types.js';
+import FormatValue from "app/core/helpers/format_value.js";
 
 function TextFieldCore(props) {
     const classes = useStyles();
@@ -17,7 +19,7 @@ function TextFieldCore(props) {
                     root: classes.labelRoot
                 }
             }}
-            value={value}
+            value={FormatValue(field_types.text_field, value)}
             onChange={(event) => onChange(event.target.value)}
             disabled={disabled}
         />

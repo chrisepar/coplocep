@@ -7,7 +7,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import CurrencyField from 'app/core/fields/currency_field.js';
+import MultilineField from 'app/core/fields/multiline_field.js';
 import IconButton from '@material-ui/core/IconButton';
 import ThumbUpIcon from '@material-ui/icons/ThumbUp';
 
@@ -17,6 +17,8 @@ function ApproveButton(props) {
     const classes = useStyles();
     const { id, label, callback, categoryTitle, category, amount, transactionKey } = props;
     const [openEntryDialog, setOpenEntryDialog] = React.useState(false);
+
+    const [comment, setComment] = React.useState("");
 
     const handleClickOpen = () => {
         setOpenEntryDialog(true);
@@ -28,7 +30,7 @@ function ApproveButton(props) {
 
     const handleConfirm = () => {
         if (callback) {
-            callback(transactionKey).then(() => setOpenEntryDialog(false));
+            callback(transactionKey, comment).then(() => setOpenEntryDialog(false));
         }
     };
 
@@ -44,6 +46,7 @@ function ApproveButton(props) {
                     <DialogContentText>
                         Approving {categoryTitle} amounting to {amount}
                     </DialogContentText>
+                    <MultilineField id="approveComment" label="Comment" value={comment} onChange={(value) => setComment(value)}/>
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleClose} color="primary"> Cancel </Button>
