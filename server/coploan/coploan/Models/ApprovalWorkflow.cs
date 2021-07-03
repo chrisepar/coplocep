@@ -31,22 +31,60 @@ namespace coploan.Models
             sql = new SQLQueries(configuration, typeof(Approval));
         }
 
-        public bool ApproveRecord(Approval data)
+        public bool ApproveMembershipRecord(Approval data)
+        {
+            List<string> included = new List<string>() { "RecordID", "Category", "ApprovedBy", "ApprovedDate", "Comment" };
+            List<SqlParameter> sqlParam = sql.GenerateSQLParamFromInstance(typeof(Approval), data, included);
+
+            return sql.ExecuteNonQuery("[dbo].[ApproveMembershipRecord]", sqlParam);
+        }
+
+        public bool ApproveTransactionRecord(Approval data)
+        {
+            List<string> included = new List<string>() { "RecordID", "Category", "ApprovedBy", "ApprovedDate", "Comment" };
+            List<SqlParameter> sqlParam = sql.GenerateSQLParamFromInstance(typeof(Approval), data, included);
+
+            return sql.ExecuteNonQuery("[dbo].[ApproveTransactionRecord]", sqlParam);
+        }
+
+        public bool RejectMembershipRecord(Approval data)
+        {            
+            List<string> included = new List<string>() { "RecordID", "Category", "ApprovedBy", "ApprovedDate", "Comment" };
+            List<SqlParameter> sqlParam = sql.GenerateSQLParamFromInstance(typeof(Approval), data, included);
+
+            return sql.ExecuteNonQuery("[dbo].[RejectMembershipRecord]", sqlParam);
+        }
+        public bool RejectTransactionRecord(Approval data)
+        {
+            List<string> included = new List<string>() { "RecordID", "Category", "ApprovedBy", "ApprovedDate", "Comment" };
+            List<SqlParameter> sqlParam = sql.GenerateSQLParamFromInstance(typeof(Approval), data, included);
+
+            return sql.ExecuteNonQuery("[dbo].[RejectTransactionRecord]", sqlParam);
+        }
+
+        public string GetMembershipTimeline(int recordID)
         {
             List<SqlParameter> sqlParam = new List<SqlParameter>();
-            List<string> included = new List<string>() { "RecordID", "Category", "ApprovedBy", "ApprovedDate", "Comment" };
 
-            foreach (PropertyInfo item in typeof(Approval).GetProperties())
-            {
-                if (included.Contains(item.Name))
-                {
-                    StringBuilder itemSB = new StringBuilder();
-                    itemSB.Append("@").Append(item.Name);
-                    sqlParam.Add(new SqlParameter(itemSB.ToString(), Helpers.isEmpty(item.GetValue(data)) ? DBNull.Value : item.GetValue(data)));
-                }
-            }
-            return sql.ExecuteNonQuery("[dbo].[ApproveRecord]", sqlParam);
+            sql = new SQLQueries(config);
+
+            sqlParam.Add(new SqlParameter("@RecordID", recordID));
+
+            return sql.ExecuteReader("[dbo].[GetMembershipTimeline]", sqlParam);
         }
+
+        public string GetTransactionTimeline(string category, int recordID)
+        {
+            List<SqlParameter> sqlParam = new List<SqlParameter>();
+
+            sql = new SQLQueries(config);
+
+            sqlParam.Add(new SqlParameter("@RecordID", recordID));
+            sqlParam.Add(new SqlParameter("@Category", category));
+
+            return sql.ExecuteReader("[dbo].[GetTransactionTimeline]", sqlParam);
+        }
+
     }
 
 }

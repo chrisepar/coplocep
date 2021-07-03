@@ -4,7 +4,7 @@ import {
     MuiPickersUtilsProvider,
     KeyboardDatePicker,
 } from '@material-ui/pickers';
-import useStyles from 'styles/core/fields/_formControl.js';
+import useStyles from 'app/core/styles/fields/_formControl.js';
 import { FormatDateFromISO } from 'app/core/helpers/date_format.js';
 
 function DateFieldCore(props) {

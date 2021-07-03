@@ -1,5 +1,6 @@
 import appDetails from '_appDetails.js';
-import { postData, deleteData } from 'app/core/helpers/fetch.js';
+import { postData, deleteData, getData } from 'app/core/helpers/fetch.js';
+import { getUserCode } from "app/core/authentication/authentication.js"
 
 const model = {
     TransactionKey: 0,
@@ -14,22 +15,23 @@ const model = {
     ModifiedDate: null
 };
 
-const prepData = (detailID, amount, category) => {
+const prepData = (detailID, category, data) => {
     var detail = _.clone(model);
     detail.MemberKey = detailID;
-    detail.Amount = amount;
     detail.Category = category;
-    detail.CreatedBy = appDetails.user();
+    detail.Amount = data.amount;
+    detail.Interest = data.interest;
+    detail.Term = data.term;
+    detail.CreatedBy = getUserCode();
     detail.CreatedDate = new Date();
-    detail.ModifiedBy = appDetails.user();
+    detail.ModifiedBy = getUserCode();
     detail.ModifiedDate = new Date();
     return detail;
 };
 
-const addTransaction = (detailID, amount, category) => {
-    var detail = prepData(detailID, amount, category);
-    var url = appDetails.apiRoute + 'transaction/add';
-    return postData(url, detail).then((data) => {
+const addTransaction = (detailID, category, data) => {
+    var detail = prepData(detailID, category, data);
+    return postData('transaction/add', detail).then((data) => {
         if (data && data.ok) {
             return data.json();
         } else {
@@ -39,8 +41,7 @@ const addTransaction = (detailID, amount, category) => {
 };
 
 const deleteTransaction = (transactionKey) => {
-    var url = appDetails.apiRoute + 'transaction/delete/' + transactionKey;
-    return deleteData(url).then((data) => {
+    return deleteData('transaction/delete/' + transactionKey).then((data) => {
         if (data && data.ok) {
             return data.json();
         } else {
@@ -50,7 +51,12 @@ const deleteTransaction = (transactionKey) => {
 };
 
 const getMemberTransactionList = (memberKey, type) => {
-    return fetch(appDetails.apiRoute + 'transaction/' + type + '/' + memberKey)
+    return getData('transaction/' + type + '/' + memberKey)
+        .then(data => data.json())
+};
+
+const getMembersWithTransaction = () => {
+    return getData('transaction/list')
         .then(data => data.json())
 };
 
@@ -58,5 +64,6 @@ export {
     model,
     getMemberTransactionList,
     addTransaction,
-    deleteTransaction
+    deleteTransaction,
+    getMembersWithTransaction
 };

@@ -3,7 +3,7 @@ import React from 'react';
 import Button from '@material-ui/core/Button';
 import SaveIcon from '@material-ui/icons/Save';
 
-import useStyles from 'styles/core/buttons/_buttons.js';
+import useStyles from 'app/core/styles/buttons/_buttons.js';
 
 function SaveButtonCore(props) {
     const classes = useStyles();

@@ -14,11 +14,11 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Toolbar from '@material-ui/core/Toolbar';
 import Dropdown from 'app/core/fields/dropdown_field.js';
-import EntryButton from "app/transaction/components/add_button.js";
+import EntryButton from "app/transaction/components/new_transaction/add_transaction_button.js";
 import DateField from 'app/core/fields/date_field.js';
 import moment from 'moment';
 
-import useTableStyles from 'styles/transaction/components/_transactionTable.js';
+import useStyles from 'app/transaction/styles/components/_transactionTable.js';
 import { FormatDateTime } from 'app/core/helpers/date_format.js';
 import isTruthy from "app/core/helpers/is_truthy.js";
 
@@ -94,7 +94,7 @@ function TransactionToolbar(props) {
 };
 
 function TransactionTable(props) {
-    const classes = useTableStyles();
+    const classes = useStyles();
     const { rows, addCallback, deleteCallback, approveCallback, rejectCallback, categoryTitle, category } = props;
     return (
         <Grid container>

@@ -13,13 +13,11 @@ import moment from 'moment';
 //Apps
 import Layout from "app/core/layout/layout.js";
 import MemberDetails from "app/membership/member_detail_view.js";
-// import LoanDetails from "app/transaction/type/loan_detail.js";
-// import InterestDetails from "app/transaction/type/interest_detail.js";
-// import DepositDetails from "app/transaction/type/deposit_detail.js";
-import TransactionDetail from "app/transaction/type/transaction_detail.js";
+
+import TransactionDetail from "app/transaction/transaction_detail.js";
 
 // Styles
-import useStyles from 'styles/membership/_memberDetailsView.js';
+import useStyles from 'app/membership/styles/_memberDetailsView.js';
 
 function MemberDetailsContainer(props) {
     const classes = useStyles();

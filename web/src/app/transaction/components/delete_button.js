@@ -12,7 +12,7 @@ import IconButton from '@material-ui/core/IconButton';
 // import HighlightOffRoundedIcon from '@material-ui/icons/HighlightOffRounded';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 
-import useStyles from 'styles/core/buttons/_buttons.js';
+import useStyles from 'app/core/styles/buttons/_buttons.js';
 
 function DeleteButton(props) {
     const classes = useStyles();

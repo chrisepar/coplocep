@@ -14,14 +14,14 @@ GO
 
 CREATE VIEW [dbo].[Transaction Approval] AS
 SELECT T.TransactionKey, T.MemberKey, T.Amount, T.Category, 
-(SELECT [Name] FROM UserRoles WHERE Code = T.CreatedBy) AS [CreatedBy], 
+dbo.GetUserRole(T.CreatedBy) AS [CreatedBy], 
 T.CreatedDate, 
-(SELECT [Name] FROM UserRoles WHERE Code = T.ModifiedBy) AS [ModifiedBy], 
+dbo.GetUserRole(T.ModifiedBy) AS [ModifiedBy], 
 T.ModifiedDate, 
 AWE.ApprovalID, 
-(SELECT [Name] FROM UserRoles WHERE Code = AWE.ApprovedBy) AS ApprovedBy, 
+dbo.GetUserRole(AWE.ApprovedBy) AS ApprovedBy, 
 AWE.ApprovedDate, AWE.IsApproved, AWE.Comment FROM Transactions T
-	OUTER APPLY (SELECT TOP 1 * FROM ApprovalWorkflow AW WHERE AW.RecordID = T.TransactionKey AND AW.Category != 'Membership' ORDER BY AW.ApprovedDate DESC) AS AWE
+	OUTER APPLY (SELECT TOP 1 * FROM TransactionWorkflow AW WHERE AW.RecordID = T.TransactionKey AND AW.Category != 'Membership' ORDER BY AW.ApprovedDate DESC) AS AWE
 GO
 
 

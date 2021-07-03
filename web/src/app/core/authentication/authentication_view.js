@@ -1,15 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { useHistory, Redirect, Route } from "react-router-dom";
-import { setSession, getUser } from "app/core/helpers/session_storage.js";
 
 import { Grid, Box, Select, FormControl, MenuItem, InputLabel } from '@material-ui/core';
-import 'css/_login.css';
+import 'css/_authentication.css';
+
 import appDetails from '_appDetails.js';
 
-const getUserRoles = () => {
-    return fetch(appDetails.apiRoute + 'security/list')
-        .then(data => data.json())
-};
+import { getUserRoles } from "app/core/authentication/authentication_model.js";
+import { setUserSession, getUserSession } from "app/core/authentication/authentication.js"
+
 
 export default () => {
     const history = useHistory();
@@ -18,14 +17,14 @@ export default () => {
     const [user, setUser] = useState("");
 
     const isUserLoggedIn = () => {
-        return getUser() !== null;
+        return getUserSession() !== null;
     };
 
     const onChangeRole = (event, item) => {
         const selected = event.target.value;
         const user = { Code: item.props.value, Name: item.props.children };
         setUser(selected);
-        setSession("user", JSON.stringify(user));
+        setUserSession(JSON.stringify(user));
         history.push(appDetails.baseRoute + "/membership");
     };
 
@@ -42,7 +41,6 @@ export default () => {
         }
         return () => mounted = false;
     }, []);
-    // End
 
     if (!isUserLoggedIn()) {
         return (

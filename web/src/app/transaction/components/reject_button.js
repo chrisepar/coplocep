@@ -11,7 +11,7 @@ import MultilineField from 'app/core/fields/multiline_field.js';
 import IconButton from '@material-ui/core/IconButton';
 import ThumbDownIcon from '@material-ui/icons/ThumbDown';
 
-import useStyles from 'styles/core/buttons/_buttons.js';
+import useStyles from 'app/core/styles/buttons/_buttons.js';
 
 function RejectButton(props) {
     const classes = useStyles();

@@ -27,10 +27,8 @@ BEGIN
 	SET NOCOUNT OFF;
 	BEGIN TRANSACTION;
     -- Insert statements for procedure here
-	DELETE FROM Transactions WHERE TransactionKey = @TransactionKey
+	DELETE FROM Transactions WHERE TransactionKey = @TransactionKey AND (SELECT IsApproved FROM [Transaction Approval] WHERE  TransactionKey = @TransactionKey) IS NULL
 	SELECT @@ROWCOUNT
 	COMMIT TRANSACTION;
 END
 GO
-
-

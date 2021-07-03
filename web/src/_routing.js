@@ -8,23 +8,18 @@ import {
     Redirect
 } from "react-router-dom";
 
-import Login from "app/core/login/login.js";
+import AuthenticationView from "app/core/authentication/authentication_view.js";
+import { getUserSession } from "app/core/authentication/authentication.js"
 
 import 'css/_core.css';
 
-import { getUser } from "app/core/helpers/session_storage.js";
 import appList from 'app_list.js';
-
-import Membership from "app/membership/members_list.js";
-import MembershipDetails from 'app/membership/member_detail_view.js';
-import Loans from "app/transaction/transaction_list.js";
-
 import appDetails from '_appDetails.js';
 
 const PrivateRoute = (props) => {
 
     const isUserLoggedIn = () => {
-        return getUser() !== null;
+        return getUserSession() !== null;
     }
 
     if (isUserLoggedIn()) {
@@ -53,7 +48,7 @@ function RoutingCore() {
         <Router>
             <Switch>
                 <Route path={appDetails.baseRoute} exact={true}>
-                    <Login />
+                    <AuthenticationView />
                 </Route>
                 {appList.map((app, index) => {
                     return (

@@ -3,7 +3,7 @@ import React from 'react';
 import MenuItem from '@material-ui/core/MenuItem';
 import TextField from '@material-ui/core/TextField';
 
-import useStyles from 'styles/core/fields/_formControl.js';
+import useStyles from 'app/core/styles/fields/_formControl.js';
 
 function DropdownCore(props) {
     const classes = useStyles();

@@ -7,13 +7,12 @@ import field_types from 'app/core/fields/field_types.js';
 import Loading from 'app/core/helpers/loading_screen.js';
 
 // Styles
-import useStyles from 'styles/transaction/_transactionList.js';
+import useStyles from 'app/transaction/styles/_transactionList.js';
 
 //Apps
 import Layout from "app/core/layout/layout.js";
 import Table from "app/core/table/table.js";
-
-import appDetails from '_appDetails.js';
+import { getMembersWithTransaction } from 'app/transaction/transaction_model.js';
 
 const columns = [
     { field: 'MemberKey', type: field_types.text_field, headerName: 'Membership #', width: 100 },
@@ -23,11 +22,6 @@ const columns = [
     { field: 'InterestPaidAmount', type: field_types.number_field, headerName: 'Interest Paid for <year>', width: 200 },
     { field: 'AverageShareAmount', type: field_types.number_field, headerName: 'Average Share', width: 200 }
 ];
-
-const getMembersWithTransaction = () => {
-    return fetch(appDetails.apiRoute + 'transaction/list')
-        .then(data => data.json())
-};
 
 export default (props) => {
     const classes = useStyles();

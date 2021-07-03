@@ -14,16 +14,25 @@ import CurrencyField from 'app/core/fields/currency_field.js';
 import MultilineField from 'app/core/fields/multiline_field.js';
 import SaveButton from 'app/core/button/save_button.js';
 import Loading from 'app/core/helpers/loading_screen.js';
+import Status from "app/core/fields/status_field.js";
 import moment from 'moment';
 
 //Apps
 import Layout from "app/core/layout/layout.js";
+import ApproveButton from "app/membership/components/approve_button.js";
+import RejectButton from "app/membership/components/reject_button.js";
+
 // Styles
-import useStyles from 'styles/membership/_memberDetailsView.js';
+import useStyles from 'app/membership/styles/_memberDetailsView.js';
 
 import appDetails from '_appDetails.js';
 
+import isTruthy from "app/core/helpers/is_truthy.js";
+import isEmpty from "app/core/helpers/is_empty.js";
+import { getUserName } from "app/core/authentication/authentication.js"
+
 import { model, saveMember, getMember } from 'app/membership/member_model.js';
+import { FormatDateFromISO } from 'app/core/helpers/date_format.js';
 
 const civilStatusList = [
     {
@@ -60,6 +69,7 @@ function MemberDetails(props) {
 
     const [detail, setDetail] = useState(model);
     const [isLoading, setLoading] = useState(null);
+    const [reload, setReload] = useState(0);
 
     // Get Member Details - Start
     useEffect(() => {
@@ -69,7 +79,9 @@ function MemberDetails(props) {
                 .then(items => {
                     if (mounted && items.length > 0) {
                         console.log("Success Get");
-                        setDetail(items[0]);
+                        const item = items[0];
+                        item.Birthdate = FormatDateFromISO(item.Birthdate);
+                        setDetail(item);
                     } else {
                         console.log("Fail Get");
                         // return to list if no items
@@ -82,7 +94,7 @@ function MemberDetails(props) {
             setLoading(false);
         }
         return () => mounted = false;
-    }, [detailID]);
+    }, [detailID, reload]);
     // End
 
 
@@ -110,7 +122,7 @@ function MemberDetails(props) {
     };
 
     const getAge = () => {
-        var birthDate = detail["Birthdate"];
+        var birthDate = detail.Birthdate;
         if (birthDate) {
             var end = moment(birthDate); // another date
             if (end.isValid()) {
@@ -124,6 +136,36 @@ function MemberDetails(props) {
             return "";
         }
     };
+    
+    const isApprovalAvailable = () => {
+        return (isEmpty(detail.LastIsApproved)) ||
+            (
+                !isEmpty(detail.LastIsApproved) && isTruthy(detail.LastIsApproved)
+                && isEmpty(detail.IsApprovedByCurrent) && !isTruthy(detail.IsFinalApproved)
+            ) ||
+            (detail.LastApprovedBy === getUserName());
+    };
+
+    const getApprovalButton = () => {
+        if (isApprovalAvailable()) {
+            return (
+                <React.Fragment>
+                    {
+                        (isEmpty(detail.IsApprovedByCurrent) || isTruthy(detail.IsApprovedByCurrent)) &&
+                        (
+                            <RejectButton recordID={detailID} memberName={detail.Name} setReload={setReload} />
+                        )
+                    }
+                    {
+                        (isEmpty(detail.IsApprovedByCurrent) || !isTruthy(detail.IsApprovedByCurrent)) &&
+                        (
+                            <ApproveButton recordID={detailID} memberName={detail.Name} setReload={setReload} />
+                        )
+                    }
+                </React.Fragment>
+            )
+        }
+    };
 
     if (isLoading === null) {
         return (<Loading />);
@@ -135,107 +177,107 @@ function MemberDetails(props) {
                 }
 
                 {
-                    (!props.isModule) ?
-                        (
-                            <Grid item xs={11}>
-                                <Typography variant="h4" gutterBottom >
-                                    Personal Details {(isCreateMode) ? " - New Member" : " - " + detailID}
-                                </Typography>
+                    (!props.isModule) &&
+                    (
+                        <React.Fragment>
+                            <Grid item xs={3}>
+                                <TextField id="MemberKey" label="Member #" value={detail.MemberKey} disabled={true} />
                             </Grid>
-                        ) : null
-                }
-
-                {
-                    (!props.isModule) ?
-                        (
+                            <Grid container item xs={4} alignItems="flex-end" >
+                                <Status category="Membership" recordID={detailID} LastIsApproved={detail.LastIsApproved} IsFinalApproved={detail.IsFinalApproved} />
+                            </Grid>
+                            <Grid container item xs={4} justify="flex-end">
+                                {getApprovalButton()}
+                            </Grid>
                             <Grid item xs={1} >
                                 <SaveButton onClick={handleSave} />
                             </Grid>
-                        ) : null
+                        </React.Fragment>
+                    )
                 }
 
                 <Grid item xs={3}>
                     <TextField id="LastName" label="Last Name"
-                        value={detail["LastName"]} onChange={(value) => handleChange(value, "LastName")} />
+                        value={detail.LastName} onChange={(value) => handleChange(value, "LastName")} />
                 </Grid>
                 <Grid item xs={3}>
                     <TextField id="FirstName" label="First Name"
-                        value={detail["FirstName"]} onChange={(value) => handleChange(value, "FirstName")} />
+                        value={detail.FirstName} onChange={(value) => handleChange(value, "FirstName")} />
                 </Grid>
                 <Grid item xs={3}>
                     <TextField id="MiddleName" label="Middle Name"
-                        value={detail["MiddleName"]} onChange={(value) => handleChange(value, "MiddleName")} />
+                        value={detail.MiddleName} onChange={(value) => handleChange(value, "MiddleName")} />
                 </Grid>
                 <Grid item xs={3}>
                     <Dropdown id="CivilStatus" label="Civil Status" list={civilStatusList}
-                        value={detail["CivilStatus"]} onChange={(value) => handleChange(value, "CivilStatus")} />
+                        value={detail.CivilStatus} onChange={(value) => handleChange(value, "CivilStatus")} />
                 </Grid>
 
 
 
                 <Grid item xs={6}>
                     <TextField id="Address" label="Address"
-                        value={detail["Address"]} onChange={(value) => handleChange(value, "Address")} />
+                        value={detail.Address} onChange={(value) => handleChange(value, "Address")} />
                 </Grid>
                 <Grid item xs={6} />
 
 
                 <Grid item xs={3}>
                     <DateField id="Birthdate" label="Birthdate" disableFuture={true} openTo="year" views={["year", "month", "date"]}
-                        value={detail["Birthdate"]} onChange={(value) => handleChange(value, "Birthdate")} />
+                        value={detail.Birthdate} onChange={(value) => handleChange(value, "Birthdate")} />
                 </Grid>
                 <Grid item xs={3}>
                     <TextField id="Age" label="Age" disabled={true} value={getAge()} />
                 </Grid>
                 <Grid item xs={6}>
                     <TextField id="Birthplace" label="Birthplace"
-                        value={detail["Birthplace"]} onChange={(value) => handleChange(value, "Birthplace")} />
+                        value={detail.Birthplace} onChange={(value) => handleChange(value, "Birthplace")} />
                 </Grid>
 
 
                 <Grid item xs={3}>
                     <TextField id="Occupation" label="Occupation"
-                        value={detail["Occupation"]} onChange={(value) => handleChange(value, "Occupation")} />
+                        value={detail.Occupation} onChange={(value) => handleChange(value, "Occupation")} />
                 </Grid>
                 <Grid item xs={3}>
                     <CurrencyField id="Salary" label="Salary"
-                        value={detail["Salary"]} onChange={(value) => handleChange(value, "Salary")} />
+                        value={detail.Salary} onChange={(value) => handleChange(value, "Salary")} />
                 </Grid>
                 <Grid item xs={3}>
                     <TextField id="OtherIncome" label="Other Source of Income"
-                        value={detail["OtherIncome"]} onChange={(value) => handleChange(value, "OtherIncome")} />
+                        value={detail.OtherIncome} onChange={(value) => handleChange(value, "OtherIncome")} />
                 </Grid>
                 <Grid item xs={3}>
                     <NumberField id="TinNumber" label="Tin Number" maxLength={9}
-                        value={detail["TinNumber"]} onChange={(value) => handleChange(value, "TinNumber")} />
+                        value={detail.TinNumber} onChange={(value) => handleChange(value, "TinNumber")} />
                 </Grid>
 
 
                 <Grid item xs={3}>
                     <Dropdown id="EducationalAttainment" label="Educational Attainment" list={educationalAttainment} defaultVal="NA"
-                        value={detail["EducationalAttainment"]} onChange={(value) => handleChange(value, "EducationalAttainment")} />
+                        value={detail.EducationalAttainment} onChange={(value) => handleChange(value, "EducationalAttainment")} />
                 </Grid>
                 <Grid item xs={6}>
                     <TextField id="SpouseName" label="Name of Spouse"
-                        value={detail["SpouseName"]} onChange={(value) => handleChange(value, "SpouseName")} />
+                        value={detail.SpouseName} onChange={(value) => handleChange(value, "SpouseName")} />
                 </Grid>
                 <Grid item xs={3}>
                     <NumberField id="Dependencies" label="No. of Dependencies" maxLength={2}
-                        value={detail["Dependencies"]} onChange={(value) => handleChange(value, "Dependencies")} />
+                        value={detail.Dependencies} onChange={(value) => handleChange(value, "Dependencies")} />
                 </Grid>
 
 
                 <Grid item xs={4}>
                     <MultilineField id="OtherCooperative" label="Indicate Other Affiliated Cooperative"
-                        value={detail["OtherCooperative"]} onChange={(value) => handleChange(value, "OtherCooperative")} />
+                        value={detail.OtherCooperative} onChange={(value) => handleChange(value, "OtherCooperative")} />
                 </Grid>
                 <Grid item xs={4}>
                     <MultilineField id="Trainings" label="Indicate Trainings, When, and Who conducted"
-                        value={detail["Trainings"]} onChange={(value) => handleChange(value, "Trainings")} />
+                        value={detail.Trainings} onChange={(value) => handleChange(value, "Trainings")} />
                 </Grid>
                 <Grid item xs={4}>
                     <MultilineField id="CreditReferences" label="Credit References"
-                        value={detail["CreditReferences"]} onChange={(value) => handleChange(value, "CreditReferences")} />
+                        value={detail.CreditReferences} onChange={(value) => handleChange(value, "CreditReferences")} />
                 </Grid>
             </Grid>
         );

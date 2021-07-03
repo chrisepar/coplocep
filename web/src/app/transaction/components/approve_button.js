@@ -11,7 +11,7 @@ import MultilineField from 'app/core/fields/multiline_field.js';
 import IconButton from '@material-ui/core/IconButton';
 import ThumbUpIcon from '@material-ui/icons/ThumbUp';
 
-import useStyles from 'styles/core/buttons/_buttons.js';
+import useStyles from 'app/core/styles/buttons/_buttons.js';
 
 function ApproveButton(props) {
     const classes = useStyles();

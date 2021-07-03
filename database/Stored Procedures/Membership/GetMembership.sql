@@ -19,7 +19,8 @@ GO
 -- =============================================
 CREATE PROCEDURE [dbo].[GetMemberhip] 
 	-- Add the parameters for the stored procedure here
-	@memberKey nvarchar(255) = NULL
+	@memberKey nvarchar(255) = NULL,
+	@currentUser nvarchar(2)
 AS
 BEGIN
 	-- SET NOCOUNT ON added to prevent extra result sets from
@@ -27,7 +28,7 @@ BEGIN
 	SET NOCOUNT ON;
 
     -- Insert statements for procedure here
-	SELECT *,  LastName + ', ' + FirstName + ' ' + MiddleName AS [Name] FROM [Membership Approval] 
+	SELECT * FROM MembershipApprovalByCurrentUser(@currentUser)
 	WHERE  (MemberKey = @memberKey OR @memberKey IS NULL) 
 END
 GO

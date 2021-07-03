@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import clsx from 'clsx';
 import { useHistory, useLocation } from "react-router-dom";
-import { getUser, removeUser } from "app/core/helpers/session_storage.js";
+import { removeUserSession, getUserName } from "app/core/authentication/authentication.js"
 import appDetails from '_appDetails.js';
 
 //Material UI
@@ -26,7 +26,7 @@ import AccountCircle from '@material-ui/icons/AccountCircle';
 
 // Styles
 import { useTheme } from '@material-ui/core/styles';
-import useStyles from 'styles/core/_layout.js';
+import useStyles from 'app/core/styles/_layout.js';
 
 import appList from 'app_list.js';
 
@@ -51,7 +51,7 @@ export default function Layout(props) {
     }
 
     const handleLogout = () => {
-        if (removeUser()) {
+        if (removeUserSession()) {
             history.push(appDetails.baseRoute);
         }
     };
@@ -79,7 +79,7 @@ export default function Layout(props) {
                     </Typography>
                     <div className={classes.logoutBtn}>
                         <Typography variant="h6" noWrap>
-                            {getUser().Name}
+                            {getUserName()}
                         </Typography>
                         <Button color="inherit" onClick={handleLogout} >Logout</Button>
                     </div>

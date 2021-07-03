@@ -16,14 +16,15 @@ CREATE VIEW [dbo].[Membership Approval] AS
 SELECT M.MemberKey, M.FirstName, M.MiddleName, M.LastName, M.TinNumber, M.BODResolutionNumber, M.TypeOfMembership, M.SharesSubscribed, M.AmountSubscribed,
 M.InitialPaidUp, M.Address, M.CivilStatus, M.Birthdate, M.Birthplace, M.Occupation, M.Salary, M.OtherIncome, M.EducationalAttainment, M.SpouseName, M.Dependencies,
 M.OtherCooperative, M.Trainings, M.CreditReferences,
-(SELECT [Name] FROM UserRoles WHERE Code = M.CreatedBy) AS [CreatedBy],
+dbo.GetUserRole(M.CreatedBy) AS [CreatedBy],
 M.CreatedDate,
-(SELECT [Name] FROM UserRoles WHERE Code = M.ModifiedBy) AS [ModifiedBy], 
+dbo.GetUserRole(M.ModifiedBy) AS [ModifiedBy], 
 M.ModifiedDate,
 AWE.ApprovalID, 
-(SELECT [Name] FROM UserRoles WHERE Code = AWE.ApprovedBy) AS ApprovedBy, 
-AWE.ApprovedDate, AWE.IsApproved, AWE.Comment FROM Members M
-	OUTER APPLY (SELECT TOP 1 * FROM ApprovalWorkflow AW WHERE AW.RecordID = M.MemberKey AND AW.Category = 'Membership' ORDER BY AW.ApprovedDate DESC) AS AWE
+dbo.GetUserRole(AWE.ApprovedBy) AS ApprovedBy, 
+AWE.ApprovedDate, AWE.IsApproved, AWE.Comment,
+dbo.IsFinalApproved(M.MemberKey, 'Membership', 5) AS [IsFinalApproved] FROM Members M
+	OUTER APPLY (SELECT TOP 1 * FROM MembershipWorkflow AW WHERE AW.RecordID = M.MemberKey AND AW.Category = 'Membership' ORDER BY AW.ApprovedDate DESC) AS AWE
 GO
 
 

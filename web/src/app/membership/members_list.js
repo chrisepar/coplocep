@@ -1,20 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import PropTypes from 'prop-types';
-import clsx from 'clsx';
 
 //Material UI
 import field_types from 'app/core/fields/field_types.js';
 import Loading from 'app/core/helpers/loading_screen.js';
 
 // Styles
-import useStyles from 'styles/membership/_membersList.js';
+import useStyles from 'app/membership/styles/_membersList.js';
 
 //Apps
 import Layout from "app/core/layout/layout.js";
-// import Grid from "app/core/dataGrid/dataGrid.js";
-import Table from "app/core/table/table.js";
 
-import appDetails from '_appDetails.js';
+import Table from "app/core/table/table.js";
+import { getMemberList } from 'app/membership/member_model.js';
 
 const columns = [
     { field: 'MemberKey', type: field_types.text_field, headerName: 'Membership #', width: 100 },
@@ -28,11 +25,6 @@ const columns = [
     { field: 'InitialPaidUp', type: field_types.text_field, headerName: 'Initial Paid-Up', width: 200 },
     { field: 'Address', type: field_types.text_field, headerName: 'Address', width: 200 },
 ];
-
-const getMemberList = () => {
-    return fetch(appDetails.apiRoute + 'membership/list')
-        .then(data => data.json())
-};
 
 export default function MembersList(props) {
     const classes = useStyles();

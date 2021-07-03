@@ -11,7 +11,7 @@ import FilterListIcon from '@material-ui/icons/FilterList';
 import TextField from '@material-ui/core/TextField';
 import { debounce } from 'throttle-debounce';
 
-import { useToolbarStyles } from 'styles/core/_table.js';
+import { useToolbarStyles } from 'app/core/styles/_table.js';
 
 function TableToolbar(props) {
     const classes = useToolbarStyles();

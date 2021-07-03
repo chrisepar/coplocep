@@ -8,11 +8,11 @@ import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
-import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
+import TablePagination from '@material-ui/core/TablePagination';
 import Paper from '@material-ui/core/Paper';
 import Checkbox from '@material-ui/core/Checkbox';
-import { useTableStyles } from 'styles/core/_table.js';
+import { useTableStyles } from 'app/core/styles/_table.js';
 import IconButton from '@material-ui/core/IconButton';
 import EditIcon from '@material-ui/icons/Edit';
 
@@ -20,6 +20,7 @@ import TableHeader from "app/core/table/tableHeader.js";
 import TableToolbar from "app/core/table/tableToolbar.js";
 
 import FormatValue from "app/core/helpers/format_value.js";
+import isEmpty from "app/core/helpers/is_empty.js";
 
 //Table
 function descendingComparator(a, b, orderBy) {
@@ -50,7 +51,7 @@ function stableSort(array, comparator) {
 
 function searchItem(searchBy, data, value) {
     var foundData = data.filter(function (item, index) {
-        return item[searchBy].toLowerCase().includes(value.toLowerCase());
+        return (!isEmpty(item[searchBy])) && item[searchBy].toLowerCase().includes(value.toLowerCase());
     });
     return (value === "") ? data : (foundData && foundData.length > 0) ? foundData : [];
 };

@@ -1,6 +1,6 @@
 import React from 'react';
 import TextField from '@material-ui/core/TextField';
-import useStyles from 'styles/core/fields/_formControl.js';
+import useStyles from 'app/core/styles/fields/_formControl.js';
 
 function MultilineFieldCore(props) {
     const classes = useStyles();

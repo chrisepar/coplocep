@@ -1,11 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using coploan.Models;
 using Microsoft.Extensions.Configuration;
-using Newtonsoft.Json;
+using Microsoft.Extensions.Primitives;
+using System.Text.Json;
 
 namespace coploan.Controllers
 {
@@ -15,6 +12,12 @@ namespace coploan.Controllers
     {
         private Membership membership;
 
+        private UserRole CurrentUser()
+        {
+            Request.Headers.TryGetValue("Authorization", out StringValues auth);
+            return JsonSerializer.Deserialize<UserRole>(auth[0]);
+        }
+
         public MembershipController(IConfiguration configuration)
         {
             membership = new Membership(configuration);
@@ -22,16 +25,16 @@ namespace coploan.Controllers
 
         [ActionName("list"), HttpGet]
         public ActionResult<string> GetMembers(string memberKey)
-        { 
-            return membership.GetMembers(memberKey);
+        {
+            return membership.GetMembers(memberKey, CurrentUser());
         }
         
-        [ActionName("edit"), HttpPut("{memberKey}")]
-        public ActionResult<bool> UpdateMemberDetails([FromBody]Member data, string memberKey)
+        [ActionName("edit"), HttpPut]
+        public ActionResult<bool> UpdateMemberDetails([FromBody]Member data)
         {
-            return membership.UpdateMemberDetails(data, memberKey);
+            return membership.UpdateMemberDetails(data);
         }
-        [ActionName("create"), HttpPost("")]
+        [ActionName("create"), HttpPost]
         public ActionResult<int> CreateMember([FromBody] Member data)
         {
             return membership.CreateMember(data);

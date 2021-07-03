@@ -1,11 +1,11 @@
 USE [Coploan]
 GO
 
-/****** Object:  StoredProcedure [dbo].[ApproveRecord]    Script Date: 05/06/2021 3:42:14 pm ******/
-DROP PROCEDURE [dbo].[ApproveRecord]
+/****** Object:  StoredProcedure [dbo].[ApproveMembershipRecord]    Script Date: 05/06/2021 3:42:14 pm ******/
+DROP PROCEDURE [dbo].[ApproveMembershipRecord]
 GO
 
-/****** Object:  StoredProcedure [dbo].[ApproveRecord]    Script Date: 05/06/2021 3:42:14 pm ******/
+/****** Object:  StoredProcedure [dbo].[ApproveMembershipRecord]    Script Date: 05/06/2021 3:42:14 pm ******/
 SET ANSI_NULLS ON
 GO
 
@@ -15,9 +15,9 @@ GO
 -- =============================================
 -- Author:		Cee
 -- Create date: June 6, 2021
--- Description:	Approve Record
+-- Description:	Approve Membership Record
 -- =============================================
-CREATE PROCEDURE [dbo].[ApproveRecord] 
+CREATE PROCEDURE [dbo].[ApproveMembershipRecord] 
 	-- Add the parameters for the stored procedure here
 	@RecordID int,
 	@Category nvarchar(50),
@@ -32,7 +32,7 @@ BEGIN
 	BEGIN TRANSACTION;
 
     -- Insert statements for procedure here
-	INSERT INTO [dbo].[ApprovalWorkflow]
+	INSERT INTO [dbo].[MembershipWorkflow]
            ([RecordID]
 		   ,[Category]
            ,[ApprovedBy]

@@ -79,7 +79,7 @@ BEGIN
                       ,[CreditReferences] = @CreditReferences
                       ,[ModifiedBy] = @ModifiedBy
                       ,[ModifiedDate] = GETDATE()
-                 WHERE  (MemberKey = @memberKey) 
+                 WHERE  (MemberKey = @MemberKey) 
 
 	COMMIT TRANSACTION;
 END

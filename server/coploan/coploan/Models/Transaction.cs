@@ -17,6 +17,8 @@ namespace coploan.Models
         public int MemberKey { get; set; }
         public decimal Amount { get; set; }
         public string Category { get; set; }
+        public decimal Interest { get; set; }
+        public int Term { get; set; }
         public string CreatedBy { get; set; }
         public DateTime CreatedDate { get; set; }
         public string ModifiedBy { get; set; }
@@ -40,24 +42,8 @@ namespace coploan.Models
         }
         public int AddTransaction(TransactionDetails data)
         {
-            List<SqlParameter> sqlParam = new List<SqlParameter>();
             string keyName = "TransactionKey";
-
-            foreach (PropertyInfo item in typeof(TransactionDetails).GetProperties())
-            {
-                StringBuilder itemSB = new StringBuilder();
-                if (item.Name != keyName)
-                {
-                    itemSB.Append("@").Append(item.Name);
-                    sqlParam.Add(new SqlParameter(itemSB.ToString(), Helpers.isEmpty(item.GetValue(data)) ? DBNull.Value : item.GetValue(data)));
-                }
-                else
-                {
-                    itemSB.Append("@").Append(item.Name);
-                    sqlParam.Add(new SqlParameter(itemSB.ToString(), Helpers.isEmpty(item.GetValue(data)) ? DBNull.Value : item.GetValue(data)) { Direction = ParameterDirection.Output, DbType = DbType.Int32 });
-                }
-            }
-
+            List<SqlParameter> sqlParam = sql.GenerateSQLParamFromInstance(typeof(TransactionDetails), data, keyName);
             return sql.ExecuteNonQueryInsert("[dbo].[AddTransaction]", sqlParam, keyName);
         }
 

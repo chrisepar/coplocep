@@ -12,24 +12,10 @@ const getSession = (id) => {
     return sessionStorage.getItem(id);
 };
 
-const getUser = () => {
-    const user = getSession("user");
-    if (user !== null) {
-        return JSON.parse(user);
-    } else {
-        return null;
-    }
-};
-
-const removeUser = () => {
-    var isRemoved = false;
-    if (getUser() !== null) {
-        sessionStorage.removeItem("user");
-        isRemoved = true;
-    }
-    return isRemoved;
+const removeSession = (id) => {
+    sessionStorage.removeItem(id);
 };
 
 export {
-    setSession, isSessionExisting, getSession, getUser, removeUser
+    setSession, isSessionExisting, getSession, removeSession
 };

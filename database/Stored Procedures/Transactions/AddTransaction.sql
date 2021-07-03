@@ -21,6 +21,8 @@ CREATE PROCEDURE [dbo].[AddTransaction]
 	@TransactionKey int OUTPUT,
 	@MemberKey int,
 	@Amount numeric(18,2),
+	@Interest numeric(3,2),
+	@Term numeric(2,0),
 	@Category nvarchar(50),
 	@CreatedBy nvarchar(250),
 	@CreatedDate datetime,
@@ -37,6 +39,8 @@ BEGIN
 	INSERT INTO [dbo].[Transactions]
            ([MemberKey]
            ,[Amount]
+		   ,[Interest]
+		   ,[Term]
            ,[Category]
            ,[CreatedBy]
            ,[CreatedDate]
@@ -44,6 +48,8 @@ BEGIN
            ,[ModifiedDate])
      VALUES(@MemberKey,
 		@Amount,
+		@Interest,
+		@Term,
 		@Category,
 		@CreatedBy,
 		@CreatedDate,

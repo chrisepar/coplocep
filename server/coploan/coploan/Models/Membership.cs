@@ -50,50 +50,31 @@ namespace coploan.Models
             config = configuration;
             sql = new SQLQueries(config, typeof(Member));
         }
-        public string GetMembers(string memberKey)
+        public string GetMembers(string memberKey, UserRole currentUser)
         {
             List<SqlParameter> sqlParam = new List<SqlParameter>();
 
-            sql = new SQLQueries(config, new Type[] { typeof(Member), typeof(Approval) });
+            sql = new SQLQueries(config);
 
             if (!string.IsNullOrEmpty(memberKey))
             {
                 sqlParam.Add(new SqlParameter("@memberKey", memberKey));
             }
+
+            sqlParam.Add(new SqlParameter("@currentUser", currentUser.Code));
+
             return sql.ExecuteReader("[dbo].[GetMemberhip]", sqlParam);
         }        
 
-        public bool UpdateMemberDetails(Member data, string memberKey)
+        public bool UpdateMemberDetails(Member data)
         {
-            List<SqlParameter> sqlParam = new List<SqlParameter>();
-
-            foreach (PropertyInfo item in typeof(Member).GetProperties())
-            {
-                StringBuilder itemSB = new StringBuilder();
-                itemSB.Append("@").Append(item.Name);
-                sqlParam.Add(new SqlParameter(itemSB.ToString(), Helpers.isEmpty(item.GetValue(data)) ? DBNull.Value : item.GetValue(data)));
-            }
-
+            List<SqlParameter> sqlParam = sql.GenerateSQLParamFromInstance(typeof(Member), data);
             return sql.ExecuteNonQuery("[dbo].[UpdateMembership]", sqlParam);
         }
         public int CreateMember(Member data)
         {
-            List<SqlParameter> sqlParam = new List<SqlParameter>();
             string keyName = "MemberKey";
-
-            foreach (PropertyInfo item in typeof(Member).GetProperties())
-            {
-                StringBuilder itemSB = new StringBuilder();
-                if (item.Name != keyName)
-                {
-                    itemSB.Append("@").Append(item.Name);
-                    sqlParam.Add(new SqlParameter(itemSB.ToString(), Helpers.isEmpty(item.GetValue(data)) ? DBNull.Value : item.GetValue(data)));
-                } else
-                {
-                    itemSB.Append("@").Append(item.Name);
-                    sqlParam.Add(new SqlParameter(itemSB.ToString(), Helpers.isEmpty(item.GetValue(data)) ? DBNull.Value : item.GetValue(data)) { Direction = ParameterDirection.Output, DbType = DbType.Int32 });
-                }
-            }
+            List<SqlParameter> sqlParam = sql.GenerateSQLParamFromInstance(typeof(Member), data, keyName);
             return sql.ExecuteNonQueryInsert("[dbo].[InsertMembership]", sqlParam, keyName);
         }
     }

@@ -2,13 +2,23 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import TextField from '@material-ui/core/TextField';
 import NumberFormat from 'react-number-format';
-import useStyles from 'styles/core/fields/_formControl.js';
+import useStyles from 'app/core/styles/fields/_formControl.js';
 import field_types from 'app/core/fields/field_types.js';
 import FormatValue from "app/core/helpers/format_value.js";
+import isEmpty from "app/core/helpers/is_empty.js";
 
 function NumberFieldCore(props) {
     const classes = useStyles();
-    const { id, label, thousandSeparator, format, maxLength, value, onChange } = props;
+    const { id, label, thousandSeparator, format, maxLength, value, onChange,
+        isNumericString, allowLeadingZeros, allowNegative, maxValue } = props;
+
+    const withValueLimit = (inputObj) => {
+        if (!isEmpty(maxValue)) {
+            const { value } = inputObj;
+            if (value <= maxValue) return true;
+        }
+        return false;
+    };
 
     return (
         <NumberFormat key={id + "Key"}
@@ -21,11 +31,14 @@ function NumberFieldCore(props) {
                 shrink: true,
             }}
             thousandSeparator={thousandSeparator}
-            isNumericString
+            isNumericString={isNumericString}
             format={format}
             inputProps={{ maxLength: maxLength }}
             value={FormatValue(field_types.number_field, value)}
             onChange={(event) => onChange(event.target.value)}
+            allowLeadingZeros={allowLeadingZeros}
+            allowNegative={allowNegative}
+            isAllowed={withValueLimit}
         />
     );
 };
@@ -38,6 +51,10 @@ NumberFieldCore.defaultProps = {
     maxLength: null,
     value: "",
     onChange: () => { },
+    isNumericString: false,
+    allowLeadingZeros: false,
+    allowNegative: false,
+    maxValue: null
 };
 
 export default NumberFieldCore;

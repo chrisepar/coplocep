@@ -19,14 +19,43 @@ namespace coploan.Controllers
             approvalWorkflow = new ApprovalWorkflow(configuration);
         }
 
-        [ActionName("Approve"), HttpPost]
-        public ActionResult<bool> ApproveRecord([FromBody] Approval data)
+        [ActionName("Approve/membership"), HttpPost]
+        public ActionResult<bool> ApproveMembershipRecord([FromBody] Approval data)
         {
-            return approvalWorkflow.ApproveRecord(data);
+            return approvalWorkflow.ApproveMembershipRecord(data);
         }
 
-        //[ActionName("Reject"), HttpPost]
-        //public ActionResult<bool> RejectRecord([FromBody] Approval data)
+        [ActionName("Approve/transaction"), HttpPost]
+        public ActionResult<bool> ApproveTransactionRecord([FromBody] Approval data)
+        {
+            return approvalWorkflow.ApproveTransactionRecord(data);
+        }
+
+        [ActionName("Reject/membership"), HttpPost]
+        public ActionResult<bool> RejectMembershipRecord([FromBody] Approval data)
+        {
+            return approvalWorkflow.RejectMembershipRecord(data);
+        }
+
+        [ActionName("Reject/transaction"), HttpPost]
+        public ActionResult<bool> RejectTransactionRecord([FromBody] Approval data)
+        {
+            return approvalWorkflow.RejectTransactionRecord(data);
+        }
+
+        [ActionName("Timeline/membership"), HttpGet("{recordID}")]
+        public ActionResult<string> GetMembershipTimeline(int recordID)
+        {
+            return approvalWorkflow.GetMembershipTimeline(recordID);
+        }
+
+        [ActionName("Timeline/transaction"), HttpGet("{category}/{recordID}")]
+        public ActionResult<string> GetTransactionTimeline(string category, int recordID)
+        {
+            return approvalWorkflow.GetTransactionTimeline(category, recordID);
+        }
+        //[ActionName("list"), HttpGet]
+        //public ActionResult<bool> GetApprovalList(int recordID)
         //{
         //    return approvalWorkflow.RejectRecord(data);
         //}

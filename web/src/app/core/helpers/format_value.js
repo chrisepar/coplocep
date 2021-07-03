@@ -7,7 +7,7 @@ export default (fieldType, value) => {
         case field_types.text_field:
             return isEmpty(value) ? "" : value;
         case field_types.number_field:
-            return isEmpty(value) ? 0 : value;
+            return isEmpty(value) ? "" : value;
         case field_types.date_field:
             return isEmpty(value) ? null : FormatDateTime(value);
         default:

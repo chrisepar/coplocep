@@ -1,6 +1,7 @@
 import appDetails from '_appDetails.js';
-import { postData, deleteData, putData } from 'app/core/helpers/fetch.js';
+import { postData, deleteData, putData, getData } from 'app/core/helpers/fetch.js';
 import { FormatDateToISO } from 'app/core/helpers/date_format.js';
+import { getUserCode } from "app/core/authentication/authentication.js"
 
 const model = {
     MemberKey: 0,
@@ -8,13 +9,11 @@ const model = {
     MiddleName: "",
     LastName: "",
     TinNumber: "",
-    DateAccepted: null,
-    IsAccepted: "",
-    BODResolutionNumber: "",
+    BODResolutionNumber: null,
     TypeOfMembership: "",
-    SharesSubscribed: 0,
-    AmountSubscribed: 0,
-    InitialPaidUp: 0,
+    SharesSubscribed: 0.0,
+    AmountSubscribed: 0.00,
+    InitialPaidUp: 0.00,
     Address: "",
     CivilStatus: "Single",
     Birthdate: null,
@@ -31,14 +30,23 @@ const model = {
     CreatedBy: "",
     CreatedDate: null,
     ModifiedBy: "",
-    ModifiedDate: null
+    ModifiedDate: null,
+    ApprovalID: 0,
+    RecordID: 0,
+    Category: "Membership",
+    ApprovedDate: null,
+    ApprovedBy: "",
+    IsApproved: "",
+    Comment: "",
+    Name: ""
 };
 
 const prepData = (detail) => {
-    detail.Birthdate = FormatDateToISO(detail.Birthdate);
-    detail.CreatedBy = appDetails.user();
+    const formattedDate = FormatDateToISO(detail.Birthdate);
+    detail.Birthdate = formattedDate;
+    detail.CreatedBy = getUserCode();
     detail.CreatedDate = new Date();
-    detail.ModifiedBy = appDetails.user();
+    detail.ModifiedBy = getUserCode();
     detail.ModifiedDate = new Date();
     return detail;
 };
@@ -46,8 +54,7 @@ const prepData = (detail) => {
 const saveMember = (isCreateMode, memberKey, detail) => {
     detail = prepData(detail);
     if (isCreateMode) {
-        var url = appDetails.apiRoute + 'membership/create';
-        return postData(url, detail).then((data) => {
+        return postData('membership/create', detail).then((data) => {
             if (data && data.ok) {
                 return data.json();
             } else {
@@ -55,8 +62,7 @@ const saveMember = (isCreateMode, memberKey, detail) => {
             }
         });
     } else {
-        var url = appDetails.apiRoute + 'membership/edit/' + memberKey;
-        return putData(url, detail).then((data) => {
+        return putData("membership/edit", detail).then((data) => {
             if (data && data.ok) {
                 return data.json();
             } else {
@@ -68,10 +74,15 @@ const saveMember = (isCreateMode, memberKey, detail) => {
 };
 
 const getMember = (memberKey) => {
-    return fetch(appDetails.apiRoute + 'membership/list?memberKey=' + memberKey)
+    return getData('membership/list?memberKey=' + memberKey)
         .then(data => data.json());
 };
 
+const getMemberList = () => {
+    return getData('membership/list')
+        .then(data => data.json())
+};
+
 export {
-    model, saveMember, getMember
+    model, saveMember, getMember, getMemberList
 };

@@ -24,6 +24,8 @@ CREATE TABLE [dbo].[Transactions](
 	[MemberKey] [int] NULL,
 	[Amount] [numeric](18, 2) NULL,
 	[Category] [nvarchar](50) NULL,
+	[Interest] [int] NULL,
+	[Term] [int] NULL,
 	[CreatedBy] [nvarchar](255) NOT NULL,
 	[CreatedDate] [datetime] NOT NULL,
 	[ModifiedBy] [nvarchar](255) NOT NULL,

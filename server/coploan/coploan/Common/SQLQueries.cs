@@ -17,6 +17,7 @@ namespace coploan.Common
         public SQLQueries(IConfiguration configuration)
         {
             _configuration = configuration;
+            results = new DataTable();
         }
 
         public SQLQueries(IConfiguration configuration, Type myType)
@@ -46,7 +47,7 @@ namespace coploan.Common
         private static DataTable CreateEmptyDataTable(Type[] myType)
         {
             DataTable dt = new DataTable();
-            foreach(Type type in myType)
+            foreach (Type type in myType)
             {
                 foreach (PropertyInfo info in type.GetProperties())
                 {
@@ -148,6 +149,60 @@ namespace coploan.Common
                 Console.WriteLine(e.ToString());
             }
             return id;
+        }
+
+        private SqlParameter CreateSQLParam(object data, PropertyInfo item)
+        {
+            StringBuilder itemSB = new StringBuilder();
+            itemSB.Append("@").Append(item.Name);
+            return new SqlParameter(itemSB.ToString(), Helpers.isEmpty(item.GetValue(data)) ? DBNull.Value : item.GetValue(data));
+        }
+
+        private SqlParameter CreateSQLParam(object data, PropertyInfo item, string outParam)
+        {
+            StringBuilder itemSB = new StringBuilder();
+            itemSB.Append("@").Append(item.Name);
+            if (item.Name != outParam)
+            {
+                return new SqlParameter(itemSB.ToString(), Helpers.isEmpty(item.GetValue(data)) ? DBNull.Value : item.GetValue(data));
+            }
+            else
+            {
+                return new SqlParameter(itemSB.ToString(), Helpers.isEmpty(item.GetValue(data)) ? DBNull.Value : item.GetValue(data)) { Direction = ParameterDirection.Output, DbType = DbType.Int32 };
+            }
+        }
+
+        public List<SqlParameter> GenerateSQLParamFromInstance(Type property, object data)
+        {
+            List<SqlParameter> sqlParam = new List<SqlParameter>();
+            foreach (PropertyInfo item in property.GetProperties())
+            {
+                sqlParam.Add(CreateSQLParam(data, item));
+            }
+            return sqlParam;
+        }
+        public List<SqlParameter> GenerateSQLParamFromInstance(Type property, object data, List<string> included)
+        {
+            List<SqlParameter> sqlParam = new List<SqlParameter>();
+
+            foreach (PropertyInfo item in property.GetProperties())
+            {
+                if (included.Contains(item.Name))
+                {
+                    sqlParam.Add(CreateSQLParam(data, item));
+                }
+            }
+            return sqlParam;
+        }
+        public List<SqlParameter> GenerateSQLParamFromInstance(Type property, object data, string outParam)
+        {
+            List<SqlParameter> sqlParam = new List<SqlParameter>();
+
+            foreach (PropertyInfo item in property.GetProperties())
+            {
+                sqlParam.Add(CreateSQLParam(data, item, outParam));
+            }
+            return sqlParam;
         }
     }
 }
