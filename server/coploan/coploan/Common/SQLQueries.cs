@@ -61,7 +61,7 @@ namespace coploan.Common
             return dt;
         }
 
-        public string ExecuteReader(string storeProcedureName)
+        public DataTable ExecuteReader(string storeProcedureName)
         {
             try
             {
@@ -81,9 +81,9 @@ namespace coploan.Common
             {
                 Console.WriteLine(e.ToString());
             }
-            return JsonConvert.SerializeObject(results);
+            return results;
         }
-        public string ExecuteReader(string storeProcedureName, List<SqlParameter> sqlParam)
+        public DataTable ExecuteReader(string storeProcedureName, List<SqlParameter> sqlParam)
         {
             try
             {
@@ -104,7 +104,7 @@ namespace coploan.Common
             {
                 Console.WriteLine(e.ToString());
             }
-            return JsonConvert.SerializeObject(results);
+            return results;
         }
 
         public bool ExecuteNonQuery(string storeProcedureName, List<SqlParameter> sqlParam)

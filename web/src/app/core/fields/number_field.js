@@ -10,7 +10,8 @@ import isEmpty from "app/core/helpers/is_empty.js";
 function NumberFieldCore(props) {
     const classes = useStyles();
     const { id, label, thousandSeparator, format, maxLength, value, onChange,
-        isNumericString, allowLeadingZeros, allowNegative, maxValue } = props;
+        isNumericString, allowLeadingZeros, allowNegative, maxValue,
+        decimalScale, fixedDecimalScale, decimalSeparator, suffix } = props;
 
     const withValueLimit = (inputObj) => {
         if (!isEmpty(maxValue)) {
@@ -39,6 +40,10 @@ function NumberFieldCore(props) {
             allowLeadingZeros={allowLeadingZeros}
             allowNegative={allowNegative}
             isAllowed={withValueLimit}
+            decimalScale={decimalScale}
+            fixedDecimalScale={fixedDecimalScale}
+            decimalSeparator={decimalSeparator}
+            suffix={suffix}
         />
     );
 };
@@ -54,7 +59,10 @@ NumberFieldCore.defaultProps = {
     isNumericString: false,
     allowLeadingZeros: false,
     allowNegative: false,
-    maxValue: null
+    maxValue: null,
+    decimalScale: 2,
+    fixedDecimalScale: false,
+    decimalSeparator: "."
 };
 
 export default NumberFieldCore;

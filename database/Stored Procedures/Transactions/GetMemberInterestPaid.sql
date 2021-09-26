@@ -31,17 +31,12 @@ BEGIN
 	SELECT [TransactionKey]
       ,[MemberKey]
       ,[Amount]
-      ,[Category]
       ,[CreatedBy]
       ,[CreatedDate]
       ,[ModifiedBy]
       ,[ModifiedDate]
-      ,[ApprovalID]
-      ,[ApprovedBy]
-      ,[ApprovedDate]
-      ,[IsApproved]
-      ,[Comment] FROM [Transaction Approval] AS TA
-	  WHERE Category = 'Interest' AND MemberKey = @memberKey
+	  FROM Interests
+	  WHERE MemberKey = @memberKey
 END
 GO
 

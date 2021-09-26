@@ -30,17 +30,12 @@ BEGIN
 	SELECT [TransactionKey]
       ,[MemberKey]
       ,[Amount]
-      ,[Category]
       ,[CreatedBy]
       ,[CreatedDate]
       ,[ModifiedBy]
       ,[ModifiedDate]
-      ,[ApprovalID]
-      ,[ApprovedBy]
-      ,[ApprovedDate]
-      ,[IsApproved]
-      ,[Comment] FROM [Transaction Approval] AS TA
-	  WHERE Category = 'Deposit' AND MemberKey = @memberKey
+	  FROM Deposits
+	  WHERE MemberKey = @memberKey
 END
 GO
 

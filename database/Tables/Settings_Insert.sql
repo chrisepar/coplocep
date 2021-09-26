@@ -17,17 +17,17 @@ SET QUOTED_IDENTIFIER ON
 GO
 
 CREATE TABLE [dbo].[Settings](
-	[Interest] [int] NOT NULL,
-	[Term] [int] NOT NULL
+	[DefaultInterest] [numeric](18, 2) NOT NULL,
+	[MaxTerm] [int] NOT NULL
 ) ON [PRIMARY]
 GO
 
-ALTER TABLE [dbo].[Settings] ADD  CONSTRAINT [DF_Settings_Interest]  DEFAULT ((1)) FOR [Interest]
+ALTER TABLE [dbo].[Settings] ADD  CONSTRAINT [DF_Settings_Interest]  DEFAULT ((1)) FOR [DefaultInterest]
 GO
 
 
-ALTER TABLE [dbo].[Settings] ADD  CONSTRAINT [DF_Settings_Term]  DEFAULT ((12)) FOR [Term]
+ALTER TABLE [dbo].[Settings] ADD  CONSTRAINT [DF_Settings_Term]  DEFAULT ((12)) FOR [MaxTerm]
 GO
 
-INSERT INTO Settings(Interest, Term) VALUES(1, 12)
+INSERT INTO Settings(DefaultInterest, MaxTerm) VALUES(1, 12)
 GO

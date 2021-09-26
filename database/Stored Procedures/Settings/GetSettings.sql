@@ -26,7 +26,7 @@ BEGIN
 	SET NOCOUNT ON;
 
     -- Insert statements for procedure here
-	SELECT Interest, Term FROM Settings
+	SELECT DefaultInterest, MaxTerm FROM Settings
 END
 GO
 

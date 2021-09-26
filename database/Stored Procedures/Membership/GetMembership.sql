@@ -19,7 +19,7 @@ GO
 -- =============================================
 CREATE PROCEDURE [dbo].[GetMemberhip] 
 	-- Add the parameters for the stored procedure here
-	@memberKey nvarchar(255) = NULL,
+	@memberKey int = NULL,
 	@currentUser nvarchar(2)
 AS
 BEGIN

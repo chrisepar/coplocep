@@ -1,6 +1,7 @@
 import appDetails from '_appDetails.js';
 import { postData, deleteData, getData } from 'app/core/helpers/fetch.js';
 import { getUserCode } from "app/core/authentication/authentication.js"
+import { downloadFile } from "app/core/helpers/file_handler.js";
 
 const model = {
     TransactionKey: 0,
@@ -31,7 +32,7 @@ const prepData = (detailID, category, data) => {
 
 const addTransaction = (detailID, category, data) => {
     var detail = prepData(detailID, category, data);
-    return postData('transaction/add', detail).then((data) => {
+    return postData('transaction/add/' + category, detail).then((data) => {
         if (data && data.ok) {
             return data.json();
         } else {
@@ -60,10 +61,20 @@ const getMembersWithTransaction = () => {
         .then(data => data.json())
 };
 
+const downloadComputation = (amount, interest, term) => {
+    const param = "?amount=" + amount + "&interest=" + interest + "&term=" + term;
+    return getData('transaction/calculation' + param)
+        .then(data => data.blob())
+        .then(blob => {
+            downloadFile(blob, "Computation.xlsx");
+        });
+};
+
 export {
     model,
     getMemberTransactionList,
     addTransaction,
     deleteTransaction,
-    getMembersWithTransaction
+    getMembersWithTransaction,
+    downloadComputation
 };

@@ -7,35 +7,51 @@ import TransactionDetailView from "app/transaction/transaction_detail_view.js";
 import Settings from "app/settings/settings_view.js";
 import Reports from "app/reports/reports_view.js";
 
+// icons
+import AssessmentIcon from '@material-ui/icons/Assessment';
+import PersonAddIcon from '@material-ui/icons/PersonAdd';
+import PeopleAltIcon from '@material-ui/icons/PeopleAlt';
+import ReceiptIcon from '@material-ui/icons/Receipt';
+import SettingsIcon from '@material-ui/icons/Settings';
+
 export default [
     {
         "id": "Reports",
         "name": "Reports",
-        "navLabel": "Reports",
+        "navigation": {
+            "label": "Reports",
+            "icon": AssessmentIcon
+        },
         "component": Reports,
         "hasDetail": true,
         "path": appDetails.baseRoute + "/Reports"
     },
     {
         "id": "addMembership",
-        "name": "Member Details",
-        "navLabel": "Add New Member",
+        "name": "Member",
+        "navigation": {
+            "label": "New Member",
+            "icon": PersonAddIcon,
+            "path": appDetails.baseRoute + "/membership/~"
+        },
         "component": MemberDetailView,
         "hasDetail": true,
-        "path": appDetails.baseRoute + "/membership/:detailID",
-        "navPath": appDetails.baseRoute + "/membership/~"
+        "path": appDetails.baseRoute + "/membership/:detailID"
     },
     {
         "id": "membership",
         "name": "Membership",
-        "navLabel": "Membership",
+        "navigation": {
+            "label": "Membership",
+            "icon": PeopleAltIcon
+        },
         "component": Membership,
         "hasDetail": true,
         "path": appDetails.baseRoute + "/membership"
     },
     {
         "id": "addTransaction",
-        "name": "Transaction Details",
+        "name": "Transaction",
         "component": TransactionDetailView,
         "hasDetail": true,
         "path": appDetails.baseRoute + "/transaction/:detailID"
@@ -43,7 +59,10 @@ export default [
     {
         "id": "transaction",
         "name": "Transaction",
-        "navLabel": "Transaction",
+        "navigation": {
+            "label": "Transaction",
+            "icon": ReceiptIcon
+        },
         "component": Transaction,
         "hasDetail": true,
         "path": appDetails.baseRoute + "/transaction"
@@ -51,7 +70,10 @@ export default [
     {
         "id": "settings",
         "name": "Settings",
-        "navLabel": "Settings",
+        "navigation": {
+            "label": "Settings",
+            "icon": SettingsIcon
+        },
         "component": Settings,
         "hasDetail": true,
         "path": appDetails.baseRoute + "/settings"

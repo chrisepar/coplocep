@@ -8,9 +8,6 @@ export default (props) => {
     const { categoryTitle, category, amount, setAmount } = props;
     return (
         <DialogContent>
-            <DialogContentText>
-                {categoryTitle}
-            </DialogContentText>
             <CurrencyField id={category} label="Amount" value={amount} onChange={(value) => setAmount(value)} />
         </DialogContent>
     );

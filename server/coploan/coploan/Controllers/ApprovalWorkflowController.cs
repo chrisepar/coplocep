@@ -1,9 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using coploan.Models;
+using coploan.Services;
 using Microsoft.Extensions.Configuration;
 
 namespace coploan.Controllers

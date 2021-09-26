@@ -45,7 +45,7 @@ const filterOptions = [
     }
 ];
 
-function TransactionToolbar(props) {
+const TransactionToolbar = (props) => {
     const { addCallback, deleteCallback, categoryTitle, category } = props;
     const [filterBy, setFilterBy] = useState("NoFilter");
     const [fromDateValue, setFromDateValue] = useState();
@@ -86,14 +86,16 @@ function TransactionToolbar(props) {
                 }
                 <Grid item xs />
                 <Grid item xs={3} container justify="flex-end">
-                    <EntryButton callback={addCallback} categoryTitle={categoryTitle} category={category} />
+                    {
+                        (category !== "Interest") && <EntryButton callback={addCallback} categoryTitle={categoryTitle} category={category} />
+                    }                    
                 </Grid>
             </Grid>
         </Toolbar>
     );
 };
 
-function TransactionTable(props) {
+const TransactionTable = (props) => {
     const classes = useStyles();
     const { rows, addCallback, deleteCallback, approveCallback, rejectCallback, categoryTitle, category } = props;
     return (
@@ -107,10 +109,15 @@ function TransactionTable(props) {
                                 <TableCell />
                                 <TableCell />
                                 <TableCell align="right">Loan Amount</TableCell>
-                                <TableCell >Created By</TableCell>
-                                <TableCell >Created Date</TableCell>
-                                <TableCell >Approved By</TableCell>
-                                <TableCell >Approved Date</TableCell>
+                                {(category === "Loan") ?
+                                    <React.Fragment>
+                                        <TableCell align="right">Interest Rate</TableCell>
+                                        <TableCell align="right">Term</TableCell>
+                                    </React.Fragment>
+                                    : null
+                                }
+                                <TableCell >Created</TableCell>
+                                <TableCell >Approved</TableCell>
                                 <TableCell />
                             </TableRow>
                         </TableHead>
@@ -133,10 +140,15 @@ function TransactionTable(props) {
                                             }
                                         </TableCell>
                                         <TableCell align="right">{row.Amount}</TableCell>
-                                        <TableCell>{row.CreatedBy}</TableCell>
-                                        <TableCell>{FormatDateTime(row.CreatedDate)}</TableCell>
-                                        <TableCell>{row.ApprovedBy}</TableCell>
-                                        <TableCell>{FormatDateTime(row.ApprovedDate)}</TableCell>
+                                        {(category === "Loan") ?
+                                            <React.Fragment>
+                                                <TableCell align="right">{row.Interest}</TableCell>
+                                                <TableCell align="right">{row.Term}</TableCell>
+                                            </React.Fragment>
+                                            : null
+                                        }
+                                        <TableCell>{row.CreatedBy} - {FormatDateTime(row.CreatedDate)}</TableCell>
+                                        <TableCell>{row.ApprovedBy} - {FormatDateTime(row.ApprovedDate)}</TableCell>
                                         <TableCell>
                                             <DeleteButton callback={deleteCallback} categoryTitle={categoryTitle} category={category}
                                                 transactionKey={row.TransactionKey} amount={row.Amount} />

@@ -19,16 +19,18 @@ GO
 -- =============================================
 CREATE PROCEDURE [dbo].[SaveSettings] 
 	-- Add the parameters for the stored procedure here
-	@interest int = 1, 
-	@term int = 12
+	@DefaultInterest numeric(18, 2) = 1, 
+	@MaxTerm int = 12
 AS
 BEGIN
 	-- SET NOCOUNT ON added to prevent extra result sets from
 	-- interfering with SELECT statements.
-	SET NOCOUNT ON;
+	SET NOCOUNT OFF;
+	BEGIN TRANSACTION;
 
     -- Insert statements for procedure here
-	UPDATE Settings SET Interest = @interest, Term = @term
+	UPDATE Settings SET DefaultInterest = @DefaultInterest, MaxTerm = @MaxTerm
+	COMMIT TRANSACTION;
 END
 GO
 

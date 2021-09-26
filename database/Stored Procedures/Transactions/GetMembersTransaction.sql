@@ -25,25 +25,12 @@ BEGIN
 	SET NOCOUNT ON;
 
     -- Insert statements for procedure here
-	SELECT [MemberKey],
-                        [Name],
-                        CONVERT(DECIMAL(18,2),[Loan]) AS [LoanAmount],
-                        CONVERT(DECIMAL(18,2),[Deposit]) AS [DepositAmount],
-                        CONVERT(DECIMAL(18,2),[Interest]) AS [InterestPaidAmount],
-                        CONVERT(DECIMAL(18,2),[Share]) AS [AverageShareAmount]
-                        FROM
-                        (
-	                        SELECT M.MemberKey AS [MemberKey],
-	                        LastName + ', ' + FirstName + ' ' + MiddleName AS [Name], 
-	                        [Category], [Amount] FROM Transactions T
-	                        RIGHT JOIN [Membership Approval] M ON M.MemberKey = T.MemberKey
-							WHERE M.IsFinalApproved = 'Y'
-                        ) AS SourceTable PIVOT(SUM([Amount]) FOR [Category] IN (
-                        [Loan], 
-                        [Deposit], 
-                        [Interest], 
-                        [Share])) AS PivotTable
+		SELECT MA.MemberKey, LastName + ', ' + FirstName + ' ' + MiddleName AS [Name], 
+				SUM(L.Amount) AS [LoanAmount], SUM(I.Amount) AS [InterestPaidAmount], SUM(D.Amount) AS [DepositAmount] FROM [Membership Approval] MA
+		LEFT JOIN Loans L ON L.MemberKey = MA.MemberKey
+		LEFT JOIN Interests I ON I.MemberKey = MA.MemberKey
+		LEFT JOIN Deposits D ON D.MemberKey = MA.MemberKey
+		WHERE MA.IsFinalApproved = 'Y'
+		GROUP BY MA.MemberKey, LastName, FirstName, MiddleName
 END
 GO
-
-

@@ -147,7 +147,7 @@ function MemberDetails(props) {
     };
 
     const getApprovalButton = () => {
-        if (isApprovalAvailable()) {
+        if (!isCreateMode && isApprovalAvailable()) {
             return (
                 <React.Fragment>
                     {

@@ -23,6 +23,7 @@ import MailIcon from '@material-ui/icons/Mail';
 import MenuIcon from '@material-ui/icons/Menu';
 import Button from '@material-ui/core/Button';
 import AccountCircle from '@material-ui/icons/AccountCircle';
+import isEmpty from "app/core/helpers/is_empty.js";
 
 // Styles
 import { useTheme } from '@material-ui/core/styles';
@@ -102,15 +103,15 @@ export default function Layout(props) {
                 <Divider />
                 <List>
                     {appList.map((app, index) => {
-                        if (app.navLabel) {
+                        if (!isEmpty(app.navigation)) {
                             return (
                                 <ListItem
                                     button
                                     key={app.id}
                                     selected={props.appName === app.name}
-                                    onClick={(event) => handleListItemClick(event, (app.navPath) ? app.navPath : app.path)}>
-                                    <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-                                    <ListItemText primary={app.navLabel} />
+                                    onClick={(event) => handleListItemClick(event, !isEmpty(app.navigation.path) ? app.navigation.path : app.path)}>
+                                    <ListItemIcon ><app.navigation.icon /></ListItemIcon>
+                                    <ListItemText primary={app.navigation.label} />
                                 </ListItem>
                             );
                         } else {

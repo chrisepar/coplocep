@@ -1,8 +1,8 @@
 const path = require('path');
-const webpack = require('webpack');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+
 
 module.exports = {
     mode: 'development',
@@ -18,7 +18,7 @@ module.exports = {
         modules: [
             path.resolve(__dirname, './src'),
             'node_modules'
-        ]
+        ],
     },
     plugins: [
         new CleanWebpackPlugin({
@@ -27,12 +27,12 @@ module.exports = {
         }),
         new HtmlWebpackPlugin({
             title: 'Cooperative',
-            template: 'index.back.html'
+            template: './src/index.html'
         }),
         new MiniCssExtractPlugin({
             filename: '[name].bundle.css',
             chunkFilename: '[id].css'
-        }),
+        })
     ],
     module: {
         rules: [

@@ -58,7 +58,7 @@ function LoanDetailsContainer(props) {
                 aria-controls="panel2a-content"
                 id="panel2a-header"
             >
-                <Typography className={classes.accordionHeading}>Loan Details</Typography>
+                <Typography className={classes.accordionHeading}>Loans</Typography>
             </AccordionSummary>
             <AccordionDetails>
                 <TransactionDetail category="Loan" categoryTitle="Loan" />
@@ -82,7 +82,7 @@ function InterestDetailsContainer(props) {
                 aria-controls="panel2a-content"
                 id="panel2a-header"
             >
-                <Typography className={classes.accordionHeading}>Interest Details</Typography>
+                <Typography className={classes.accordionHeading}>Interests</Typography>
             </AccordionSummary>
             <AccordionDetails>
                 <TransactionDetail category="Interest" categoryTitle="Interest" />
@@ -106,7 +106,7 @@ function DepositDetailsContainer(props) {
                 aria-controls="panel2a-content"
                 id="panel2a-header"
             >
-                <Typography className={classes.accordionHeading}>Deposit Details</Typography>
+                <Typography className={classes.accordionHeading}>Deposits</Typography>
             </AccordionSummary>
             <AccordionDetails>
                 <TransactionDetail category="Deposit" categoryTitle="Deposit" />

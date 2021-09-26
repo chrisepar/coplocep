@@ -55,7 +55,6 @@ function AddButton(props) {
                         :
                         <StandardContent categoryTitle={categoryTitle} category={category} amount={amount} setAmount={setAmount} />
                 }
-
                 <DialogActions>
                     <Button onClick={handleClose} color="primary"> Cancel </Button>
                     <Button onClick={handleConfirm} color="primary"> Confirm </Button>

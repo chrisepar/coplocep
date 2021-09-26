@@ -51,22 +51,24 @@ export default (props) => {
 
     return (
         <Layout appName={props.appName}>
-            {(isLoading) ? <Loading /> : null}
-            <Grid container spacing={3} >
-                <Grid item xs={10} />
-                <Grid item xs={2} >
-                    <SaveButton onClick={handleSave} />
+            {(isLoading === true) ? <Loading /> :
+                <Grid container spacing={3} >
+                    <Grid item xs={10} />
+                    <Grid item xs={2} >
+                        <SaveButton onClick={handleSave} />
+                    </Grid>
+                    <Grid item xs={3}>
+                        <NumberField id="DefaultInterest" label="Default Interest Percent" maxValue={100} fixedDecimalScale
+                            value={detail.DefaultInterest} onChange={(value) => handleChange(value, "DefaultInterest")}
+                            suffix="%" />
+                    </Grid>
+                    <Grid item xs={3}>
+                        <NumberField id="MaxTerm" label="Max Term" maxValue={60} decimalScale={0}
+                            value={detail.MaxTerm} onChange={(value) => handleChange(value, "MaxTerm")} />
+                    </Grid>
+                    <Grid item xs={6} />
                 </Grid>
-                <Grid item xs={3}>
-                    <NumberField id="Interest" label="Interest Percent" maxValue={100}
-                        value={detail.Interest} onChange={(value) => handleChange(value, "Interest")} />
-                </Grid>
-                <Grid item xs={3}>
-                    <NumberField id="Term" label="Term" maxValue={60}
-                        value={detail.Term} onChange={(value) => handleChange(value, "Term")} />
-                </Grid>
-                <Grid item xs={6} />
-            </Grid>
+            }
         </Layout>
     );
 };

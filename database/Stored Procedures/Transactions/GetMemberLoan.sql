@@ -19,7 +19,8 @@ GO
 -- =============================================
 CREATE PROCEDURE [dbo].[GetMemberLoan] 
 	-- Add the parameters for the stored procedure here
-	@memberKey int = NULL
+	@memberKey int,
+	@currentUser nvarchar(2)
 AS
 BEGIN
 	-- SET NOCOUNT ON added to prevent extra result sets from
@@ -30,18 +31,17 @@ BEGIN
 	SELECT [TransactionKey]
       ,[MemberKey]
       ,[Amount]
-      ,[Category]
+	  ,[Interest]
+	  ,[Term]
       ,[CreatedBy]
       ,[CreatedDate]
       ,[ModifiedBy]
       ,[ModifiedDate]
       ,[ApprovalID]
-      ,[ApprovedBy]
-      ,[ApprovedDate]
-      ,[IsApproved]
-      ,[Comment] FROM [Transaction Approval] AS TA
-	WHERE Category = 'Loan' AND MemberKey = @memberKey
+      ,[LastApprovedBy] As [ApprovedBy]
+      ,[LastApprovedDate] AS [ApprovedDate]
+      ,[LastIsApproved] AS [IsApproved]
+      ,[Comment] FROM [LoanApprovalByCurrentUser](@currentUser) AS TA
+	WHERE MemberKey = @memberKey
 END
 GO
-
-

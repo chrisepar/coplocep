@@ -4,8 +4,8 @@ import { getUserCode } from "app/core/authentication/authentication.js"
 import { postData, deleteData, putData, getData } from 'app/core/helpers/fetch.js';
 
 const model = {
-    Interest: 1,
-    Term: 12
+    DefaultInterest: 1,
+    MaxTerm: 12
 };
 
 const prepData = (detail) => {
