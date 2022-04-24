@@ -11,14 +11,14 @@ function NumberFieldCore(props) {
     const classes = useStyles();
     const { id, label, thousandSeparator, format, maxLength, value, onChange,
         isNumericString, allowLeadingZeros, allowNegative, maxValue,
-        decimalScale, fixedDecimalScale, decimalSeparator, suffix } = props;
+        decimalScale, fixedDecimalScale, decimalSeparator, suffix, disabled } = props;
 
     const withValueLimit = (inputObj) => {
         if (!isEmpty(maxValue)) {
             const { value } = inputObj;
-            if (value <= maxValue) return true;
+            if (value > maxValue) return false;
         }
-        return false;
+        return true;
     };
 
     return (
@@ -44,6 +44,7 @@ function NumberFieldCore(props) {
             fixedDecimalScale={fixedDecimalScale}
             decimalSeparator={decimalSeparator}
             suffix={suffix}
+            disabled={disabled}
         />
     );
 };
@@ -62,7 +63,8 @@ NumberFieldCore.defaultProps = {
     maxValue: null,
     decimalScale: 2,
     fixedDecimalScale: false,
-    decimalSeparator: "."
+    decimalSeparator: ".",
+    disabled: false
 };
 
 export default NumberFieldCore;

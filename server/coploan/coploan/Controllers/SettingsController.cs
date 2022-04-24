@@ -4,20 +4,15 @@ using coploan.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Primitives;
 using System.Text.Json;
+using coploan.Common;
 
 namespace coploan.Controllers
 {
     [ApiController]
     [Route("api/[controller]/[action]")]
-    public class SettingsController : ControllerBase
+    public class SettingsController : ControllerHandler
     {
         private SettingsService settings;
-
-        private UserRole CurrentUser()
-        {
-            Request.Headers.TryGetValue("Authorization", out StringValues auth);
-            return JsonSerializer.Deserialize<UserRole>(auth[0]);
-        }
 
         public SettingsController(IConfiguration configuration)
         {

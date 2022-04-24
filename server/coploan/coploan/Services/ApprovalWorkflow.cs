@@ -11,11 +11,10 @@ using coploan.Models;
 
 namespace coploan.Services
 {    
-    public class ApprovalWorkflow
+    public class ApprovalWorkflow: BusinessObjects
     {
 
         private SQLQueries sql;
-        private IConfiguration config;
         public ApprovalWorkflow(IConfiguration configuration)
         {
             config = configuration;
@@ -61,7 +60,8 @@ namespace coploan.Services
 
             sqlParam.Add(new SqlParameter("@RecordID", recordID));
 
-            return JsonConvert.SerializeObject(sql.ExecuteReader("[dbo].[GetMembershipTimeline]", sqlParam));
+            DataTable results = sql.ExecuteReader("[dbo].[GetMembershipTimeline]", sqlParam);
+            return JsonConvert.SerializeObject(GetDataByPage(results));
         }
 
         public string GetTransactionTimeline(string category, int recordID)
@@ -73,7 +73,8 @@ namespace coploan.Services
             sqlParam.Add(new SqlParameter("@RecordID", recordID));
             sqlParam.Add(new SqlParameter("@Category", category));
 
-            return JsonConvert.SerializeObject(sql.ExecuteReader("[dbo].[GetTransactionTimeline]", sqlParam));
+            DataTable results = sql.ExecuteReader("[dbo].[GetTransactionTimeline]", sqlParam);
+            return JsonConvert.SerializeObject(GetDataByPage(results));
         }
 
     }

@@ -5,6 +5,10 @@ import Typography from '@material-ui/core/Typography';
 import Link from '@material-ui/core/Link';
 import IsEmpty from "app/core/helpers/is_empty.js";
 import IsTruthy from "app/core/helpers/is_truthy.js";
+import TextField from '@material-ui/core/TextField';
+import IconButton from '@material-ui/core/IconButton';
+import ExpandMoreIcon from '@material-ui/icons/More';
+import InputAdornment from '@material-ui/core/InputAdornment';
 
 import ApprovalTimeline from "app/approval_workflow/approval_timeline.js";
 
@@ -38,12 +42,30 @@ const StatusField = (props) => {
 
     return (
         <div>
-            <Typography variant="h4" gutterBottom>
-                Status:
-                <Link href="#" onClick={() => onLinkClick()}>
-                    {getStatus(LastIsApproved, IsFinalApproved)}
-                </Link>
-            </Typography>
+            <TextField variant="outlined" margin="normal" fullWidth disabled
+                InputLabelProps={{
+                    shrink: true,
+                    classes: {
+                        root: classes.labelRoot
+                    }
+                }}
+                label="Status" value={getStatus(LastIsApproved, IsFinalApproved)}
+
+                InputProps={{
+                    endAdornment:
+                        <InputAdornment position="end">
+                            <IconButton
+                                aria-label="more"
+                                id="loan-details"
+                                aria-haspopup="true"
+                                onClick={() => onLinkClick()}
+                            >
+                                <ExpandMoreIcon />
+                            </IconButton>
+                        </InputAdornment>
+
+                }}
+            />
             <ApprovalTimeline category={category} recordID={recordID} openDialog={openDialog} setOpenDialog={setOpenDialog} />
         </div>
     );

@@ -27,7 +27,10 @@ namespace coploan.Models
 
     public class DepositDetails : TransactionDetails { }
 
-    public class PaymentDetails : TransactionDetails { }
+    public class PaymentDetails : TransactionDetails 
+    { 
+        public int LoanKey { get; set; }
+    }
 
     public class LoanComputation
     {

@@ -48,8 +48,8 @@ const rejectRecord = (recordID, category, comment) => {
 };
 
 const getURL = (category, recordID) => {
-    const membership = "approvalworkflow/timeline/membership/" + recordID;
-    const transaction = "approvalworkflow/timeline/transaction/" + category + "/" + recordID;
+    const membership = `approvalworkflow/timeline/membership/${recordID}`;
+    const transaction = `approvalworkflow/timeline/transaction/${category}/${recordID}`;
     return (category === "Membership") ? membership : transaction;
 };
 

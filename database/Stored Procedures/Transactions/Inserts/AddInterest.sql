@@ -20,7 +20,9 @@ GO
 CREATE PROCEDURE [dbo].[AddInterest]
 	@MemberKey int,
 	@LoanKey int,
-	@Amount numeric(18,2),
+	@Interest numeric(3,2) = NULL,
+	@Term numeric(2,0) = NULL,
+	@Amount float,
 	@CreatedBy nvarchar(250),
 	@CreatedDate datetime,
 	@ModifiedBy nvarchar(250),
@@ -31,7 +33,8 @@ BEGIN
 	-- SET NOCOUNT ON added to prevent extra result sets from
 	-- interfering with SELECT statements.
 	SET NOCOUNT OFF;
-    -- Insert statements for procedure here
+	DECLARE @StaticInterest float = @Amount * @Interest
+
 	INSERT INTO [dbo].[Interests]
            ([MemberKey]
 		   ,[LoanKey]
@@ -42,7 +45,7 @@ BEGIN
            ,[ModifiedDate])
      VALUES(@MemberKey,
 		@LoanKey,
-		@Amount,
+		(@StaticInterest * (@Term /12 )),
 		@CreatedBy,
 		@CreatedDate,
 		@ModifiedBy,

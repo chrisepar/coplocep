@@ -10,6 +10,7 @@ import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableRow from '@material-ui/core/TableRow';
 import TablePagination from '@material-ui/core/TablePagination';
+import TableFooter from '@material-ui/core/TableFooter';
 import Paper from '@material-ui/core/Paper';
 import Checkbox from '@material-ui/core/Checkbox';
 import { useTableStyles } from 'app/core/styles/_table.js';
@@ -22,6 +23,8 @@ import TableToolbar from "app/core/table/tableToolbar.js";
 import FormatValue from "app/core/helpers/format_value.js";
 import isEmpty from "app/core/helpers/is_empty.js";
 
+import TablePaginationActions from "app/core/table/tablePagination.js";
+
 //Table
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -33,29 +36,6 @@ function descendingComparator(a, b, orderBy) {
     return 0;
 }
 
-function getComparator(order, orderBy) {
-    return order === 'desc'
-        ? (a, b) => descendingComparator(a, b, orderBy)
-        : (a, b) => -descendingComparator(a, b, orderBy);
-}
-
-function stableSort(array, comparator) {
-    const stabilizedThis = array.map((el, index) => [el, index]);
-    stabilizedThis.sort((a, b) => {
-        const order = comparator(a[0], b[0]);
-        if (order !== 0) return order;
-        return a[1] - b[1];
-    });
-    return stabilizedThis.map((el) => el[0]);
-}
-
-function searchItem(searchBy, data, value) {
-    var foundData = data.filter(function (item, index) {
-        return (!isEmpty(item[searchBy])) && item[searchBy].toLowerCase().includes(value.toLowerCase());
-    });
-    return (value === "") ? data : (foundData && foundData.length > 0) ? foundData : [];
-};
-
 function dataCell(col, row) {
     return (
         col.map((cell, cellIndex) => (
@@ -64,212 +44,80 @@ function dataCell(col, row) {
     );
 }
 
-function getMaxRowsPerPage() {
-    return Math.abs(Math.floor((window.innerHeight - 185) / 53)) - 1;
-}
-
 function TableCore(props) {
     const history = useHistory();
     const classes = useTableStyles();
 
-    const { data, columns, isMultiSelect, rowsPerPageOptions, title, editable, searchBy } = props;
-
-    const [order, setOrder] = React.useState('asc');
-
-    const [orderBy, setOrderBy] = React.useState('calories');
-
-    const [selected, setSelected] = React.useState([]);
-    const [page, setPage] = React.useState(0);
-    const [rowsPerPage, setRowsPerPage] = React.useState(getMaxRowsPerPage());
-
-    const [searchValue, setSearchValue] = React.useState("");
-
-    const handleRequestSort = (event, property) => {
-        const isAsc = orderBy === property && order === 'asc';
-        setOrder(isAsc ? 'desc' : 'asc');
-        setOrderBy(property);
-    };
-
-    const handleSelectAllClick = (event) => {
-        if (event.target.checked) {
-            const newSelecteds = data.map((n) => n.name);
-            setSelected(newSelecteds);
-            return;
-        }
-        setSelected([]);
-    };
-
-    const handleMultiSelectClick = (event, name) => {
-        const selectedIndex = selected.indexOf(name);
-        let newSelected = [];
-
-        if (selectedIndex === -1) {
-            newSelected = newSelected.concat(selected, name);
-        } else if (selectedIndex === 0) {
-            newSelected = newSelected.concat(selected.slice(1));
-        } else if (selectedIndex === selected.length - 1) {
-            newSelected = newSelected.concat(selected.slice(0, -1));
-        } else if (selectedIndex > 0) {
-            newSelected = newSelected.concat(
-                selected.slice(0, selectedIndex),
-                selected.slice(selectedIndex + 1),
-            );
-        }
-
-        setSelected(newSelected);
-    };
+    const { data, totalRowCount, rowsPerPage, columns, title, editable, page, setPage, 
+        filterByValue, setFilterByValue, searchValue, setSearchValue } = props;
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
-    };
-
-    const handleChangeRowsPerPage = (event) => {
-        setRowsPerPage(parseInt(event.target.value, 10));
-        setPage(0);
     };
 
     const handleEditBtnClick = (event, id) => {
         history.push(history.location.pathname + "/" + id);
     };
 
-    const isSelected = (name) => selected.indexOf(name) !== -1;
-
-    const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
-
-    const getTotal = (field, row) => {
-        var total = 0;
-        for (var counter = 0; counter < row.length; counter++) {
-            total = total + row[counter][field];
-        };
-        return total;
-    };
-
-
-    const hasTotalRow = () => {
-        for (var counter = 0; counter < columns.length; counter++) {
-            if (columns[counter].hasTotal) {
-                return true;
-            }
-        };
-        return false;
-    }
-
-    const rowForTotal = () => {
-        if (hasTotalRow()) {
-            return (
-                <TableRow hover tabIndex={-1} key="totalRowID" className={classes.tableRow} >
-                    <TableCell />
-                    {
-                        columns.map((col, colIndex) => {
-                            if (col.hasTotal) {
-                                return (
-                                    <TableCell key={"totalRowID" + "_" + colIndex} align="left" className={classes.totalRow}>{getTotal(col.field, data)}</TableCell>
-                                );
-                            } else {
-                                return (
-                                    <TableCell key={"totalRowID" + "_" + colIndex} />
-                                );
-                            }
-                        })
-                    }
-                </TableRow>
-            );
-        } else {
-            return null;
-        }
-    };
+    // Compute for Empty Rows
+    const emptyRows = Math.max(0, (1 + page) * rowsPerPage - totalRowCount);
 
     return (
         <Paper className={classes.paper}>
-            <TableToolbar title={title} numSelected={selected.length} isMultiSelect={isMultiSelect}
-                setSearchValue={setSearchValue} />
-            <TableContainer className={classes.tableContainer}>
+            <TableToolbar title={title} searchValue={searchValue} setSearchValue={setSearchValue} filterByList={columns} 
+            filterByValue={filterByValue} setFilterByValue={setFilterByValue} />
+            <TableContainer>
                 <Table
-                    className={classes.table}
-                    aria-labelledby="tableTitle"
-                    size='medium'
-                    aria-label="enhanced table"
+                    aria-label="simple table"
                     stickyHeader
                 >
                     <TableHeader
                         classes={classes}
-                        order={order}
-                        orderBy={orderBy}
-                        onRequestSort={handleRequestSort}
                         rowCount={data.length}
                         columns={columns}
-
-                        numSelected={selected.length}
-                        onSelectAllClick={handleSelectAllClick}
-                        isMultiSelect={isMultiSelect}
-                        editable={editable}
                     />
-                    <TableBody className={classes.tableBody}>
+                    <TableBody>
                         {
-                            stableSort(searchItem(searchBy, data, searchValue), getComparator(order, orderBy))
-                                // .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                .map((row, rowIndex) => {
-                                    if (isMultiSelect) {
-                                        const isItemSelected = isSelected(row.Name);
-                                        const labelId = `enhanced-table-checkbox-${rowIndex}`;
-                                        return (
-                                            <TableRow
-                                                hover
-                                                onClick={(event) => handleMultiSelectClick(event, row.Name)}
-                                                role="checkbox"
-                                                aria-checked={isItemSelected}
-                                                tabIndex={-1}
-                                                key={row.Name}
-                                                selected={isItemSelected}
-                                                className={classes.tableRow}
-                                            >
-
-                                                <TableCell padding="checkbox">
-                                                    <Checkbox
-                                                        checked={isItemSelected}
-                                                        inputProps={{ 'aria-labelledby': labelId }}
-                                                    />
-                                                </TableCell>
-                                                {dataCell(columns, row)}
-                                            </TableRow>
-                                        );
-                                    } else {
-                                        return (
-                                            <TableRow
-                                                hover
-                                                tabIndex={-1}
-                                                key={row.MemberKey}
-                                                className={classes.tableRow}
-                                            >
-                                                {(editable) ?
-                                                    <TableCell>
-                                                        <IconButton aria-label="expand row" size="small" onClick={(event) => handleEditBtnClick(event, row.MemberKey)}>
-                                                            <EditIcon />
-                                                        </IconButton>
-                                                    </TableCell>
-                                                    : null
-                                                }
-                                                {dataCell(columns, row)}
-                                            </TableRow>
-                                        );
-                                    }
-                                })
+                            data.map((row, rowIndex) => {
+                                return (
+                                    <TableRow
+                                        hover
+                                        tabIndex={-1}
+                                        key={row.MemberKey}
+                                    >
+                                        <TableCell>
+                                            <IconButton aria-label="expand row" size="small" onClick={(event) => handleEditBtnClick(event, row.MemberKey)}>
+                                                <EditIcon />
+                                            </IconButton>
+                                        </TableCell>
+                                        {dataCell(columns, row)}
+                                    </TableRow>
+                                );
+                            })
                         }
-
-                        {
-                            emptyRows > 0 && (
-                                <TableRow style={{ height: 53 * (hasTotalRow() ? emptyRows - 1 : emptyRows) }}>
-                                    <TableCell colSpan={6} />
-                                </TableRow>
-                            )
-                        }
-
-                        {
-                            rowForTotal()
-                        }
+                        {emptyRows > 0 && (
+                            <TableRow style={{ height: 63 * emptyRows }}>
+                                <TableCell colSpan={columns.length} />
+                            </TableRow>
+                        )}
                     </TableBody>
                 </Table>
             </TableContainer>
+            <TablePagination
+                rowsPerPageOptions={[rowsPerPage]}
+                component="div"
+                count={totalRowCount}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                SelectProps={{
+                    inputProps: {
+                        'aria-label': 'rows per page',
+                    },
+                    native: true,
+                }}
+                onPageChange={handleChangePage}
+                ActionsComponent={TablePaginationActions}
+            />
         </Paper>
     );
 };
@@ -280,11 +128,8 @@ TableCore.propTypes = {
 };
 
 TableCore.defaultProps = {
-    rowsPerPageOptions: [],
     title: "",
-    isMultiSelect: false,
-    rowsPerPageOptions: [],
-    editable: false
+    rowsPerPage: 5
 };
 
 export default TableCore;

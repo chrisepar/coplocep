@@ -9,14 +9,12 @@ using System.Reflection;
 using System.Text;
 using coploan.Models;
 
-
 namespace coploan.Services
 {
 
-    public class Transaction
+    public class Transaction: BusinessObjects
     {
         private SQLQueries sql;
-        private IConfiguration config;
 
         public Transaction(IConfiguration configuration)
         {
@@ -25,7 +23,8 @@ namespace coploan.Services
         }
         public string GetMembersWithTransactions()
         {
-            return JsonConvert.SerializeObject(sql.ExecuteReader("[dbo].[GetMembersTransaction]"));
+            DataTable results = sql.ExecuteReader("[dbo].[GetMembersTransaction]");
+            return JsonConvert.SerializeObject(GetDataByPage(results));
         }
 
         public int AddLoan(LoanDetails data)
@@ -43,10 +42,10 @@ namespace coploan.Services
         public int AddPayment(PaymentDetails data)
         {
             string keyName = "TransactionKey";
-            List<SqlParameter> sqlParam = sql.GenerateSQLParamFromInstance(typeof(InterestDetails), data, keyName);
+            List<SqlParameter> sqlParam = sql.GenerateSQLParamFromInstance(typeof(PaymentDetails), data, keyName);
             return sql.ExecuteNonQueryInsert("[dbo].[AddPayment]", sqlParam, keyName);
         }
-        public string GetMemberLoan(string memberKey, UserRole currentUser)
+        public string GetMemberLoan(string memberKey)
         {
             List<SqlParameter> sqlParam = new List<SqlParameter>();
 
@@ -57,19 +56,37 @@ namespace coploan.Services
                 sqlParam.Add(new SqlParameter("@memberKey", memberKey));
             }
             sqlParam.Add(new SqlParameter("@currentUser", currentUser.Code));
-            return JsonConvert.SerializeObject(sql.ExecuteReader("[dbo].[GetMemberLoan]", sqlParam));
+            DataTable results = sql.ExecuteReader("[dbo].[GetMemberLoan]", sqlParam);
+            return JsonConvert.SerializeObject(GetDataByPage(results));
         }
-        public string GetMemberInterestPaid(string memberKey)
+        public string GetLoan(string loanID)
+        {
+            List<SqlParameter> sqlParam = new List<SqlParameter>();
+
+            sql = new SQLQueries(config, new Type[] { typeof(LoanDetails), typeof(Approval) });
+
+            if (!string.IsNullOrEmpty(loanID))
+            {
+                sqlParam.Add(new SqlParameter("@loanID", loanID));
+                //sqlParam.Add(new SqlParameter("@memberKey", memberKey));
+            }
+            sqlParam.Add(new SqlParameter("@currentUser", currentUser.Code));
+
+            DataTable results = sql.ExecuteReader("[dbo].[GetLoan]", sqlParam);
+            return JsonConvert.SerializeObject(GetDataByPage(results));
+        }
+        public string GetMemberInterestPaid(string loanID)
         {
             List<SqlParameter> sqlParam = new List<SqlParameter>();
 
             sql = new SQLQueries(config, new Type[] { typeof(InterestDetails)});
 
-            if (!string.IsNullOrEmpty(memberKey))
+            if (!string.IsNullOrEmpty(loanID))
             {
-                sqlParam.Add(new SqlParameter("@memberKey", memberKey));
+                sqlParam.Add(new SqlParameter("@loanID", loanID));
             }
-            return JsonConvert.SerializeObject(sql.ExecuteReader("[dbo].[GetMemberInterestPaid]", sqlParam));
+            DataTable results = sql.ExecuteReader("[dbo].[GetMemberInterestPaid]", sqlParam);
+            return JsonConvert.SerializeObject(GetDataByPage(results));
         }
         public string GetMemberDeposit(string memberKey)
         {
@@ -81,10 +98,24 @@ namespace coploan.Services
             {
                 sqlParam.Add(new SqlParameter("@memberKey", memberKey));
             }
-            return JsonConvert.SerializeObject(sql.ExecuteReader("[dbo].[GetMemberDeposit]", sqlParam));
+            DataTable results = sql.ExecuteReader("[dbo].[GetMemberDeposit]", sqlParam);
+            return JsonConvert.SerializeObject(GetDataByPage(results));
+        }
+        public string GetMemberPayment(string loanID)
+        {
+            List<SqlParameter> sqlParam = new List<SqlParameter>();
+
+            sql = new SQLQueries(config, new Type[] { typeof(PaymentDetails) });
+
+            if (!string.IsNullOrEmpty(loanID))
+            {
+                sqlParam.Add(new SqlParameter("@loanID", loanID));
+            }
+            DataTable results = sql.ExecuteReader("[dbo].[GetMemberPayment]", sqlParam);
+            return JsonConvert.SerializeObject(GetDataByPage(results));
         }
 
-        public bool DeleteLoan(int transactionKey, UserRole currentUser)
+        public bool DeleteLoan(int transactionKey)
         {
             List<SqlParameter> sqlParam = new List<SqlParameter>();
             
@@ -100,7 +131,16 @@ namespace coploan.Services
 
             sqlParam.Add(new SqlParameter("@DepositKey", transactionKey));
 
-            return sql.ExecuteNonQuery("[dbo].[DeleteTransaction]", sqlParam);
+            return sql.ExecuteNonQuery("[dbo].[DeleteDeposit]", sqlParam);
+        }
+
+        public bool DeletePayment(int transactionKey)
+        {
+            List<SqlParameter> sqlParam = new List<SqlParameter>();
+
+            sqlParam.Add(new SqlParameter("@PaymentKey", transactionKey));
+
+            return sql.ExecuteNonQuery("[dbo].[DeletePayment]", sqlParam);
         }
 
         public byte[] GetComputedMonthlyLoan (float amount = 0,  float interest = 0, int term = 0)

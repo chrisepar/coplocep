@@ -43,9 +43,9 @@ const ApprovalTimeline = (props) => {
         let mounted = true;
         if (openDialog) {
             getApprovalTimeline(category, recordID)
-                .then(items => {
+                .then(data => {
                     if (mounted) {
-                        setList(items)
+                        setList(data);
                     }
                     setLoading(false);
                 })
@@ -71,7 +71,7 @@ const ApprovalTimeline = (props) => {
                                 </TableHead>
                                 <TableBody>
                                     {
-                                        list.map((item, index) => (
+                                        list.results.map((item, index) => (
                                             <TableRow key={index}>
                                                 <TableCell >
                                                     {getStatus(item.IsApproved)} by {item.ApprovedBy}

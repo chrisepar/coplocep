@@ -34,6 +34,7 @@ function DateFieldCore(props) {
                         root: classes.labelRoot
                     }
                 }}
+                disabled={disabled}
             />
         </MuiPickersUtilsProvider>
     );

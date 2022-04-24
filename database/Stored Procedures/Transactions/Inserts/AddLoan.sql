@@ -55,6 +55,9 @@ BEGIN
 	 )
 	 
 	SELECT @TransactionKey = SCOPE_IDENTITY();
+
+	EXEC [AddInterest] @MemberKey, @TransactionKey, @Interest, @Term, @Amount, @CreatedBy, @CreatedDate, @ModifiedBy, @ModifiedDate
+
 	COMMIT TRANSACTION;
 END
 GO

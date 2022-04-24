@@ -11,17 +11,16 @@ using coploan.Models;
 
 namespace coploan.Services
 {    
-    public class Membership
+    public class Membership : BusinessObjects
     {
         private SQLQueries sql;
-        private IConfiguration config;
 
         public Membership(IConfiguration configuration)
         {
             config = configuration;
             sql = new SQLQueries(config, typeof(Member));
         }
-        public string GetMembers(string memberKey, UserRole currentUser)
+        public string GetMembers(string memberKey)
         {
             List<SqlParameter> sqlParam = new List<SqlParameter>();
 
@@ -34,7 +33,8 @@ namespace coploan.Services
 
             sqlParam.Add(new SqlParameter("@currentUser", currentUser.Code));
 
-            return JsonConvert.SerializeObject(sql.ExecuteReader("[dbo].[GetMemberhip]", sqlParam));
+            DataTable results = sql.ExecuteReader("[dbo].[GetMemberhip]", sqlParam);
+            return JsonConvert.SerializeObject(GetDataByPage(results));
         }        
 
         public bool UpdateMemberDetails(Member data)

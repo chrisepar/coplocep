@@ -7,13 +7,14 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
 import useStyles from 'app/core/styles/buttons/_buttons.js';
+import isEmpty from "app/core/helpers/is_empty.js";
 
 import LoanBreakdown from "app/transaction/components/new_transaction/loan_breakdown.js";
 import StandardContent from "app/transaction/components/new_transaction/standard_content.js";
 
 function AddButton(props) {
     const classes = useStyles();
-    const { id, label, callback, categoryTitle, category } = props;
+    const { id, label, callback, categoryTitle, category, customText } = props;
     const [openEntryDialog, setOpenEntryDialog] = React.useState(false);
 
     const [amount, setAmount] = React.useState(null);
@@ -34,6 +35,17 @@ function AddButton(props) {
         }
     };
 
+    const breakdown = () => {
+        switch (category) {
+            case "Loan":
+                return <LoanBreakdown categoryTitle={categoryTitle} category={category} amount={amount} setAmount={setAmount}
+                    interest={interest} setInterest={setInterest} term={term} setTerm={setTerm}
+                />;
+            default:
+                return <StandardContent categoryTitle={categoryTitle} category={category} amount={amount} setAmount={setAmount} />;
+        }
+    };
+
     return (
         <div>
             <Button
@@ -44,16 +56,11 @@ function AddButton(props) {
                 className={classes.button}
                 startIcon={<AddCircleIcon />}
                 onClick={handleClickOpen}
-            >{category}</Button>
-            <Dialog open={openEntryDialog} onClose={handleClose} aria-labelledby="form-dialog-title" maxWidth="md">
+            >{isEmpty(customText) ? category : customText}</Button>
+            <Dialog open={openEntryDialog} onClose={handleClose} aria-labelledby="form-dialog-title" maxWidth="lg">
                 <DialogTitle id="form-dialog-title">{category}</DialogTitle>
                 {
-                    (category === "Loan") ?
-                        <LoanBreakdown categoryTitle={categoryTitle} category={category} amount={amount} setAmount={setAmount}
-                            interest={interest} setInterest={setInterest} term={term} setTerm={setTerm}
-                        />
-                        :
-                        <StandardContent categoryTitle={categoryTitle} category={category} amount={amount} setAmount={setAmount} />
+                    breakdown()
                 }
                 <DialogActions>
                     <Button onClick={handleClose} color="primary"> Cancel </Button>
@@ -65,7 +72,8 @@ function AddButton(props) {
 };
 
 AddButton.defaultProps = {
-    callback: null
+    callback: null,
+    customText: null
 };
 
 export default AddButton;

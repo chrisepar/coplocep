@@ -2,12 +2,13 @@
 using coploan.Models;
 using coploan.Services;
 using Microsoft.Extensions.Configuration;
+using coploan.Common;
 
 namespace coploan.Controllers
 {
     [ApiController]
     [Route("api/[controller]/[action]")]
-    public class ApprovalWorkflowController : Controller
+    public class ApprovalWorkflowController : ControllerHandler
     {
         private ApprovalWorkflow approvalWorkflow;
 
@@ -51,10 +52,5 @@ namespace coploan.Controllers
         {
             return approvalWorkflow.GetTransactionTimeline(category, recordID);
         }
-        //[ActionName("list"), HttpGet]
-        //public ActionResult<bool> GetApprovalList(int recordID)
-        //{
-        //    return approvalWorkflow.RejectRecord(data);
-        //}
     }
 }

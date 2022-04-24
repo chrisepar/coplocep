@@ -2,12 +2,13 @@
 using coploan.Models;
 using coploan.Services;
 using Microsoft.Extensions.Configuration;
+using coploan.Common;
 
 namespace coploan.Controllers
 {
     [ApiController]
     [Route("api/[controller]/[action]")]
-    public class SecurityController : ControllerBase
+    public class SecurityController : ControllerHandler
     {
         private Security security;
 

@@ -30,9 +30,33 @@ const prepData = (detailID, category, data) => {
     return detail;
 };
 
+const prepPayment = (detailID, data) => {
+    var detail = _.clone(model);
+    detail.MemberKey = detailID;
+    detail.LoanKey = data.loanID;
+    detail.Category = "Payment";
+    detail.Amount = data.amount;
+    detail.CreatedBy = getUserCode();
+    detail.CreatedDate = new Date();
+    detail.ModifiedBy = getUserCode();
+    detail.ModifiedDate = new Date();
+    return detail;
+};
+
+const addPayment = (detailID, data) => {
+    var detail = prepPayment(detailID, data);
+    return postData(`transaction/add/payment`, detail).then((data) => {
+        if (data && data.ok) {
+            return data.json();
+        } else {
+            return false;
+        }
+    });
+};
+
 const addTransaction = (detailID, category, data) => {
     var detail = prepData(detailID, category, data);
-    return postData('transaction/add/' + category, detail).then((data) => {
+    return postData(`transaction/add/${category}`, detail).then((data) => {
         if (data && data.ok) {
             return data.json();
         } else {
@@ -41,8 +65,8 @@ const addTransaction = (detailID, category, data) => {
     });
 };
 
-const deleteTransaction = (transactionKey) => {
-    return deleteData('transaction/delete/' + transactionKey).then((data) => {
+const deleteTransaction = (transactionKey, category) => {
+    return deleteData(`transaction/delete/${category}/${transactionKey}`).then((data) => {
         if (data && data.ok) {
             return data.json();
         } else {
@@ -51,19 +75,24 @@ const deleteTransaction = (transactionKey) => {
     });
 };
 
-const getMemberTransactionList = (memberKey, type) => {
-    return getData('transaction/' + type + '/' + memberKey)
+const getMemberTransactionList = (memberKey, type, page = 1) => {
+    return getData(`transaction/${type}/list/${memberKey}?page=${page}`)
         .then(data => data.json())
 };
 
-const getMembersWithTransaction = () => {
-    return getData('transaction/list')
+const getLoanTransactionList = (loadID, type, page = 1) => {
+    return getData(`transaction/${type}/list/${loadID}?page=${page}`)
+        .then(data => data.json())
+};
+
+const getMembersWithTransaction = (pageCount, page = 1) => {
+    return getData(`transaction/list?page=${page}&pageCount=${pageCount}`)
         .then(data => data.json())
 };
 
 const downloadComputation = (amount, interest, term) => {
-    const param = "?amount=" + amount + "&interest=" + interest + "&term=" + term;
-    return getData('transaction/calculation' + param)
+    const param = `?amount=${amount}&interest=${interest}&term=${term}`;
+    return getData(`transaction/calculation${param}`)
         .then(data => data.blob())
         .then(blob => {
             downloadFile(blob, "Computation.xlsx");
@@ -73,7 +102,9 @@ const downloadComputation = (amount, interest, term) => {
 export {
     model,
     getMemberTransactionList,
+    getLoanTransactionList,
     addTransaction,
+    addPayment,
     deleteTransaction,
     getMembersWithTransaction,
     downloadComputation

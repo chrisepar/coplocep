@@ -11,12 +11,13 @@ using coploan.Models;
 
 namespace coploan.Services
 {    
-    public class Security
+    public class Security : BusinessObjects
     {
 
         private SQLQueries sql;
         public Security(IConfiguration configuration)
         {
+            config = configuration;
             sql = new SQLQueries(configuration, typeof(Security));
         }
 

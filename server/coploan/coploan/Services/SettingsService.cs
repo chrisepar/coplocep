@@ -12,10 +12,9 @@ using coploan.Models;
 namespace coploan.Services
 {
 
-    public class SettingsService
+    public class SettingsService : BusinessObjects
     {
         private SQLQueries sql;
-        private IConfiguration config;
 
         public SettingsService(IConfiguration configuration)
         {

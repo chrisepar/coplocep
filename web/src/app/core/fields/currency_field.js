@@ -6,7 +6,7 @@ import useStyles from 'app/core/styles/fields/_formControl.js';
 
 function CurrencyFieldCore(props) {
     const classes = useStyles();
-    const { id, label, prefix, value, onChange } = props;
+    const { id, label, prefix, value, onChange, disabled } = props;
 
     const onValueChange = (values) => {
         const {formattedValue, value} = values;
@@ -28,6 +28,7 @@ function CurrencyFieldCore(props) {
             prefix={prefix}
             value={value}
             onValueChange={(values) => onValueChange(values)}
+            disabled={disabled}
         />
     );
 };
@@ -38,6 +39,7 @@ CurrencyFieldCore.defaultProps = {
     prefix: "Php ",
     value: "",
     onChange: () => { },
+    disabled: false
 };
 
 export default CurrencyFieldCore;

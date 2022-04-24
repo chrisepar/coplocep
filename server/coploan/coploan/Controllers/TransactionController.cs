@@ -4,20 +4,15 @@ using coploan.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Primitives;
 using System.Text.Json;
+using coploan.Common;
 
 namespace coploan.Controllers
 {
     [ApiController]
     [Route("api/[controller]/[action]")]
-    public class TransactionController : ControllerBase
+    public class TransactionController : ControllerHandler
     {
         private Transaction transaction;
-        private UserRole CurrentUser()
-        {
-            Request.Headers.TryGetValue("Authorization", out StringValues auth);
-            return JsonSerializer.Deserialize<UserRole>(auth[0]);
-        }
-
         public TransactionController(IConfiguration configuration)
         {
             transaction = new Transaction(configuration);
@@ -48,30 +43,47 @@ namespace coploan.Controllers
         [ActionName("delete/loan"), HttpDelete("{transactionKey}")]
         public ActionResult<bool> DeleteLoan(int transactionKey)
         {
-            return transaction.DeleteLoan(transactionKey, CurrentUser());
+            return transaction.DeleteLoan(transactionKey);
         }
         [ActionName("delete/deposit"), HttpDelete("{transactionKey}")]
         public ActionResult<bool> DeleteDeposit(int transactionKey)
         {
             return transaction.DeleteDeposit(transactionKey);
         }
-
-        [ActionName("loan"), HttpGet("{memberKey}")]
-        public ActionResult<string> GetMemberLoan(string memberKey)
+        [ActionName("delete/payment"), HttpDelete("{transactionKey}")]
+        public ActionResult<bool> DeletePayment(int transactionKey)
         {
-            return transaction.GetMemberLoan(memberKey, CurrentUser());
+            return transaction.DeletePayment(transactionKey);
         }
 
-        [ActionName("deposit"), HttpGet("{memberKey}")]
+        [ActionName("loan/list"), HttpGet("{memberKey}")]
+        public ActionResult<string> GetMemberLoan(string memberKey)
+        {
+            return transaction.GetMemberLoan(memberKey);
+        }
+
+        [ActionName("loan"), HttpGet("{loanID}")]
+        public ActionResult<string> GetLoan(string loanID)
+        {
+            return transaction.GetLoan(loanID);
+        }
+
+        [ActionName("deposit/list"), HttpGet("{memberKey}")]
         public ActionResult<string> GetMemberDeposit(string memberKey)
         {
             return transaction.GetMemberDeposit(memberKey);
         }
 
-        [ActionName("interest"), HttpGet("{memberKey}")]
-        public ActionResult<string> GetMemberInterestPaid(string memberKey)
+        [ActionName("interest/list"), HttpGet("{loanID}")]
+        public ActionResult<string> GetMemberInterestPaid(string loanID)
         {
-            return transaction.GetMemberInterestPaid(memberKey);
+            return transaction.GetMemberInterestPaid(loanID);
+        }
+
+        [ActionName("payment/list"), HttpGet("{loanID}")]
+        public ActionResult<string> GetMemberPayment(string loanID)
+        {
+            return transaction.GetMemberPayment(loanID);
         }
 
         [ActionName("calculation"), HttpGet]

@@ -6,7 +6,8 @@ import _ from 'lodash';
 
 import Loading from 'app/core/helpers/loading_screen.js';
 
-import TransactionTable from "app/transaction/components/transaction_table.js";
+import TransactionTable from "app/transaction/components/common/transaction_table.js";
+import LoanTable from "app/transaction/components/loan/loan_table.js";
 import { getMemberTransactionList, addTransaction, deleteTransaction } from 'app/transaction/transaction_model.js';
 import { approveRecord, rejectRecord } from "app/approval_workflow/approval_workflow_model.js";
 
@@ -27,7 +28,7 @@ function TransactionDetail(props) {
     };
 
     const deleteCallback = (transactionKey) => {
-        return deleteTransaction(transactionKey).then((data) => {
+        return deleteTransaction(transactionKey, category).then((data) => {
             if (data) {
                 setTrigger(data);
             }
@@ -53,9 +54,9 @@ function TransactionDetail(props) {
     useEffect(() => {
         let mounted = true;
         getMemberTransactionList(detailID, category)
-            .then(items => {
+            .then(data => {
                 if (mounted) {
-                    setList(items)
+                    setList(data);
                 }
                 setLoading(false);
             })
@@ -66,10 +67,18 @@ function TransactionDetail(props) {
     if (isLoading) {
         return (<Loading />);
     } else {
-        return (
-            <TransactionTable category={category} rows={list} addCallback={addCallback}
-                deleteCallback={deleteCallback} approveCallback={approveCallback} rejectCallback={rejectCallback} categoryTitle={categoryTitle} />
-        );
+        switch (category) {
+            case "Loan":
+                return (
+                    <LoanTable rows={list.results} addCallback={addCallback}
+                        deleteCallback={deleteCallback} approveCallback={approveCallback} rejectCallback={rejectCallback} categoryTitle={categoryTitle} />
+                );
+            default:
+                return (
+                    <TransactionTable category={category} rows={list.results} addCallback={addCallback} 
+                        deleteCallback={deleteCallback} categoryTitle={categoryTitle} />
+                );
+        }
     }
 };
 

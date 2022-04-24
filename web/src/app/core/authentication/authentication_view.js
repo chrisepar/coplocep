@@ -46,7 +46,7 @@ export default () => {
         return (
             <Grid container
                 direction="column"
-                alignItems="center" justify="center"
+                alignItems="center" justifyContent="center"
                 className="loginContainer">
                 <FormControl className="loginFormControl" variant="filled">
                     <InputLabel id="role-label">Login Role</InputLabel>

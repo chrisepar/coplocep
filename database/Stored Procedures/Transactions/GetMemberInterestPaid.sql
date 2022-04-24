@@ -28,7 +28,7 @@ BEGIN
 
     -- Insert statements for procedure here
 	
-	SELECT [TransactionKey]
+	SELECT [LoanKey] AS [TransactionKey]
       ,[MemberKey]
       ,[Amount]
       ,[CreatedBy]

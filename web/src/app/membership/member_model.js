@@ -2,6 +2,7 @@ import appDetails from '_appDetails.js';
 import { postData, deleteData, putData, getData } from 'app/core/helpers/fetch.js';
 import { FormatDateToISO } from 'app/core/helpers/date_format.js';
 import { getUserCode } from "app/core/authentication/authentication.js"
+import isEmpty from "app/core/helpers/is_empty.js";
 
 const model = {
     MemberKey: 0,
@@ -74,12 +75,16 @@ const saveMember = (isCreateMode, memberKey, detail) => {
 };
 
 const getMember = (memberKey) => {
-    return getData('membership/list?memberKey=' + memberKey)
+    return getData(`membership/list?memberKey=${memberKey}`)
         .then(data => data.json());
 };
 
-const getMemberList = () => {
-    return getData('membership/list')
+const getMemberList =  (filters) => {
+    const pageCount = !isEmpty(filters.pageCount) && filters.pageCount;
+    const page = isEmpty(filters.page) ? 1 : filters.page;
+    const filterBy = isEmpty(filters.filterByValue) ? "" : filters.filterByValue;
+    const searchBy = isEmpty(filters.searchValue) ? "" : filters.searchValue;
+    return getData(`membership/list?page=${page}&pageCount=${pageCount}&filterBy=${filterBy}&searchBy=${searchBy}`)
         .then(data => data.json())
 };
 

@@ -37,7 +37,7 @@ const useTableStyles = makeStyles((theme) => ({
         fontWeight: 'bold'
     },
     tableContainer: {
-        maxHeight: '77vh',
+        maxHeight: '78vh',
     },
     emptyRows: {
         height: '75vh'

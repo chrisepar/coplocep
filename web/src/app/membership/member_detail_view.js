@@ -70,16 +70,19 @@ function MemberDetails(props) {
     const [detail, setDetail] = useState(model);
     const [isLoading, setLoading] = useState(null);
     const [reload, setReload] = useState(0);
+    const [isSuccess, setIsSuccess] = useState(0);
+
+    const shouldFieldDisabled = (props.isModule) ? true : false;
 
     // Get Member Details - Start
     useEffect(() => {
         let mounted = true;
         if (!isCreateMode) {
             getMember(detailID)
-                .then(items => {
-                    if (mounted && items.length > 0) {
+                .then(items => {                    
+                    if (mounted && items.results.length > 0) {
                         console.log("Success Get");
-                        const item = items[0];
+                        const item = items.results[0];
                         item.Birthdate = FormatDateFromISO(item.Birthdate);
                         setDetail(item);
                     } else {
@@ -114,10 +117,15 @@ function MemberDetails(props) {
                 } else {
                     console.log("Success _udpate");
                 }
+                // setIsSuccess(1);
             } else {
                 console.log("Fail Fetch");
+                // setIsSuccess(-1);
             }
             setLoading(false);
+        }, (error) => {
+            console.log("Fail Fetch");
+            // setIsSuccess(-1);
         });
     };
 
@@ -183,10 +191,11 @@ function MemberDetails(props) {
                             <Grid item xs={3}>
                                 <TextField id="MemberKey" label="Member #" value={detail.MemberKey} disabled={true} />
                             </Grid>
-                            <Grid container item xs={4} alignItems="flex-end" >
+                            <Grid item xs={3} >
                                 <Status category="Membership" recordID={detailID} LastIsApproved={detail.LastIsApproved} IsFinalApproved={detail.IsFinalApproved} />
                             </Grid>
-                            <Grid container item xs={4} justify="flex-end">
+                            <Grid item xs={1} />
+                            <Grid container item xs={4} justifyContent="flex-end">
                                 {getApprovalButton()}
                             </Grid>
                             <Grid item xs={1} >
@@ -198,86 +207,86 @@ function MemberDetails(props) {
 
                 <Grid item xs={3}>
                     <TextField id="LastName" label="Last Name"
-                        value={detail.LastName} onChange={(value) => handleChange(value, "LastName")} />
+                        value={detail.LastName} onChange={(value) => handleChange(value, "LastName")} disabled={shouldFieldDisabled} />
                 </Grid>
                 <Grid item xs={3}>
                     <TextField id="FirstName" label="First Name"
-                        value={detail.FirstName} onChange={(value) => handleChange(value, "FirstName")} />
+                        value={detail.FirstName} onChange={(value) => handleChange(value, "FirstName")} disabled={shouldFieldDisabled} />
                 </Grid>
                 <Grid item xs={3}>
                     <TextField id="MiddleName" label="Middle Name"
-                        value={detail.MiddleName} onChange={(value) => handleChange(value, "MiddleName")} />
+                        value={detail.MiddleName} onChange={(value) => handleChange(value, "MiddleName")} disabled={shouldFieldDisabled} />
                 </Grid>
                 <Grid item xs={3}>
                     <Dropdown id="CivilStatus" label="Civil Status" list={civilStatusList}
-                        value={detail.CivilStatus} onChange={(value) => handleChange(value, "CivilStatus")} />
+                        value={detail.CivilStatus} onChange={(value) => handleChange(value, "CivilStatus")} disabled={shouldFieldDisabled} />
                 </Grid>
 
 
 
                 <Grid item xs={6}>
                     <TextField id="Address" label="Address"
-                        value={detail.Address} onChange={(value) => handleChange(value, "Address")} />
+                        value={detail.Address} onChange={(value) => handleChange(value, "Address")} disabled={shouldFieldDisabled} />
                 </Grid>
                 <Grid item xs={6} />
 
 
                 <Grid item xs={3}>
                     <DateField id="Birthdate" label="Birthdate" disableFuture={true} openTo="year" views={["year", "month", "date"]}
-                        value={detail.Birthdate} onChange={(value) => handleChange(value, "Birthdate")} />
+                        value={detail.Birthdate} onChange={(value) => handleChange(value, "Birthdate")} disabled={shouldFieldDisabled} />
                 </Grid>
                 <Grid item xs={3}>
-                    <TextField id="Age" label="Age" disabled={true} value={getAge()} />
+                    <TextField id="Age" label="Age" value={getAge()} disabled={shouldFieldDisabled} />
                 </Grid>
                 <Grid item xs={6}>
                     <TextField id="Birthplace" label="Birthplace"
-                        value={detail.Birthplace} onChange={(value) => handleChange(value, "Birthplace")} />
+                        value={detail.Birthplace} onChange={(value) => handleChange(value, "Birthplace")} disabled={shouldFieldDisabled} />
                 </Grid>
 
 
                 <Grid item xs={3}>
                     <TextField id="Occupation" label="Occupation"
-                        value={detail.Occupation} onChange={(value) => handleChange(value, "Occupation")} />
+                        value={detail.Occupation} onChange={(value) => handleChange(value, "Occupation")} disabled={shouldFieldDisabled} />
                 </Grid>
                 <Grid item xs={3}>
                     <CurrencyField id="Salary" label="Salary"
-                        value={detail.Salary} onChange={(value) => handleChange(value, "Salary")} />
+                        value={detail.Salary} onChange={(value) => handleChange(value, "Salary")}  disabled={shouldFieldDisabled} />
                 </Grid>
                 <Grid item xs={3}>
                     <TextField id="OtherIncome" label="Other Source of Income"
-                        value={detail.OtherIncome} onChange={(value) => handleChange(value, "OtherIncome")} />
+                        value={detail.OtherIncome} onChange={(value) => handleChange(value, "OtherIncome")} disabled={shouldFieldDisabled} />
                 </Grid>
                 <Grid item xs={3}>
                     <NumberField id="TinNumber" label="Tin Number" maxLength={9}
-                        value={detail.TinNumber} onChange={(value) => handleChange(value, "TinNumber")} />
+                        value={detail.TinNumber} onChange={(value) => handleChange(value, "TinNumber")} disabled={shouldFieldDisabled} />
                 </Grid>
 
 
                 <Grid item xs={3}>
                     <Dropdown id="EducationalAttainment" label="Educational Attainment" list={educationalAttainment} defaultVal="NA"
-                        value={detail.EducationalAttainment} onChange={(value) => handleChange(value, "EducationalAttainment")} />
+                        value={detail.EducationalAttainment} onChange={(value) => handleChange(value, "EducationalAttainment")} disabled={shouldFieldDisabled} />
                 </Grid>
                 <Grid item xs={6}>
                     <TextField id="SpouseName" label="Name of Spouse"
-                        value={detail.SpouseName} onChange={(value) => handleChange(value, "SpouseName")} />
+                        value={detail.SpouseName} onChange={(value) => handleChange(value, "SpouseName")} disabled={shouldFieldDisabled} />
                 </Grid>
                 <Grid item xs={3}>
                     <NumberField id="Dependencies" label="No. of Dependencies" maxLength={2}
-                        value={detail.Dependencies} onChange={(value) => handleChange(value, "Dependencies")} />
+                        value={detail.Dependencies} onChange={(value) => handleChange(value, "Dependencies")} disabled={shouldFieldDisabled} />
                 </Grid>
 
 
                 <Grid item xs={4}>
                     <MultilineField id="OtherCooperative" label="Indicate Other Affiliated Cooperative"
-                        value={detail.OtherCooperative} onChange={(value) => handleChange(value, "OtherCooperative")} />
+                        value={detail.OtherCooperative} onChange={(value) => handleChange(value, "OtherCooperative")} disabled={shouldFieldDisabled} />
                 </Grid>
                 <Grid item xs={4}>
                     <MultilineField id="Trainings" label="Indicate Trainings, When, and Who conducted"
-                        value={detail.Trainings} onChange={(value) => handleChange(value, "Trainings")} />
+                        value={detail.Trainings} onChange={(value) => handleChange(value, "Trainings")} disabled={shouldFieldDisabled} />
                 </Grid>
                 <Grid item xs={4}>
                     <MultilineField id="CreditReferences" label="Credit References"
-                        value={detail.CreditReferences} onChange={(value) => handleChange(value, "CreditReferences")} />
+                        value={detail.CreditReferences} onChange={(value) => handleChange(value, "CreditReferences")} disabled={shouldFieldDisabled} />
                 </Grid>
             </Grid>
         );

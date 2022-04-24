@@ -4,7 +4,7 @@ import useStyles from 'app/core/styles/fields/_formControl.js';
 
 function MultilineFieldCore(props) {
     const classes = useStyles();
-    const { id, label, value, onChange } = props;
+    const { id, label, value, onChange, disabled } = props;
     return (
         <TextField key={id + "Key"} multiline
             id={id} label={label}
@@ -19,6 +19,7 @@ function MultilineFieldCore(props) {
             }}
             value={(value !== null) ? value : ""}
             onChange={(event) => onChange(event.target.value)}
+            disabled={disabled}
         />
     );
 };
@@ -28,6 +29,7 @@ MultilineFieldCore.defaultProps = {
     label: "",
     value: "",
     onChange: () => { },
+    disabled: false
 };
 
 export default MultilineFieldCore;

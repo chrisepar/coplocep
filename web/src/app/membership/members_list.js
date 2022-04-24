@@ -28,29 +28,42 @@ const columns = [
 
 export default function MembersList(props) {
     const classes = useStyles();
+    const pageCount = 8;
+
     const [list, setList] = useState([]);
     const [isLoading, setLoading] = useState(true);
+    const [page, setPage] = React.useState(0);
+    const [filterByValue, setFilterByValue] = React.useState("Name");
+    const [searchValue, setSetSearchValue] = React.useState("");
 
     // Get Members List - Start
     useEffect(() => {
         let mounted = true;
-        getMemberList()
-            .then(items => {
+        let filters = {
+            pageCount: pageCount,
+            page: page + 1,
+            filterByValue: filterByValue,
+            searchValue: searchValue
+        };
+        getMemberList(filters)
+            .then(data => {
                 if (mounted) {
-                    setList(items)
+                    setList(data);
                 }
                 setLoading(false);
             });
         return () => mounted = false;
-    }, []);
+    }, [page, filterByValue, searchValue]);
     // End
 
     return (
         <Layout appName={props.appName}>
             {
                 (isLoading) ? <Loading /> :
-                    <Table data={list} columns={columns} isMultiSelect={false} title="Members" editable={true}
-                        searchBy="Name"
+                    <Table data={list.results} totalRowCount={list.totalRowCount} columns={columns} title="Members"
+                        page={page} setPage={setPage} rowsPerPage={pageCount}
+                        filterByValue={filterByValue} setFilterByValue={setFilterByValue}
+                        searchValue={searchValue} setSearchValue={setSetSearchValue}
                     />
             }
         </Layout>
