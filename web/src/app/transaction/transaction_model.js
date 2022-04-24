@@ -2,6 +2,7 @@ import appDetails from '_appDetails.js';
 import { postData, deleteData, getData } from 'app/core/helpers/fetch.js';
 import { getUserCode } from "app/core/authentication/authentication.js"
 import { downloadFile } from "app/core/helpers/file_handler.js";
+import isEmpty from "app/core/helpers/is_empty.js";
 
 const model = {
     TransactionKey: 0,
@@ -85,8 +86,12 @@ const getLoanTransactionList = (loadID, type, page = 1) => {
         .then(data => data.json())
 };
 
-const getMembersWithTransaction = (pageCount, page = 1) => {
-    return getData(`transaction/list?page=${page}&pageCount=${pageCount}`)
+const getMembersWithTransaction = (filters) => {
+    const pageCount = !isEmpty(filters.pageCount) && filters.pageCount;
+    const page = isEmpty(filters.page) ? 1 : filters.page;
+    const filterBy = isEmpty(filters.filterByValue) ? "" : filters.filterByValue;
+    const searchBy = isEmpty(filters.searchValue) ? "" : filters.searchValue;
+    return getData(`transaction/list?page=${page}&pageCount=${pageCount}&filterBy=${filterBy}&searchBy=${searchBy}`)
         .then(data => data.json())
 };
 
