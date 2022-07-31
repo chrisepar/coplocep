@@ -76,13 +76,22 @@ const deleteTransaction = (transactionKey, category) => {
     });
 };
 
-const getMemberTransactionList = (memberKey, type, page = 1) => {
-    return getData(`transaction/${type}/list/${memberKey}?page=${page}`)
+const getMemberTransactionList = (memberKey, type, filters) => {
+    const pageCount = !isEmpty(filters.pageCount) && filters.pageCount;
+    const page = isEmpty(filters.page) ? 1 : filters.page;
+    const filterBy = isEmpty(filters.filterByValue) ? "" : filters.filterByValue;
+    const searchBy = isEmpty(filters.searchValue) ? "" : filters.searchValue;
+    return getData(`transaction/${type}/list/${memberKey}?page=${page}&pageCount=${pageCount}&filterBy=${filterBy}&searchBy=${searchBy}`)
         .then(data => data.json())
 };
 
-const getLoanTransactionList = (loadID, type, page = 1) => {
-    return getData(`transaction/${type}/list/${loadID}?page=${page}`)
+const getLoanTransactionList = (loadID, type, filters) => {
+    const pageCount = !isEmpty(filters.pageCount) && filters.pageCount;
+    const page = isEmpty(filters.page) ? 1 : filters.page;
+    const filterBy = isEmpty(filters.filterByValue) ? "" : filters.filterByValue;
+    const searchBy = isEmpty(filters.searchValue) ? "" : filters.searchValue;
+
+    return getData(`transaction/${type}/list/${loadID}?page=${page}&pageCount=${pageCount}&filterBy=${filterBy}&searchBy=${searchBy}`)
         .then(data => data.json())
 };
 
@@ -95,12 +104,12 @@ const getMembersWithTransaction = (filters) => {
         .then(data => data.json())
 };
 
-const downloadComputation = (amount, interest, term) => {
-    const param = `?amount=${amount}&interest=${interest}&term=${term}`;
+const downloadComputation = (memberKey, amount, interest, term, name) => {
+    const param = `?memberKey=${memberKey}&amount=${amount}&interest=${interest}&term=${term}`;
     return getData(`transaction/calculation${param}`)
         .then(data => data.blob())
         .then(blob => {
-            downloadFile(blob, "Computation.xlsx");
+            downloadFile(blob, "Computation - " + name + ".xlsx");
         });
 };
 

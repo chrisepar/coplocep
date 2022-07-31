@@ -9,7 +9,7 @@ import { FormatDateFromISO } from 'app/core/helpers/date_format.js';
 
 function DateFieldCore(props) {
     const classes = useStyles();
-    const { id, label, value, onChange, disabled, disableFuture, openTo, views } = props;
+    const { id, label, value, onChange, disabled, disableFuture, openTo, views, required, error } = props;
     return (
         <MuiPickersUtilsProvider utils={DateFnsUtils}>
             <KeyboardDatePicker
@@ -25,16 +25,19 @@ function DateFieldCore(props) {
                 onChange={onChange}
                 openTo={openTo}
                 views={views}
+                error={error}
                 KeyboardButtonProps={{
                     'aria-label': 'change date'
                 }}
                 InputLabelProps={{
                     shrink: true,
                     classes: {
-                        root: classes.labelRoot
+                        root: classes.labelRoot,
+                        asterisk: classes.labelAsterisk
                     }
                 }}
                 disabled={disabled}
+                required={required}
             />
         </MuiPickersUtilsProvider>
     );
@@ -48,7 +51,9 @@ DateFieldCore.defaultProps = {
     disabled: false,
     disableFuture: false,
     openTo: "date",
-    views: ["date"]
+    views: ["date"],
+    required: false,
+    error: false
 };
 
 export default DateFieldCore;

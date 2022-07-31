@@ -42,7 +42,7 @@ DECLARE @monthlyAmount float = @amount
 		FROM CTE_LoanTable
 		WHERE ID + 1 <= @term
 	)
-SELECT ROUND([Balance],2) AS [Balance], ROUND([Payment],2) AS [Payment], ROUND([Principal],2) AS [Principal] , ROUND([Interest],2) AS [Interest] , ROUND([EndingBalance],2) AS [EndingBalance] FROM CTE_LoanTable
+SELECT ID AS [Month], ROUND([Payment],2) AS [Payment], ROUND([Interest],2) AS [Interest], ROUND([Principal],2) AS [Principal], ROUND([EndingBalance],2) AS [Balance] FROM CTE_LoanTable
 END
 GO
 

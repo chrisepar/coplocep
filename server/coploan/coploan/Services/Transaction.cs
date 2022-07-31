@@ -68,7 +68,6 @@ namespace coploan.Services
             if (!string.IsNullOrEmpty(loanID))
             {
                 sqlParam.Add(new SqlParameter("@loanID", loanID));
-                //sqlParam.Add(new SqlParameter("@memberKey", memberKey));
             }
             sqlParam.Add(new SqlParameter("@currentUser", currentUser.Code));
 
@@ -120,7 +119,6 @@ namespace coploan.Services
             List<SqlParameter> sqlParam = new List<SqlParameter>();
             
             sqlParam.Add(new SqlParameter("@LoanKey", transactionKey));
-            sqlParam.Add(new SqlParameter("@currentUser", currentUser.Code));
 
             return sql.ExecuteNonQuery("[dbo].[DeleteLoan]", sqlParam);
         }
@@ -143,18 +141,28 @@ namespace coploan.Services
             return sql.ExecuteNonQuery("[dbo].[DeletePayment]", sqlParam);
         }
 
-        public byte[] GetComputedMonthlyLoan (float amount = 0,  float interest = 0, int term = 0)
+        public byte[] GetComputedMonthlyLoan (string memberKey, float amount = 0,  float interest = 0, int term = 0)
         {
             sql = new SQLQueries(config, typeof(LoanComputation));
             FileHandler fileHandler = new FileHandler();
             List<SqlParameter> sqlParam = new List<SqlParameter>();
 
+            // Get Loan Computation
             sqlParam.Add(new SqlParameter("@amount", amount));
             sqlParam.Add(new SqlParameter("@interest", interest));
             sqlParam.Add(new SqlParameter("@term", term));
 
-            DataTable dt = sql.ExecuteReader("[dbo].[GetComputedMonthlyLoan]", sqlParam);
-            return fileHandler.DownloadFile(dt, "Computation");
+            DataTable computationDatatable = sql.ExecuteReader("[dbo].[GetComputedMonthlyLoan]", sqlParam);
+
+            // Get Member Details
+            sql = new SQLQueries(config, typeof(Membership));
+            sqlParam = new List<SqlParameter>();
+            sqlParam.Add(new SqlParameter("@memberKey", memberKey));
+            sqlParam.Add(new SqlParameter("@currentUser", currentUser.Code));
+
+            DataTable customerDataTable = sql.ExecuteReader("[dbo].[GetMemberhip]", sqlParam);
+
+            return fileHandler.DownloadComputation(computationDatatable, customerDataTable, amount);
         }
     }
 }

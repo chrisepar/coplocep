@@ -14,6 +14,7 @@ import moment from 'moment';
 import Layout from "app/core/layout/layout.js";
 import MemberDetails from "app/membership/member_detail_view.js";
 
+// Loan list for member
 import LoanView from "app/transaction/components/loan/loan_view.js";
 import DepositView from "app/transaction/components/deposit/deposit_view.js";
 
@@ -45,6 +46,7 @@ function MemberDetailsContainer(props) {
 };
 
 function LoanDetailsContainer(props) {
+    console.log("Load Loan List for Member")
     const classes = useStyles();
     const [expanded, setExpanded] = useState(true);
 
@@ -110,5 +112,5 @@ function TransactionDetailViewContainer(props) {
         </Layout>
     );
 };
-
+//Note: Loan_view.js > loan_table.js > loan_details.js
 export default TransactionDetailViewContainer;

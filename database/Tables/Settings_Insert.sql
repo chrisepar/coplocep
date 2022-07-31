@@ -18,7 +18,8 @@ GO
 
 CREATE TABLE [dbo].[Settings](
 	[DefaultInterest] [numeric](18, 2) NOT NULL,
-	[MaxTerm] [int] NOT NULL
+	[MaxTerm] [int] NOT NULL,
+	[MaxApprovalCount] [int] NOT NULL
 ) ON [PRIMARY]
 GO
 
@@ -29,5 +30,9 @@ GO
 ALTER TABLE [dbo].[Settings] ADD  CONSTRAINT [DF_Settings_Term]  DEFAULT ((12)) FOR [MaxTerm]
 GO
 
-INSERT INTO Settings(DefaultInterest, MaxTerm) VALUES(1, 12)
+
+ALTER TABLE [dbo].[Settings] ADD  CONSTRAINT [DF_Settings_MaxApprovalCount]  DEFAULT ((1)) FOR [MaxApprovalCount]
+GO
+
+INSERT INTO Settings(DefaultInterest, MaxTerm, MaxApprovalCount) VALUES(1, 12, 1)
 GO

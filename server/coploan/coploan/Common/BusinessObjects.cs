@@ -69,22 +69,80 @@ namespace coploan.Common
         {
             BusinessObjects.currentUser = currentUser;
         }
+
+        private EnumerableRowCollection<DataRow> CreateDateFilter(DataTable results, string searchBy)
+        {
+            string filterBy = "CreatedDate";
+            EnumerableRowCollection<DataRow> tempRows = null;
+            switch (searchBy)
+            {
+                case "NoFilter":
+                    tempRows = results.AsEnumerable();
+                    break;
+                case "Daily":
+                    tempRows = results.AsEnumerable().Where(rows => (rows.Field<DateTime>(filterBy).Date == DateTime.Today));
+                    break;
+                case "Week":
+                    DateTime start = DateTime.Today.AddDays(-(int)DateTime.Today.DayOfWeek),
+                        end = start.AddDays(7);
+                    tempRows = results.AsEnumerable().Where(rows => (rows.Field<DateTime>(filterBy).Date >= start.Date && rows.Field<DateTime>(filterBy).Date < end.Date));
+                    break;
+                case "Month":
+                    tempRows = results.AsEnumerable().Where(rows => (rows.Field<DateTime>(filterBy).Date.Month == DateTime.Today.Month));
+                    break;
+                case "Annual":
+                    tempRows = results.AsEnumerable().Where(rows => (rows.Field<DateTime>(filterBy).Date.Year == DateTime.Today.Year));
+                    break;
+            }
+            return tempRows;
+        }
         public Dictionary<string, object> GetDataByPage(DataTable results)
         {
             Dictionary<string, object> finalResult = new Dictionary<string, object>();
 
             DataTable filteredResults = results.Clone();
 
-            if (!String.IsNullOrEmpty(filterBy))
+            bool hasRows = results.Rows.Count > 0;
+            if (hasRows)
             {
-                StringBuilder expression = new StringBuilder();
-                expression.AppendFormat("{0} LIKE '%{1}%'", filterBy, searchBy);
-                var tempRows = results.AsEnumerable().Where(rows => (rows.Field<string>(filterBy) ?? "").Contains(searchBy));
-                if (tempRows.Any())
-                    filteredResults = tempRows.CopyToDataTable();
-            } else
-            {
-                filteredResults = results.AsEnumerable().CopyToDataTable();
+                if (!String.IsNullOrEmpty(filterBy))
+                {
+                    EnumerableRowCollection<DataRow> tempRows = null;
+                    switch (filterBy) {
+                        case "CreatedDate":
+                            tempRows = CreateDateFilter(results, searchBy);
+                            break;
+                        default:
+                            string dataType = results.Columns[filterBy].DataType.Name;
+
+                            if (String.IsNullOrEmpty(searchBy))
+                            {
+                                tempRows = results.AsEnumerable().Where(rows => ("").Contains(searchBy));
+                            }
+                            else
+                            {
+                                switch (dataType)
+                                {
+                                    case "String":
+                                        tempRows = results.AsEnumerable().Where(rows => (rows.Field<string>(filterBy) ?? "").Contains(searchBy));
+                                        break;
+                                    case "Int32":
+                                        tempRows = results.AsEnumerable().Where(rows => (rows.Field<Int32>(filterBy)).Equals(Int32.Parse(searchBy)));
+                                        break;
+                                    default:
+                                        tempRows = results.AsEnumerable().Where(rows => (rows.Field<string>(filterBy) ?? "").Contains(searchBy));
+                                        break;
+                                }
+                            }
+                            break;
+                    }
+                    if (tempRows.Any())
+                        filteredResults = tempRows.CopyToDataTable();
+                }
+                else
+                {
+                    filteredResults = results.AsEnumerable().CopyToDataTable();
+                }
             }
 
             DataTable newResults = filteredResults.Clone();

@@ -125,6 +125,7 @@ namespace coploan.Common
             catch (SqlException e)
             {
                 Console.WriteLine(e.ToString());
+                throw;
             }
             return isSuccess;
         }

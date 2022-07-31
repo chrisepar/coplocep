@@ -14,7 +14,9 @@ import CurrencyField from 'app/core/fields/currency_field.js';
 import MultilineField from 'app/core/fields/multiline_field.js';
 import SaveButton from 'app/core/button/save_button.js';
 import Loading from 'app/core/helpers/loading_screen.js';
-import Status from "app/core/fields/status_field.js";
+import StatusField from "app/core/fields/status_field.js";
+import AlertDialog from "app/core/dialogs/alert_dialog.js";
+import StatusBar from "app/core/dialogs/statusbar.js";
 import moment from 'moment';
 
 //Apps
@@ -61,6 +63,13 @@ const educationalAttainment = [
     }
 ];
 
+const typeOfMembershipItems = [
+    {
+        value: "Regular",
+        label: "Regular"
+    }
+];
+
 function MemberDetails(props) {
     let { detailID } = props.match.params;
     const classes = useStyles();
@@ -71,22 +80,37 @@ function MemberDetails(props) {
     const [isLoading, setLoading] = useState(null);
     const [reload, setReload] = useState(0);
     const [isSuccess, setIsSuccess] = useState(0);
+    const [fieldErrors, setFieldErrors] = useState([]);
+    
+    const defaultStatus = {
+        open: false,
+        message: "",
+        severity: "info"
+    };
+
+    const [status, setStatus] = React.useState(defaultStatus);
 
     const shouldFieldDisabled = (props.isModule) ? true : false;
+
 
     // Get Member Details - Start
     useEffect(() => {
         let mounted = true;
         if (!isCreateMode) {
             getMember(detailID)
-                .then(items => {                    
+                .then(items => {
                     if (mounted && items.results.length > 0) {
                         console.log("Success Get");
                         const item = items.results[0];
-                        item.Birthdate = FormatDateFromISO(item.Birthdate);
+                        // item.Birthdate = FormatDateFromISO(item.Birthdate);
                         setDetail(item);
                     } else {
                         console.log("Fail Get");
+                        setStatus({
+                            open: true,
+                            message: "An Error Occured.",
+                            severity: "error"
+                        });
                         // return to list if no items
                         history.push(appDetails.baseRoute + "/membership");
                     }
@@ -100,6 +124,22 @@ function MemberDetails(props) {
     }, [detailID, reload]);
     // End
 
+    const validateFields = () => {
+        let requiredFields = ["LastName", "FirstName", "MiddleName", "Birthdate", "Occupation", "Salary"];
+        let fieldsWithError = [];
+        for (let counter = 0; counter < requiredFields.length; counter++) {
+            let field = requiredFields[counter];
+            if (isEmpty(detail[field])) {
+                fieldsWithError.push(field);
+            }
+        }
+        return fieldsWithError;
+    };
+
+    const hasError = (field) => {
+        return _.includes(fieldErrors, field);
+    };
+
 
     const handleChange = (value, field) => {
         var newDetail = _.clone(detail);
@@ -109,28 +149,58 @@ function MemberDetails(props) {
 
     const handleSave = (event) => {
         setLoading(true);
-        saveMember(isCreateMode, detailID, detail).then((data) => {
-            if (data) {
-                if (isCreateMode) {
-                    console.log("Success _insert");
-                    history.push(appDetails.baseRoute + "/membership/" + data);
+        let fieldsWithError = validateFields();
+        if (isEmpty(fieldsWithError)) {
+            saveMember(isCreateMode, detailID, detail).then((data) => {
+                if (data) {
+                    if (isCreateMode) {
+                        console.log("Success _insert");
+                        setFieldErrors([]);
+                        setStatus({
+                            open: true,
+                            message: "Saved Successful!",
+                            severity: "success"
+                        });
+                        history.push(appDetails.baseRoute + "/membership/" + data);
+                    } else {
+                        console.log("Success _udpate");
+                        setFieldErrors([]);
+                        setStatus({
+                            open: true,
+                            message: "Saved Successful!",
+                            severity: "success"
+                        });
+                    }
                 } else {
-                    console.log("Success _udpate");
+                    console.log("Fail Fetch");
+                    setStatus({
+                        open: true,
+                        message: "An Error Occured - Saving Failed",
+                        severity: "error"
+                    });
                 }
-                // setIsSuccess(1);
-            } else {
-                console.log("Fail Fetch");
-                // setIsSuccess(-1);
-            }
+                setLoading(false);
+            }, (error) => {
+                console.log(error);
+                setStatus({
+                    open: true,
+                    message: "An Error Occured - Saving Failed",
+                    severity: "error"
+                });
+            });
+        } else {
             setLoading(false);
-        }, (error) => {
-            console.log("Fail Fetch");
-            // setIsSuccess(-1);
-        });
+            setFieldErrors(fieldsWithError);
+            setStatus({
+                open: true,
+                message: "Please fill the form properly.",
+                severity: "error"
+            });
+        }
     };
 
     const getAge = () => {
-        var birthDate = detail.Birthdate;
+        var birthDate = _.get(detail, "Birthdate");
         if (birthDate) {
             var end = moment(birthDate); // another date
             if (end.isValid()) {
@@ -144,7 +214,12 @@ function MemberDetails(props) {
             return "";
         }
     };
-    
+
+    // Handle Status
+    const handleStatusClose = () => {
+        setStatus(defaultStatus);
+    };
+
     const isApprovalAvailable = () => {
         return (isEmpty(detail.LastIsApproved)) ||
             (
@@ -154,6 +229,7 @@ function MemberDetails(props) {
             (detail.LastApprovedBy === getUserName());
     };
 
+    // Approval Button Generator
     const getApprovalButton = () => {
         if (!isCreateMode && isApprovalAvailable()) {
             return (
@@ -180,6 +256,7 @@ function MemberDetails(props) {
     } else {
         return (
             <Grid container spacing={3} >
+                <StatusBar open={status.open} setOpen={handleStatusClose} message={status.message} severity={status.severity} />
                 {
                     (isLoading) ? <Loading /> : null
                 }
@@ -192,7 +269,7 @@ function MemberDetails(props) {
                                 <TextField id="MemberKey" label="Member #" value={detail.MemberKey} disabled={true} />
                             </Grid>
                             <Grid item xs={3} >
-                                <Status category="Membership" recordID={detailID} LastIsApproved={detail.LastIsApproved} IsFinalApproved={detail.IsFinalApproved} />
+                                <StatusField category="Membership" recordID={detailID} LastIsApproved={detail.LastIsApproved} IsFinalApproved={detail.IsFinalApproved} />
                             </Grid>
                             <Grid item xs={1} />
                             <Grid container item xs={4} justifyContent="flex-end">
@@ -206,16 +283,16 @@ function MemberDetails(props) {
                 }
 
                 <Grid item xs={3}>
-                    <TextField id="LastName" label="Last Name"
-                        value={detail.LastName} onChange={(value) => handleChange(value, "LastName")} disabled={shouldFieldDisabled} />
+                    <TextField id="LastName" label="Last Name" error={hasError("LastName")}
+                        value={detail.LastName} onChange={(value) => handleChange(value, "LastName")} disabled={shouldFieldDisabled} required={true} />
                 </Grid>
                 <Grid item xs={3}>
-                    <TextField id="FirstName" label="First Name"
-                        value={detail.FirstName} onChange={(value) => handleChange(value, "FirstName")} disabled={shouldFieldDisabled} />
+                    <TextField id="FirstName" label="First Name" error={hasError("FirstName")}
+                        value={detail.FirstName} onChange={(value) => handleChange(value, "FirstName")} disabled={shouldFieldDisabled} required={true} />
                 </Grid>
                 <Grid item xs={3}>
-                    <TextField id="MiddleName" label="Middle Name"
-                        value={detail.MiddleName} onChange={(value) => handleChange(value, "MiddleName")} disabled={shouldFieldDisabled} />
+                    <TextField id="MiddleName" label="Middle Name" error={hasError("MiddleName")}
+                        value={detail.MiddleName} onChange={(value) => handleChange(value, "MiddleName")} disabled={shouldFieldDisabled} required={true} />
                 </Grid>
                 <Grid item xs={3}>
                     <Dropdown id="CivilStatus" label="Civil Status" list={civilStatusList}
@@ -232,11 +309,11 @@ function MemberDetails(props) {
 
 
                 <Grid item xs={3}>
-                    <DateField id="Birthdate" label="Birthdate" disableFuture={true} openTo="year" views={["year", "month", "date"]}
-                        value={detail.Birthdate} onChange={(value) => handleChange(value, "Birthdate")} disabled={shouldFieldDisabled} />
+                    <DateField id="Birthdate" label="Birthdate" disableFuture={true} openTo="year" views={["year", "month", "date"]} error={hasError("Birthdate")}
+                        value={detail.Birthdate} onChange={(value) => handleChange(value, "Birthdate")} disabled={shouldFieldDisabled} required={true} />
                 </Grid>
                 <Grid item xs={3}>
-                    <TextField id="Age" label="Age" value={getAge()} disabled={shouldFieldDisabled} />
+                    <TextField id="Age" label="Age" value={getAge()} disabled={true} />
                 </Grid>
                 <Grid item xs={6}>
                     <TextField id="Birthplace" label="Birthplace"
@@ -245,12 +322,12 @@ function MemberDetails(props) {
 
 
                 <Grid item xs={3}>
-                    <TextField id="Occupation" label="Occupation"
-                        value={detail.Occupation} onChange={(value) => handleChange(value, "Occupation")} disabled={shouldFieldDisabled} />
+                    <TextField id="Occupation" label="Occupation" error={hasError("Occupation")}
+                        value={detail.Occupation} onChange={(value) => handleChange(value, "Occupation")} disabled={shouldFieldDisabled} required={true} />
                 </Grid>
                 <Grid item xs={3}>
-                    <CurrencyField id="Salary" label="Salary"
-                        value={detail.Salary} onChange={(value) => handleChange(value, "Salary")}  disabled={shouldFieldDisabled} />
+                    <CurrencyField id="Salary" label="Salary" error={hasError("Salary")}
+                        value={detail.Salary} onChange={(value) => handleChange(value, "Salary")} disabled={shouldFieldDisabled} required={true} />
                 </Grid>
                 <Grid item xs={3}>
                     <TextField id="OtherIncome" label="Other Source of Income"
@@ -260,6 +337,7 @@ function MemberDetails(props) {
                     <NumberField id="TinNumber" label="Tin Number" maxLength={9}
                         value={detail.TinNumber} onChange={(value) => handleChange(value, "TinNumber")} disabled={shouldFieldDisabled} />
                 </Grid>
+
 
 
                 <Grid item xs={3}>
@@ -276,6 +354,7 @@ function MemberDetails(props) {
                 </Grid>
 
 
+
                 <Grid item xs={4}>
                     <MultilineField id="OtherCooperative" label="Indicate Other Affiliated Cooperative"
                         value={detail.OtherCooperative} onChange={(value) => handleChange(value, "OtherCooperative")} disabled={shouldFieldDisabled} />
@@ -287,6 +366,33 @@ function MemberDetails(props) {
                 <Grid item xs={4}>
                     <MultilineField id="CreditReferences" label="Credit References"
                         value={detail.CreditReferences} onChange={(value) => handleChange(value, "CreditReferences")} disabled={shouldFieldDisabled} />
+                </Grid>
+
+
+
+                <Grid item xs={3}>
+                    <Dropdown id="TypeOfMembership" label="Type of Membership" list={typeOfMembershipItems} defaultVal="Regular"
+                        value={detail.TypeOfMembership} onChange={(value) => handleChange(value, "TypeOfMembership")} disabled={shouldFieldDisabled} />
+                </Grid>
+                <Grid item xs={9} />
+
+
+
+                <Grid item xs={3}>
+                    <NumberField id="BODResolutionNumber" label="BOD Resolution Number"
+                        value={detail.BODResolutionNumber} onChange={(value) => handleChange(value, "BODResolutionNumber")} disabled={shouldFieldDisabled} />
+                </Grid>
+                <Grid item xs={3}>
+                    <CurrencyField id="AmountSubscribed" label="Amount Subscribed"
+                        value={detail.AmountSubscribed} onChange={(value) => handleChange(value, "AmountSubscribed")} disabled={shouldFieldDisabled} />
+                </Grid>
+                <Grid item xs={3}>
+                    <CurrencyField id="SharesSubscribed" label="Number of Shares Subscribed"
+                        value={detail.SharesSubscribed} onChange={(value) => handleChange(value, "SharesSubscribed")} disabled={shouldFieldDisabled} />
+                </Grid>
+                <Grid item xs={3}>
+                    <CurrencyField id="InitialPaidUp" label="Initial Paid-Up"
+                        value={detail.InitialPaidUp} onChange={(value) => handleChange(value, "InitialPaidUp")} disabled={shouldFieldDisabled} />
                 </Grid>
             </Grid>
         );

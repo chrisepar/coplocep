@@ -38,7 +38,7 @@ AWE.ApprovedDate AS [LastApprovedDate],
 AWE.IsApproved AS [LastIsApproved],
 AWE.Comment,
 AWEC.IsApproved AS [IsApprovedByCurrent],
-dbo.IsFinalApproved(M.MemberKey, 'Membership', 5) AS [IsFinalApproved]
+dbo.IsFinalApproved(M.MemberKey, 'Membership') AS [IsFinalApproved]
 FROM Members M
 	OUTER APPLY (SELECT TOP 1 * FROM MembershipWorkflow AW WHERE AW.RecordID = M.MemberKey AND AW.Category = 'Membership' ORDER BY AW.ApprovedDate DESC) AS AWE
 	OUTER APPLY (SELECT TOP 1 * FROM MembershipWorkflow AWC WHERE AWC.RecordID = M.MemberKey AND AWC.Category = 'Membership' AND AWC.ApprovedBy = @currentUser ORDER BY AWC.ApprovedDate DESC) AS AWEC

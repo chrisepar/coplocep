@@ -15,6 +15,7 @@ import TextField from 'app/core/fields/text_field.js';
 import EntryButton from "app/transaction/components/new_transaction/add_transaction_button.js";
 import IntPayView from "app/transaction/components/loan/interest_payment_view.js";
 import { addPayment, downloadComputation } from 'app/transaction/transaction_model.js';
+import StatusBar from "app/core/dialogs/statusbar.js";
 
 export default (props) => {
     let { detailID } = useParams();
@@ -22,24 +23,35 @@ export default (props) => {
     const { TransactionKey, Amount, Interest, Term } = detail;
     const [paymentReload, setPaymentReload] = useState(0);
 
-    // useEffect(() => {
-    //     let mounted = true;
-    //     getMemberTransactionList(detailID, category)
-    //         .then(items => {
-    //             if (mounted) {
-    //                 setList(items)
-    //             }
-    //             setLoading(false);
-    //         })
-    //     return () => mounted = false;
-    // }, []);
-    // End
+    const defaultStatus = {
+        open: false,
+        message: "",
+        severity: "info"
+    };
+
+    const [status, setStatus] = React.useState(defaultStatus);
+
+    // Handle Status Close
+    const handleStatusClose = () => {
+        setStatus(defaultStatus);
+    };
 
     const addCallback = (paymentAmount) => {
         return addPayment(detailID, { loanID: TransactionKey, amount: paymentAmount }).then((data) => {
             if (data) {
+                setStatus({
+                    open: true,
+                    message: "Payment successfully added!",
+                    severity: "success"
+                });
                 setPaymentReload(data);
             }
+        }, (error) => {
+            setStatus({
+                open: true,
+                message: "An error occured",
+                severity: "error"
+            });
         });
     };
 
@@ -50,33 +62,36 @@ export default (props) => {
 
     console.log("Render");
     return (
-        <Dialog open={(TransactionKey > 0)} onClose={handleDialogClose} aria-labelledby="form-dialog-title" fullWidth fullScreen maxWidth="lg">
-            <DialogTitle id="form-dialog-title">Loan Details</DialogTitle>
-            <DialogContent>
-                <Grid container spacing={3} >
-                    <Grid item xs={3}>
-                        <TextField id="LoanID" label="Loan Number" disabled={true} value={TransactionKey} />
-                    </Grid>
-                    <Grid item xs={3}>
-                        <TextField id="Amount" label="Loan Amount" disabled={true} value={Amount} />
-                    </Grid>
-                    <Grid item xs={3}>
-                        <TextField id="InterestRate" label="Interest Rate" disabled={true} value={Interest} />
-                    </Grid>
-                    <Grid item xs={3}>
-                        <TextField id="Term" label="Term" disabled={true} value={Term} />
-                    </Grid>
+        <React.Fragment>
+            <StatusBar open={status.open} setOpen={handleStatusClose} message={status.message} severity={status.severity} />
+            <Dialog open={(TransactionKey > 0)} onClose={handleDialogClose} aria-labelledby="form-dialog-title" fullWidth fullScreen maxWidth="lg">
+                <DialogTitle id="form-dialog-title">Loan Details</DialogTitle>
+                <DialogContent>
+                    <Grid container spacing={3} >
+                        <Grid item xs={3}>
+                            <TextField id="LoanID" label="Loan Number" disabled={true} value={TransactionKey} />
+                        </Grid>
+                        <Grid item xs={3}>
+                            <TextField id="Amount" label="Loan Amount" disabled={true} value={Amount} />
+                        </Grid>
+                        <Grid item xs={3}>
+                            <TextField id="InterestRate" label="Interest Rate" disabled={true} value={Interest} />
+                        </Grid>
+                        <Grid item xs={3}>
+                            <TextField id="Term" label="Term" disabled={true} value={Term} />
+                        </Grid>
 
-                    <Grid item xs={12}>
-                        <IntPayView paymentReload={paymentReload} loanID={TransactionKey} category="Payment" categoryTitle="Payment" />
+                        <Grid item xs={12}>
+                            <IntPayView paymentReload={paymentReload} loanID={TransactionKey} category="Payment" categoryTitle="Payment" />
+                        </Grid>
                     </Grid>
-                </Grid>
-            </DialogContent>
-            <DialogActions>
-                <EntryButton callback={addCallback} categoryTitle="Payment" category="Payment" customText="Pay an amount" />
-                <Button onClick={handleCalculate} label="Calculate" />
-                <Button onClick={handleDialogClose} color="primary" label="Close" />
-            </DialogActions>
-        </Dialog>
+                </DialogContent>
+                <DialogActions>
+                    <EntryButton callback={addCallback} categoryTitle="Payment" category="Payment" customText="Pay an amount" />
+                    <Button onClick={handleCalculate} label="Calculate" />
+                    <Button onClick={handleDialogClose} color="primary" label="Close" />
+                </DialogActions>
+            </Dialog>
+        </React.Fragment>
     );
 };

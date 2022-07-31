@@ -19,7 +19,7 @@ function FormatDateToISO(date) {
     if (date === "" || date === null || date === undefined) {
         return null;
     } else {
-        return moment(date, "DD/MM/YYYY");
+        return moment(date).toISOString();
     }
 };
 

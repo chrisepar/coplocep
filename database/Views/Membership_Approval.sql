@@ -23,7 +23,7 @@ M.ModifiedDate,
 AWE.ApprovalID, 
 dbo.GetUserRole(AWE.ApprovedBy) AS ApprovedBy, 
 AWE.ApprovedDate, AWE.IsApproved, AWE.Comment,
-dbo.IsFinalApproved(M.MemberKey, 'Membership', 5) AS [IsFinalApproved] FROM Members M
+dbo.IsFinalApproved(M.MemberKey, 'Membership') AS [IsFinalApproved] FROM Members M
 	OUTER APPLY (SELECT TOP 1 * FROM MembershipWorkflow AW WHERE AW.RecordID = M.MemberKey AND AW.Category = 'Membership' ORDER BY AW.ApprovedDate DESC) AS AWE
 GO
 

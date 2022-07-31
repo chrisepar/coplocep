@@ -19,8 +19,7 @@ GO
 -- =============================================
 CREATE PROCEDURE [dbo].[DeleteLoan] 
 	-- Add the parameters for the stored procedure here
-	@LoanKey int = null,
-	@currentUser nvarchar(2)
+	@LoanKey int = null
 AS
 BEGIN
 	-- SET NOCOUNT ON added to prevent extra result sets from
@@ -28,12 +27,10 @@ BEGIN
 	SET NOCOUNT OFF;
 	BEGIN TRANSACTION;
     -- Insert statements for procedure here
-	DELETE FROM Loans WHERE LoanKey = @LoanKey AND (SELECT IsLastApprovedByCurrentUser FROM [LoanApprovalByCurrentUser](@currentUser) WHERE  LoanKey = @LoanKey) = 'Y'
 
-	IF (@@ROWCOUNT > 0)
-	BEGIN	
-		DELETE FROM Interests WHERE LoanKey = @LoanKey
-	END
+	DELETE FROM Payments WHERE LoanKey = @LoanKey
+	DELETE FROM Interests WHERE LoanKey = @LoanKey
+	DELETE FROM Loans WHERE TransactionKey = @LoanKey --AND (SELECT IsLastApprovedByCurrentUser FROM [LoanApprovalByCurrentUser](@currentUser) WHERE  TransactionKey = @LoanKey) = 'Y'
 
 	SELECT @@ROWCOUNT
 	COMMIT TRANSACTION;

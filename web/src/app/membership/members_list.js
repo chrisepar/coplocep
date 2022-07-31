@@ -9,6 +9,7 @@ import useStyles from 'app/membership/styles/_membersList.js';
 
 //Apps
 import Layout from "app/core/layout/layout.js";
+import StatusBar from "app/core/dialogs/statusbar.js";
 
 import Table from "app/core/table/table.js";
 import { getMemberList } from 'app/membership/member_model.js';
@@ -17,7 +18,7 @@ const columns = [
     { field: 'MemberKey', type: field_types.text_field, headerName: 'Membership #', width: 100 },
     { field: 'Name', type: field_types.text_field, headerName: 'Name', width: 200 },
     { field: 'TinNumber', type: field_types.text_field, headerName: 'Tin Number', width: 200 },
-    { field: 'ApprovedDate', type: field_types.date_field, headerName: 'Date Accepted', width: 200 },
+    { field: 'LastApprovedDate', type: field_types.date_field, headerName: 'Date Accepted', width: 200 },
     { field: 'BODResolutionNumber', type: field_types.text_field, headerName: 'BOD Resolution Number', width: 200 },
     { field: 'TypeOfMembership', type: field_types.text_field, headerName: 'Type of Membership', width: 200 },
     { field: 'SharesSubscribed', type: field_types.text_field, headerName: 'Number of Shares Subscribed', width: 200 },
@@ -35,6 +36,17 @@ export default function MembersList(props) {
     const [page, setPage] = React.useState(0);
     const [filterByValue, setFilterByValue] = React.useState("Name");
     const [searchValue, setSetSearchValue] = React.useState("");
+    
+    const defaultStatus = {
+        open: false,
+        message: "",
+        severity: "info"
+    };
+    const [status, setStatus] = React.useState(defaultStatus);
+    // Handle Status
+    const handleStatusClose = () => {
+        setStatus(defaultStatus);
+    };
 
     // Get Members List - Start
     useEffect(() => {
@@ -51,6 +63,13 @@ export default function MembersList(props) {
                     setList(data);
                 }
                 setLoading(false);
+            }, (error) => {
+                console.log(error);
+                setStatus({
+                    open: true,
+                    message: "An Error Occured",
+                    severity: "error"
+                });
             });
         return () => mounted = false;
     }, [page, filterByValue, searchValue]);
@@ -58,6 +77,7 @@ export default function MembersList(props) {
 
     return (
         <Layout appName={props.appName}>
+            <StatusBar open={status.open} setOpen={handleStatusClose} message={status.message} severity={status.severity} />
             {
                 (isLoading) ? <Loading /> :
                     <Table data={list.results} totalRowCount={list.totalRowCount} columns={columns} title="Members"

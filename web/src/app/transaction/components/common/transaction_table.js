@@ -24,6 +24,8 @@ import DateField from 'app/core/fields/date_field.js';
 
 import useStyles from 'app/transaction/styles/components/_transactionTable.js';
 import { FormatDateTime } from 'app/core/helpers/date_format.js';
+import { Peso } from 'app/core/helpers/currency_format.js';
+import IsEmpty from "app/core/helpers/is_empty.js";
 
 import TablePaginationActions from "app/core/table/tablePagination.js";
 
@@ -32,32 +34,28 @@ const filterOptions = [
         value: "NoFilter",
         label: "No Filter"
     }, {
+        value: "Daily",
+        label: "Daily"
+    }, {
+        value: "Week",
+        label: "Weekly"
+    }, {
+        value: "Month",
+        label: "Monthly"
+    }, {
         value: "Annual",
         label: "Annually"
-    }, {
-        value: "SemiAnnual",
-        label: "Semi-Annually"
-    }, {
-        value: "Quarter",
-        label: "Quarterly"
-    }, {
-        value: "DateRange",
-        label: "Date Range"
     }
 ];
 
+
 const TransactionToolbar = (props) => {
-    const { addCallback, deleteCallback, categoryTitle, category } = props;
-    const [filterBy, setFilterBy] = useState("NoFilter");
+    const { addCallback, deleteCallback, categoryTitle, category, setSetSearchValue, searchValue } = props;
     const [fromDateValue, setFromDateValue] = useState();
     const [toDateValue, setToDateValue] = useState();
 
     const handleFilterChange = (value) => {
-        setFilterBy(value);
-    };
-
-    const handleFromDateChange = () => {
-
+        !IsEmpty(setSetSearchValue) && setSetSearchValue(value)
     };
 
     const handleRemove = (event, transactionKey) => {
@@ -71,9 +69,9 @@ const TransactionToolbar = (props) => {
             <Grid container item xs={12} spacing={2} direction="row" alignItems="center">
                 <Grid item xs={2}>
                     <Dropdown id="filter_loan_by" label="Filter" list={filterOptions}
-                        value={filterBy} onChange={(value) => handleFilterChange(value)} />
+                        value={searchValue} onChange={(value) => handleFilterChange(value)} />
                 </Grid>
-                {
+                {/* {
                     (filterBy === "DateRange") ?
                         <Grid container item xs={4} spacing={1} direction="row" alignItems="center" >
                             <Grid item xs={6}>
@@ -84,7 +82,7 @@ const TransactionToolbar = (props) => {
                             </Grid>
                         </Grid>
                         : null
-                }
+                } */}
                 <Grid item xs />
                 <Grid item xs={3} container justifyContent="flex-end">
                     {
@@ -99,9 +97,7 @@ const TransactionToolbar = (props) => {
 const TransactionTable = (props) => {
     const classes = useStyles();
 
-    const rowsPerPage = 5;
-
-    const { rows, totalRowCount, page, setPage, addCallback, deleteCallback, categoryTitle, category } = props;
+    const { rows, totalRowCount, page, setPage, addCallback, deleteCallback, categoryTitle, category, rowsPerPage, setSetSearchValue, searchValue } = props;
 
     // Compute for Empty Rows
     const emptyRows = Math.max(0, (1 + page) * rowsPerPage - totalRowCount);
@@ -114,7 +110,7 @@ const TransactionTable = (props) => {
     return (
         <Grid container>
             <Grid item xs={12}>
-                <TransactionToolbar addCallback={addCallback} categoryTitle={categoryTitle} category={category} />
+                <TransactionToolbar addCallback={addCallback} categoryTitle={categoryTitle} category={category} setSetSearchValue={setSetSearchValue} searchValue={searchValue} />
                 <TableContainer>
                     <Table aria-label="simple table">
                         <TableHead>
@@ -132,7 +128,7 @@ const TransactionTable = (props) => {
                                 rows.map((row, index) => (
                                     <TableRow key={index}>
                                         <TableCell align="right">{row.TransactionKey}</TableCell>
-                                        <TableCell align="right">{row.Amount}</TableCell>
+                                        <TableCell align="right">{Peso(row.Amount)}</TableCell>
                                         <TableCell>{row.CreatedBy} - {FormatDateTime(row.CreatedDate)}</TableCell>
                                         <TableCell>
                                             <DeleteButton callback={deleteCallback} categoryTitle={categoryTitle} category={category}

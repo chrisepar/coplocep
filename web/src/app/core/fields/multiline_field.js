@@ -14,7 +14,8 @@ function MultilineFieldCore(props) {
             InputLabelProps={{
                 shrink: true,
                 classes: {
-                    root: classes.labelRoot
+                    root: classes.labelRoot,
+                    asterisk: classes.labelAsterisk
                 }
             }}
             value={(value !== null) ? value : ""}

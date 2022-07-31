@@ -81,15 +81,12 @@ namespace coploan.Controllers
         }
 
         [ActionName("payment/list"), HttpGet("{loanID}")]
-        public ActionResult<string> GetMemberPayment(string loanID)
-        {
-            return transaction.GetMemberPayment(loanID);
-        }
+        public ActionResult<string> GetMemberPayment(string loanID) => transaction.GetMemberPayment(loanID);
 
         [ActionName("calculation"), HttpGet]
-        public ActionResult DownloadFile(float amount, float interest, int term)
+        public ActionResult DownloadFile(string memberKey, float amount, float interest, int term)
         {
-            byte[] result = transaction.GetComputedMonthlyLoan(amount, interest, term);
+            byte[] result = transaction.GetComputedMonthlyLoan(memberKey, amount, interest, term);
             return File(result, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Computation.xlsx");
         }
     }

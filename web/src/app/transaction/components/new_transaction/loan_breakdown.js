@@ -1,4 +1,7 @@
 import React, { useEffect, useState } from 'react';
+import {
+    useParams
+} from "react-router-dom";
 import Grid from '@material-ui/core/Grid';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
@@ -8,11 +11,13 @@ import Loading from 'app/core/helpers/loading_screen.js';
 import Button from 'app/core/button/core_button.js';
 
 import { model, getSettings } from "app/settings/settings_model.js";
+import { getMember } from 'app/membership/member_model.js';
 
 import { downloadComputation } from 'app/transaction/transaction_model.js';
 
 
 export default (props) => {
+    let { detailID } = useParams();
     const { categoryTitle, category, setAmount, setInterest, setTerm, amount, interest, term } = props;
 
     const [isLoading, setLoading] = useState(null);
@@ -36,7 +41,11 @@ export default (props) => {
     }, [])
 
     const handleCalculate = (event) => {
-        downloadComputation(amount, interest, term);
+        console.log("Test");
+        getMember(detailID).then((data) => {
+            let name = data.results[0].Name;
+            downloadComputation(detailID, amount, interest, term, name);
+        });
     };
 
 
@@ -57,7 +66,7 @@ export default (props) => {
                         value={term} onChange={(value) => setTerm(value)} />
                 </Grid>
                 <Grid container item xs={3} alignItems="center">
-                    <Button onClick={handleCalculate} label="Calculate" />
+                    <Button onClick={handleCalculate} label="Download Breakdown" size="small" disabled={(amount <= 0)}/>
                 </Grid>
             </Grid>
         </DialogContent>

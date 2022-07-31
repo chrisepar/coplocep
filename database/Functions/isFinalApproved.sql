@@ -21,16 +21,18 @@ CREATE FUNCTION [dbo].[IsFinalApproved]
 (
 	-- Add the parameters for the function here
 	@RecordID int,
-	@Category nvarchar(50),
-	@MaxApprovalCount int = 5
+	@Category nvarchar(50)
 )
 RETURNS nvarchar(1)
 AS
 BEGIN
 	-- Declare the return variable here
-	DECLARE @Result nvarchar(1)
-	DECLARE @ApprovedCount int
-	
+	DECLARE @Result NVARCHAR(1)
+	DECLARE @ApprovedCount INT
+	DECLARE @MaxApprovalCount INT
+
+	SELECT @MaxApprovalCount = MaxApprovalCount FROM Settings
+
 	SET @ApprovedCount = IIF(@Category = 'Membership',
 	(SELECT COUNT(*) FROM MembershipWorkflow WHERE RecordID = @RecordID AND Category = @Category AND IsApproved = 'Y'),
 	(SELECT COUNT(*) FROM TransactionWorkflow WHERE RecordID = @RecordID AND Category = @Category AND IsApproved = 'Y'))

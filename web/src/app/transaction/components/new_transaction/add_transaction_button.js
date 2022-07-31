@@ -17,7 +17,7 @@ function AddButton(props) {
     const { id, label, callback, categoryTitle, category, customText } = props;
     const [openEntryDialog, setOpenEntryDialog] = React.useState(false);
 
-    const [amount, setAmount] = React.useState(null);
+    const [amount, setAmount] = React.useState(0);
     const [interest, setInterest] = React.useState(null);
     const [term, setTerm] = React.useState(null);
 
@@ -64,7 +64,7 @@ function AddButton(props) {
                 }
                 <DialogActions>
                     <Button onClick={handleClose} color="primary"> Cancel </Button>
-                    <Button onClick={handleConfirm} color="primary"> Confirm </Button>
+                    <Button onClick={handleConfirm} color="primary" disabled={(amount <= 0)}> Confirm </Button>
                 </DialogActions>
             </Dialog>
         </div>

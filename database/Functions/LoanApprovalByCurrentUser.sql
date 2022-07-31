@@ -36,7 +36,7 @@ AWE.ApprovedDate AS [LastApprovedDate],
 AWE.IsApproved AS [LastIsApproved],
 AWE.Comment,
 AWEC.IsApproved AS [IsApprovedByCurrent],
-dbo.IsFinalApproved(T.TransactionKey, 'Loan', 5) AS [IsFinalApproved],
+dbo.IsFinalApproved(T.TransactionKey, 'Loan') AS [IsFinalApproved],
 IIF(@currentUser = AWE.ApprovedBy, 'Y', 'N') AS [IsLastApprovedByCurrentUser]
 FROM Loans T
 	OUTER APPLY (SELECT TOP 1 * FROM TransactionWorkflow AW WHERE AW.RecordID = T.TransactionKey ORDER BY AW.ApprovedDate DESC) AS AWE

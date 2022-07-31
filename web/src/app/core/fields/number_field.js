@@ -30,6 +30,10 @@ function NumberFieldCore(props) {
             customInput={TextField}
             InputLabelProps={{
                 shrink: true,
+                classes: {
+                    root: classes.labelRoot,
+                    asterisk: classes.labelAsterisk
+                }
             }}
             thousandSeparator={thousandSeparator}
             isNumericString={isNumericString}

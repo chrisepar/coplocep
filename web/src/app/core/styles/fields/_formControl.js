@@ -5,6 +5,10 @@ export default makeStyles((theme) => ({
         fontWeight: "bold"        
     },
     labelRoot: {
-        backgroundColor: "white"
+        backgroundColor: "white",
+        fontWeight: "bold"
+    },
+    labelAsterisk: {
+        color: "red"
     }
 }));

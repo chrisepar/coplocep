@@ -23,6 +23,7 @@ import DateField from 'app/core/fields/date_field.js';
 
 import useStyles from 'app/transaction/styles/components/_transactionTable.js';
 import { FormatDateTime } from 'app/core/helpers/date_format.js';
+import { Peso } from 'app/core/helpers/currency_format.js';
 
 import LoanDetails from "app/transaction/components/loan/loan_details.js";
 import IsEmpty from "app/core/helpers/is_empty.js";
@@ -34,32 +35,28 @@ const filterOptions = [
         value: "NoFilter",
         label: "No Filter"
     }, {
+        value: "Daily",
+        label: "Daily"
+    }, {
+        value: "Week",
+        label: "Weekly"
+    }, {
+        value: "Month",
+        label: "Monthly"
+    }, {
         value: "Annual",
         label: "Annually"
-    }, {
-        value: "SemiAnnual",
-        label: "Semi-Annually"
-    }, {
-        value: "Quarter",
-        label: "Quarterly"
-    }, {
-        value: "DateRange",
-        label: "Date Range"
     }
 ];
 
 const LoanToolbar = (props) => {
-    const { addCallback, deleteCallback } = props;
-    const [filterBy, setFilterBy] = useState("NoFilter");
+    const { addCallback, setSetSearchValue, searchValue } = props;
+    // const [filterBy, setFilterBy] = useState("NoFilter");
     const [fromDateValue, setFromDateValue] = useState();
     const [toDateValue, setToDateValue] = useState();
 
     const handleFilterChange = (value) => {
-        setFilterBy(value);
-    };
-
-    const handleFromDateChange = () => {
-
+        !IsEmpty(setSetSearchValue) && setSetSearchValue(value)
     };
 
     const handleRemove = (event, transactionKey) => {
@@ -73,10 +70,10 @@ const LoanToolbar = (props) => {
             <Grid container item xs={12} spacing={2} direction="row" alignItems="center">
                 <Grid item xs={2}>
                     <Dropdown id="filter_loan_by" label="Filter" list={filterOptions}
-                        value={filterBy} onChange={(value) => handleFilterChange(value)} />
+                        value={searchValue} onChange={(value) => handleFilterChange(value)} />
                 </Grid>
-                {
-                    (filterBy === "DateRange") ?
+                {/* {
+                    (searchValue === "DateRange") ?
                         <Grid container item xs={4} spacing={1} direction="row" alignItems="center" >
                             <Grid item xs={6}>
                                 <DateField id="fromDate" label="From" disableFuture={true} />
@@ -86,7 +83,7 @@ const LoanToolbar = (props) => {
                             </Grid>
                         </Grid>
                         : null
-                }
+                } */}
                 <Grid item xs />
                 <Grid item xs={3} container justifyContent="flex-end">
                     <EntryButton callback={addCallback} categoryTitle="Loan" category="Loan" />
@@ -98,10 +95,9 @@ const LoanToolbar = (props) => {
 
 const LoanTable = (props) => {
     const classes = useStyles();
-    
-    const rowsPerPage = 5;
 
-    const { rows, totalRowCount, page, setPage, addCallback, deleteCallback, approveCallback, rejectCallback } = props;
+    const { memberKey, rows, totalRowCount, page, setPage, addCallback, deleteCallback, approveCallback, 
+        rejectCallback, rowsPerPage, setSetSearchValue, searchValue } = props;
 
     const [selectedLoan, setSelectedLoan] = useState(null);
 
@@ -125,7 +121,7 @@ const LoanTable = (props) => {
         <React.Fragment>
             <Grid container>
                 <Grid item xs={12}>
-                    <LoanToolbar addCallback={addCallback} />
+                    <LoanToolbar addCallback={addCallback} setSetSearchValue={setSetSearchValue} searchValue={searchValue} />
                     <TableContainer>
                         <Table aria-label="simple table">
                             <TableHead>
@@ -159,7 +155,7 @@ const LoanTable = (props) => {
                                             </TableCell>
                                             <TableCell></TableCell>
                                             <TableCell align="right">{row.TransactionKey}</TableCell>
-                                            <TableCell align="right">{row.Amount}</TableCell>
+                                            <TableCell align="right">{Peso(row.Amount)}</TableCell>
                                             <TableCell align="right">{row.Interest}</TableCell>
                                             <TableCell align="right">{row.Term}</TableCell>
                                             <TableCell>{row.CreatedBy} - {FormatDateTime(row.CreatedDate)}</TableCell>
@@ -184,7 +180,7 @@ const LoanTable = (props) => {
                                         rowsPerPageOptions={[5]}
                                         colSpan={9}
                                         count={totalRowCount}
-                                        rowsPerPage={5}
+                                        rowsPerPage={rowsPerPage}
                                         page={page}
                                         SelectProps={{
                                             inputProps: {

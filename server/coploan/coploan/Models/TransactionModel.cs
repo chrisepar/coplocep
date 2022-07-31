@@ -34,10 +34,11 @@ namespace coploan.Models
 
     public class LoanComputation
     {
-        public decimal Balance { get; set; }
+        public int Month { get; set; }
         public decimal Payment { get; set; }
-        public decimal Principal { get; set; }
         public decimal Interest { get; set; }
-        public decimal EndingBalance { get; set; }
+        public decimal Principal { get; set; }
+        public decimal Balance { get; set; }
+        //public decimal EndingBalance { get; set; }
     }
 }

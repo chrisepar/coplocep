@@ -8,7 +8,7 @@ import isEmpty from "app/core/helpers/is_empty.js";
 
 function DropdownCore(props) {
     const classes = useStyles();
-    const { id, label, value, list, helperText, onChange, item_label_key, item_value_key, disabled, fullWidth, size, placeHolder } = props;
+    const { id, label, value, list, helperText, onChange, item_label_key, item_value_key, disabled, fullWidth, size, placeHolder, error } = props;
     return (
         <TextField key={id + "Key"}
             id={id + "Dropdown"}
@@ -19,9 +19,14 @@ function DropdownCore(props) {
             helperText={helperText}
             variant="outlined"
             fullWidth={fullWidth}
+            error={error}
             margin="normal"size={size}
             InputLabelProps={{
-                shrink: true
+                shrink: true,
+                classes: {
+                    root: classes.labelRoot,
+                    asterisk: classes.labelAsterisk
+                }
             }}
             disabled={disabled}
         >
@@ -49,7 +54,8 @@ DropdownCore.defaultProps = {
     onChange: () => { },
     disabled: false,
     fullWidth: true,
-    size: "medium"
+    size: "medium",
+    error: false
 };
 
 export default DropdownCore;

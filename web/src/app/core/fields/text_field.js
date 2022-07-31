@@ -6,7 +6,7 @@ import FormatValue from "app/core/helpers/format_value.js";
 
 function TextFieldCore(props) {
     const classes = useStyles();
-    const { id, label, value, onChange, disabled} = props;
+    const { id, label, value, onChange, disabled, required, error} = props;
 
     return (
         <TextField key={id + "Key"}
@@ -16,12 +16,15 @@ function TextFieldCore(props) {
             InputLabelProps={{
                 shrink: true,
                 classes: {
-                    root: classes.labelRoot
+                    root: classes.labelRoot,
+                    asterisk: classes.labelAsterisk
                 }
             }}
             value={FormatValue(field_types.text_field, value)}
             onChange={(event) => onChange(event.target.value)}
             disabled={disabled}
+            required={required}
+            error={error}
         />
     );
 };
@@ -31,7 +34,9 @@ TextFieldCore.defaultProps = {
     label: "",
     value: "",
     onChange: () => {},
-    disabled: false
+    disabled: false,
+    required: false,
+    error: false
 };
 
 export default TextFieldCore;

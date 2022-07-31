@@ -27,7 +27,15 @@ namespace coploan
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
+            services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(
+                    policy =>
+                    {
+                        policy.WithOrigins("http://localhost",
+                            "http://192.168.0.107", "http://192.168.0.110");
+                    });
+            });
             services.AddControllers().AddNewtonsoftJson();
         }
 
@@ -44,6 +52,8 @@ namespace coploan
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseCors();
 
             app.UseAuthorization();
 
