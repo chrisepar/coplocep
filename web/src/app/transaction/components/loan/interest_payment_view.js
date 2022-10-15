@@ -10,8 +10,8 @@ import TransactionTable from "app/transaction/components/common/transaction_tabl
 import { getLoanTransactionList, deleteTransaction } from 'app/transaction/transaction_model.js';
 
 export default (props) => {
-    const { paymentReload, loanID, category, categoryTitle } = props;
-    const pageCount = 4;
+    const { paymentReload, loanID, category, categoryTitle, setLoanPaymentTrigger } = props;
+    const pageCount = 3;
 
     const [list, setList] = useState([]);
     const [isLoading, setLoading] = useState(true);
@@ -22,6 +22,7 @@ export default (props) => {
     const deleteCallback = (transactionKey) => {
         return deleteTransaction(transactionKey, category).then((data) => {
             if (data) {
+                setLoanPaymentTrigger(data);
                 setTrigger(data);
             }
         });
@@ -41,7 +42,7 @@ export default (props) => {
                 if (mounted) {
                     setList(data);
                 }
-                setTrigger(false);
+                setTrigger(0);
                 setLoading(false);
             })
         return () => mounted = false;

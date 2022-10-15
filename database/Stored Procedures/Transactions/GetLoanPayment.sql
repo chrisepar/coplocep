@@ -28,17 +28,15 @@ BEGIN
 
     -- Insert statements for procedure here
 	
-	SELECT 
-	   P.[LoanKey] AS [TransactionKey]
-      ,P.[MemberKey]
-      ,P.[Amount]
-      ,P.[CreatedBy]
-      ,P.[CreatedDate]
-      ,P.[ModifiedBy]
-      ,P.[ModifiedDate]
+	SELECT L.TransactionKey AS [LoanKey] 
+	  ,P.[MemberKey]
+      ,SUM(P.[Amount]) AS [PaidAmount]
+	  ,L.Amount - SUM(P.[Amount]) AS [UnpaidAmount]
+	  ,L.[Amount] AS [LoanAmount]
 	  FROM Payments P
 		LEFT JOIN Loans L ON L.TransactionKey = P.LoanKey
 		WHERE L.TransactionKey = @loanID
+		GROUP BY L.TransactionKey, P.MemberKey, L.Amount
 END
 GO
 

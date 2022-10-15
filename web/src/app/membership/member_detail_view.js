@@ -125,7 +125,7 @@ function MemberDetails(props) {
     // End
 
     const validateFields = () => {
-        let requiredFields = ["LastName", "FirstName", "MiddleName", "Birthdate", "Occupation", "Salary"];
+        let requiredFields = ["MemberID", "LastName", "FirstName", "MiddleName", "Birthdate", "Occupation", "Salary"];
         let fieldsWithError = [];
         for (let counter = 0; counter < requiredFields.length; counter++) {
             let field = requiredFields[counter];
@@ -266,7 +266,8 @@ function MemberDetails(props) {
                     (
                         <React.Fragment>
                             <Grid item xs={3}>
-                                <TextField id="MemberKey" label="Member #" value={detail.MemberKey} disabled={true} />
+                                <TextField id="MemberID" label="Member #"  error={hasError("MemberID")} value={detail.MemberID} 
+                                disabled={shouldFieldDisabled} onChange={(value) => handleChange(value, "MemberID")} required={true} />
                             </Grid>
                             <Grid item xs={3} >
                                 <StatusField category="Membership" recordID={detailID} LastIsApproved={detail.LastIsApproved} IsFinalApproved={detail.IsFinalApproved} />

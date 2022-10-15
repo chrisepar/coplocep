@@ -29,9 +29,7 @@ BEGIN
 	-- Declare the return variable here
 	DECLARE @Result NVARCHAR(1)
 	DECLARE @ApprovedCount INT
-	DECLARE @MaxApprovalCount INT
-
-	SELECT @MaxApprovalCount = MaxApprovalCount FROM Settings
+	DECLARE @MaxApprovalCount INT = 1
 
 	SET @ApprovedCount = IIF(@Category = 'Membership',
 	(SELECT COUNT(*) FROM MembershipWorkflow WHERE RecordID = @RecordID AND Category = @Category AND IsApproved = 'Y'),

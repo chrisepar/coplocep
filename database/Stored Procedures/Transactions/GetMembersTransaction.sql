@@ -25,12 +25,12 @@ BEGIN
 	SET NOCOUNT ON;
 
     -- Insert statements for procedure here
-		SELECT MA.MemberKey, LastName + ', ' + FirstName + ' ' + MiddleName AS [Name], 
+		SELECT MA.MemberKey, MA.MemberID, LastName + ', ' + FirstName + ' ' + MiddleName AS [Name], 
 				SUM(L.Amount) AS [LoanAmount], SUM(I.Amount) AS [InterestPaidAmount], SUM(D.Amount) AS [DepositAmount] FROM [Membership Approval] MA
 		LEFT JOIN Loans L ON L.MemberKey = MA.MemberKey
 		LEFT JOIN Interests I ON I.MemberKey = MA.MemberKey
 		LEFT JOIN Deposits D ON D.MemberKey = MA.MemberKey
 		WHERE MA.IsFinalApproved = 'Y'
-		GROUP BY MA.MemberKey, LastName, FirstName, MiddleName
+		GROUP BY MA.MemberKey, MA.MemberID, LastName, FirstName, MiddleName
 END
 GO

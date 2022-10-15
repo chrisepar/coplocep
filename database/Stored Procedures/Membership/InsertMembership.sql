@@ -20,6 +20,7 @@ GO
 CREATE PROCEDURE [dbo].[InsertMembership] 
 	-- Add the parameters for the stored procedure here
 	@MemberKey int OUTPUT,
+	@MemberID nvarchar(250),
 	@FirstName nvarchar(250),
 	@MiddleName nvarchar(250),
 	@LastName nvarchar(250),
@@ -54,11 +55,12 @@ BEGIN
 	BEGIN TRANSACTION;
     -- Insert statements for procedure here
 	INSERT INTO [dbo].[Members]
-	([FirstName] ,[MiddleName] ,[LastName] ,[TinNumber] ,[Address] ,[CivilStatus] ,[Birthdate] ,[Birthplace] ,[Occupation] ,[Salary] ,[OtherIncome]
+	([MemberID], [FirstName] ,[MiddleName] ,[LastName] ,[TinNumber] ,[Address] ,[CivilStatus] ,[Birthdate] ,[Birthplace] ,[Occupation] ,[Salary] ,[OtherIncome]
                        ,[EducationalAttainment] ,[SpouseName] ,[Dependencies] ,[OtherCooperative] ,[Trainings] ,[CreditReferences] ,[CreatedBy] ,[CreatedDate]
                        ,[ModifiedBy] ,[ModifiedDate])
 	VALUES
-                       (@FirstName
+                       (@MemberID
+					   ,@FirstName
                        ,@MiddleName
                        ,@LastName
                        ,@TinNumber

@@ -34,6 +34,7 @@ export default (props) => {
     };
 
     const addCallback = (amount, interest = null, term = null) => {
+        setLoading(true);
         return addTransaction(detailID, category, { amount: amount, interest: interest, term: term }).then((data) => {
             if (data) {
                 setStatus({
@@ -55,6 +56,7 @@ export default (props) => {
     };
 
     const deleteCallback = (transactionKey) => {
+        setLoading(true);
         return deleteTransaction(transactionKey, category).then((data) => {
             if (data) {
                 setStatus({
@@ -88,6 +90,7 @@ export default (props) => {
                 if (mounted) {
                     setList(data);
                 }
+                setTrigger(0);
                 setLoading(false);
             })
         return () => mounted = false;
@@ -102,7 +105,7 @@ export default (props) => {
                 <StatusBar open={status.open} setOpen={handleStatusClose} message={status.message} severity={status.severity} />
                 <TransactionTable category={category} categoryTitle="Deposit" rows={list.results} addCallback={addCallback}
                     deleteCallback={deleteCallback} totalRowCount={list.totalRowCount} page={page} setPage={setPage} rowsPerPage={pageCount}
-                    setSetSearchValue={setSetSearchValue} searchValue={searchValue} />
+                    setSetSearchValue={setSetSearchValue} searchValue={searchValue} setLoading={setLoading} />
             </ React.Fragment>
         );
     }

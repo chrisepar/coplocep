@@ -10,4 +10,4 @@ const downloadFile = (blob, fileName) => {
 
 export {
     downloadFile
-}
+};

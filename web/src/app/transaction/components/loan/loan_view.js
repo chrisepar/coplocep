@@ -34,8 +34,9 @@ export default (props) => {
         setStatus(defaultStatus);
     };
 
-    const addCallback = (amount, interest = null, term = null) => {
-        return addTransaction(detailID, category, { amount: amount, interest: interest, term: term }).then((data) => {
+    const addCallback = (amount, interest = null, term = null, dueDate = null) => {
+        setLoading(true);
+        return addTransaction(detailID, category, { amount: amount, interest: interest, term: term, startDueDate: dueDate }).then((data) => {
             if (data) {
                 setStatus({
                     open: true,
@@ -44,18 +45,26 @@ export default (props) => {
                 });
                 setTrigger(data);
             } else {
+                setStatus({
+                    open: true,
+                    message: "Error Occured - Add Failed",
+                    severity: "error"
+                });
                 console.log("Error Occured - Add Failed");
-            }
+            }            
+            setLoading(false);
         }, (error) => {
             setStatus({
                 open: true,
                 message: "An error occured",
                 severity: "error"
             });
+            setLoading(false);
         });
     };
 
     const deleteCallback = (transactionKey) => {
+        setLoading(true);
         return deleteTransaction(transactionKey, category).then((data) => {
             if (data) {
                 setStatus({
@@ -65,18 +74,26 @@ export default (props) => {
                 });
                 setTrigger(data);
             } else {
+                setStatus({
+                    open: true,
+                    message: "Error Occured - Delete Failed",
+                    severity: "error"
+                });
                 console.log("Error Occured - Delete Failed");
             }
+            setLoading(false);
         }, (error) => {
             setStatus({
                 open: true,
                 message: "An error occured",
                 severity: "error"
-            });
+            });            
+            setLoading(false);
         });
     };
 
     const approveCallback = (transactionKey, comment) => {
+        setLoading(true);
         return approveRecord(transactionKey, category, comment).then((data) => {
             if (data) {
                 setStatus({
@@ -86,18 +103,26 @@ export default (props) => {
                 });
                 setTrigger(data);
             } else {
+                setStatus({
+                    open: true,
+                    message: "Error Occured - Approve Failed",
+                    severity: "error"
+                });
                 console.log("Error Occured - Approve Failed");
             }
+            setLoading(false);
         }, (error) => {
             setStatus({
                 open: true,
                 message: "An error occured",
                 severity: "error"
             });
+            setLoading(false);
         });
     };
 
     const rejectCallback = (transactionKey, comment) => {
+        setLoading(true);
         return rejectRecord(transactionKey, category, comment).then((data) => {
             if (data) {
                 setStatus({
@@ -107,14 +132,21 @@ export default (props) => {
                 });
                 setTrigger(data);
             } else {
+                setStatus({
+                    open: true,
+                    message: "Error Occured - Reject Failed",
+                    severity: "error"
+                });
                 console.log("Error Occured - Reject Failed");
             }
+            setLoading(false);
         }, (error) => {
             setStatus({
                 open: true,
                 message: "An error occured",
                 severity: "error"
             });
+            setLoading(false);
         });
     };
 
@@ -131,7 +163,7 @@ export default (props) => {
                 if (mounted) {
                     setList(data);
                 }
-                setTrigger(false);
+                setTrigger(0);
                 setLoading(false);
             })
         return () => mounted = false;
@@ -146,7 +178,7 @@ export default (props) => {
                 <StatusBar open={status.open} setOpen={handleStatusClose} message={status.message} severity={status.severity} />
                 <LoanTable rows={list.results} totalRowCount={list.totalRowCount} addCallback={addCallback} deleteCallback={deleteCallback}
                     approveCallback={approveCallback} rejectCallback={rejectCallback} page={page} setPage={setPage} rowsPerPage={pageCount}
-                    setSetSearchValue={setSetSearchValue} searchValue={searchValue} />
+                    setSetSearchValue={setSetSearchValue} searchValue={searchValue} setLoading={setLoading} />
             </React.Fragment>
         );
     }

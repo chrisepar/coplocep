@@ -20,6 +20,7 @@ GO
 CREATE PROCEDURE [dbo].[UpdateMembership] 
 	-- Add the parameters for the stored procedure here
 	@MemberKey nvarchar(250) = NULL,
+	@MemberID nvarchar(250),
 	@FirstName nvarchar(250),
 	@MiddleName nvarchar(250),
 	@LastName nvarchar(250),
@@ -55,30 +56,31 @@ BEGIN
     -- Insert statements for procedure here
 
 	UPDATE [dbo].[Members] SET
-	[FirstName] = @FirstName
-                      ,[MiddleName] = @MiddleName
-                      ,[LastName] = @LastName
-                      ,[TinNumber] = @TinNumber
-                      ,[BODResolutionNumber] = @BODResolutionNumber
-                      ,[TypeOfMembership] = @TypeOfMembership
-                      ,[SharesSubscribed] = @SharesSubscribed
-                      ,[AmountSubscribed] = @AmountSubscribed
-                      ,[InitialPaidUp] = @InitialPaidUp
-                      ,[Address] = @Address
-                      ,[CivilStatus] = @CivilStatus
-                      ,[Birthdate] = @Birthdate
-                      ,[Birthplace] = @Birthplace
-                      ,[Occupation] = @Occupation
-                      ,[Salary] = @Salary
-                      ,[OtherIncome] = @OtherIncome
-                      ,[EducationalAttainment] = @EducationalAttainment
-                      ,[SpouseName] = @SpouseName
-                      ,[Dependencies] = @Dependencies
-                      ,[OtherCooperative] = @OtherCooperative
-                      ,[Trainings] = @Trainings
-                      ,[CreditReferences] = @CreditReferences
-                      ,[ModifiedBy] = @ModifiedBy
-                      ,[ModifiedDate] = GETDATE()
+						[MemberID] = @MemberID
+						,[FirstName] = @FirstName
+						,[MiddleName] = @MiddleName
+						,[LastName] = @LastName
+						,[TinNumber] = @TinNumber
+						,[BODResolutionNumber] = @BODResolutionNumber
+						,[TypeOfMembership] = @TypeOfMembership
+						,[SharesSubscribed] = @SharesSubscribed
+						,[AmountSubscribed] = @AmountSubscribed
+						,[InitialPaidUp] = @InitialPaidUp
+						,[Address] = @Address
+						,[CivilStatus] = @CivilStatus
+						,[Birthdate] = @Birthdate
+						,[Birthplace] = @Birthplace
+						,[Occupation] = @Occupation
+						,[Salary] = @Salary
+						,[OtherIncome] = @OtherIncome
+						,[EducationalAttainment] = @EducationalAttainment
+						,[SpouseName] = @SpouseName
+						,[Dependencies] = @Dependencies
+						,[OtherCooperative] = @OtherCooperative
+						,[Trainings] = @Trainings
+						,[CreditReferences] = @CreditReferences
+						,[ModifiedBy] = @ModifiedBy
+						,[ModifiedDate] = GETDATE()
                  WHERE  (MemberKey = @MemberKey) 
 
 	COMMIT TRANSACTION;

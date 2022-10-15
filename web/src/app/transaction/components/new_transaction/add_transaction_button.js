@@ -20,6 +20,9 @@ function AddButton(props) {
     const [amount, setAmount] = React.useState(0);
     const [interest, setInterest] = React.useState(null);
     const [term, setTerm] = React.useState(null);
+    const [dueDate, setDueDate] = React.useState(new Date());
+
+    const [isLoading, setLoading] = React.useState(null);
 
     const handleClickOpen = () => {
         setOpenEntryDialog(true);
@@ -31,7 +34,10 @@ function AddButton(props) {
 
     const handleConfirm = () => {
         if (callback) {
-            callback(amount, interest, term).then(() => setOpenEntryDialog(false));
+            setLoading(true);
+            callback(amount, interest, term, dueDate).then(() => {
+                setOpenEntryDialog(false);
+            });
         }
     };
 
@@ -39,10 +45,13 @@ function AddButton(props) {
         switch (category) {
             case "Loan":
                 return <LoanBreakdown categoryTitle={categoryTitle} category={category} amount={amount} setAmount={setAmount}
-                    interest={interest} setInterest={setInterest} term={term} setTerm={setTerm}
+                    interest={interest} setInterest={setInterest} term={term} setTerm={setTerm} dueDate={dueDate} setDueDate={setDueDate} 
+                    isLoading={isLoading} setLoading={setLoading}
                 />;
             default:
-                return <StandardContent categoryTitle={categoryTitle} category={category} amount={amount} setAmount={setAmount} />;
+                return <StandardContent categoryTitle={categoryTitle} category={category} amount={amount} setAmount={setAmount}
+                    isLoading={isLoading} setLoading={setLoading}
+                />;
         }
     };
 

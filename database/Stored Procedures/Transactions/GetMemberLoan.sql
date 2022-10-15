@@ -28,20 +28,25 @@ BEGIN
 	SET NOCOUNT ON;
 
     -- Insert statements for procedure here
-	SELECT [TransactionKey]
-      ,[MemberKey]
-      ,[Amount]
-	  ,[Interest]
-	  ,[Term]
-      ,[CreatedBy]
-      ,[CreatedDate]
-      ,[ModifiedBy]
-      ,[ModifiedDate]
-      ,[ApprovalID]
-      ,[LastApprovedBy] As [ApprovedBy]
-      ,[LastApprovedDate] AS [ApprovedDate]
-      ,[LastIsApproved] AS [IsApproved]
-      ,[Comment] FROM [LoanApprovalByCurrentUser](@currentUser) AS TA
-	WHERE MemberKey = @memberKey
+	SELECT TA.[TransactionKey]
+      ,TA.[MemberKey]
+      ,TA.[Amount]
+	  ,TA.Amount - SUM(P.[Amount]) AS [Balance]
+	  ,TA.[Interest]
+	  ,TA.[Term]
+	  ,TA.[StartDueDate]
+      ,TA.[CreatedBy]
+      ,TA.[CreatedDate]
+      ,TA.[ModifiedBy]
+      ,TA.[ModifiedDate]
+      ,TA.[ApprovalID]
+      ,TA.[LastApprovedBy] As [ApprovedBy]
+      ,TA.[LastApprovedDate] AS [ApprovedDate]
+      ,TA.[LastIsApproved] AS [IsApproved]
+      ,TA.[Comment] FROM [LoanApprovalByCurrentUser](@currentUser) AS TA
+		LEFT JOIN Payments AS P ON TA.TransactionKey = P.LoanKey
+	WHERE TA.MemberKey = @memberKey
+	GROUP BY TA.TransactionKey, TA.MemberKey, TA.Amount, TA.Interest, TA.Term, TA.StartDueDate, TA.CreatedBy, TA.CreatedDate,
+	TA.ModifiedBy, TA.ModifiedDate, TA.ApprovalID, TA.LastApprovedBy, TA.LastApprovedDate, TA.LastIsApproved, TA.Comment
 END
 GO

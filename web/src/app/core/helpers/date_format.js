@@ -31,9 +31,16 @@ function FormatDateFromISO(date) {
     }
 };
 
+function GetDueDateOfCurrentMonth(startDueDate) {
+    let firstDay = moment().startOf("month");
+    let dayOfMonth = moment(startDueDate).date();
+    return FormatDate(firstDay.add(dayOfMonth, "days"));
+};
+
 export {
     FormatDateTime,
     FormatDate,
     FormatDateToISO,
-    FormatDateFromISO
+    FormatDateFromISO,
+    GetDueDateOfCurrentMonth
 };

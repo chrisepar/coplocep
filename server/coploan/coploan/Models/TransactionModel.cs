@@ -21,6 +21,13 @@ namespace coploan.Models
     {
         public decimal Interest { get; set; }
         public int Term { get; set; }
+
+        public DateTime StartDueDate { get; set; }
+    }
+
+    public class LoanDetailsBalance: LoanDetails
+    {
+        public decimal Balance { get; set; }
     }
 
     public class InterestDetails : TransactionDetails { }
@@ -30,6 +37,12 @@ namespace coploan.Models
     public class PaymentDetails : TransactionDetails 
     { 
         public int LoanKey { get; set; }
+    }
+
+    public class LoanPaymentDetails : TransactionDetails
+    {
+        public decimal PaidAmount { get; set; }
+        public decimal UnpaidAmount { get; set; }
     }
 
     public class LoanComputation

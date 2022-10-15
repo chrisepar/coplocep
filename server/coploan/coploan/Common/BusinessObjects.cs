@@ -124,7 +124,7 @@ namespace coploan.Common
                                 switch (dataType)
                                 {
                                     case "String":
-                                        tempRows = results.AsEnumerable().Where(rows => (rows.Field<string>(filterBy) ?? "").Contains(searchBy));
+                                        tempRows = results.AsEnumerable().Where(rows => (rows.Field<string>(filterBy) ?? "").ToLower().Contains(searchBy.ToLower()));
                                         break;
                                     case "Int32":
                                         tempRows = results.AsEnumerable().Where(rows => (rows.Field<Int32>(filterBy)).Equals(Int32.Parse(searchBy)));

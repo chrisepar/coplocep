@@ -33,6 +33,7 @@ BEGIN
       ,[Amount]
 	  ,[Interest]
 	  ,[Term]
+	  ,[StartDueDate]
       ,[CreatedBy]
       ,[CreatedDate]
       ,[ModifiedBy]

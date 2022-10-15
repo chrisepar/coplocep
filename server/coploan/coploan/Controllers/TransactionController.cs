@@ -65,6 +65,7 @@ namespace coploan.Controllers
         [ActionName("loan"), HttpGet("{loanID}")]
         public ActionResult<string> GetLoan(string loanID)
         {
+            //For deletion
             return transaction.GetLoan(loanID);
         }
 
@@ -83,11 +84,15 @@ namespace coploan.Controllers
         [ActionName("payment/list"), HttpGet("{loanID}")]
         public ActionResult<string> GetMemberPayment(string loanID) => transaction.GetMemberPayment(loanID);
 
+        [ActionName("loan/details"), HttpGet("{loanID}")]
+        public ActionResult<string> GetLoanPaymentDetails(string loanID) => transaction.GetLoanPaymentDetails(loanID);
+
         [ActionName("calculation"), HttpGet]
         public ActionResult DownloadFile(string memberKey, float amount, float interest, int term)
         {
-            byte[] result = transaction.GetComputedMonthlyLoan(memberKey, amount, interest, term);
-            return File(result, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Computation.xlsx");
+            string fileName;
+            byte[] result = transaction.GetComputedMonthlyLoan(memberKey, out fileName, amount, interest, term);
+            return File(result, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName + ".xlsx");
         }
     }
 }

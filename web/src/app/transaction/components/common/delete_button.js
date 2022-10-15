@@ -11,6 +11,7 @@ import CurrencyField from 'app/core/fields/currency_field.js';
 // import HighlightOffRoundedIcon from '@material-ui/icons/HighlightOffRounded';
 import IconButton from '@material-ui/core/IconButton';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
+import { Peso } from 'app/core/helpers/currency_format.js';
 
 import useStyles from 'app/core/styles/buttons/_buttons.js';
 
@@ -33,7 +34,7 @@ function DeleteDialog(props) {
             <DialogTitle id="form-dialog-title">Delete {category}</DialogTitle>
             <DialogContent>
                 <DialogContentText>
-                    Delete {categoryTitle} amounting to {amount}
+                    Delete {categoryTitle} amounting to {Peso(amount)}
                 </DialogContentText>
             </DialogContent>
             <DialogActions>

@@ -6,6 +6,7 @@ import isEmpty from "app/core/helpers/is_empty.js";
 
 const model = {
     MemberKey: 0,
+    MemberID: "",
     FirstName: "",
     MiddleName: "",
     LastName: "",

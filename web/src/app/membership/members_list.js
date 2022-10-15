@@ -15,7 +15,7 @@ import Table from "app/core/table/table.js";
 import { getMemberList } from 'app/membership/member_model.js';
 
 const columns = [
-    { field: 'MemberKey', type: field_types.text_field, headerName: 'Membership #', width: 100 },
+    { field: 'MemberID', type: field_types.text_field, headerName: 'Membership #', width: 100 },
     { field: 'Name', type: field_types.text_field, headerName: 'Name', width: 200 },
     { field: 'TinNumber', type: field_types.text_field, headerName: 'Tin Number', width: 200 },
     { field: 'LastApprovedDate', type: field_types.date_field, headerName: 'Date Accepted', width: 200 },

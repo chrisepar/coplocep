@@ -24,6 +24,7 @@ const prepData = (detailID, category, data) => {
     detail.Amount = data.amount;
     detail.Interest = data.interest;
     detail.Term = data.term;
+    detail.StartDueDate = data.startDueDate;
     detail.CreatedBy = getUserCode();
     detail.CreatedDate = new Date();
     detail.ModifiedBy = getUserCode();
@@ -85,13 +86,13 @@ const getMemberTransactionList = (memberKey, type, filters) => {
         .then(data => data.json())
 };
 
-const getLoanTransactionList = (loadID, type, filters) => {
+const getLoanTransactionList = (loanID, type, filters) => {
     const pageCount = !isEmpty(filters.pageCount) && filters.pageCount;
     const page = isEmpty(filters.page) ? 1 : filters.page;
     const filterBy = isEmpty(filters.filterByValue) ? "" : filters.filterByValue;
     const searchBy = isEmpty(filters.searchValue) ? "" : filters.searchValue;
 
-    return getData(`transaction/${type}/list/${loadID}?page=${page}&pageCount=${pageCount}&filterBy=${filterBy}&searchBy=${searchBy}`)
+    return getData(`transaction/${type}/list/${loanID}?page=${page}&pageCount=${pageCount}&filterBy=${filterBy}&searchBy=${searchBy}`)
         .then(data => data.json())
 };
 
@@ -104,12 +105,29 @@ const getMembersWithTransaction = (filters) => {
         .then(data => data.json())
 };
 
-const downloadComputation = (memberKey, amount, interest, term, name) => {
+const getLoanPaymentDetails = (loanID) => {
+    return getData(`transaction/loan/details/${loanID}`)
+        .then(data => data.json())
+};
+
+const downloadComputation = (memberKey, amount, interest, term) => {
+    let fileName = "";
     const param = `?memberKey=${memberKey}&amount=${amount}&interest=${interest}&term=${term}`;
     return getData(`transaction/calculation${param}`)
-        .then(data => data.blob())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not OK');
+            }
+            let contentDisposition = response.headers.get("Content-Disposition");
+            fileName = contentDisposition.substring(
+                contentDisposition.indexOf("filename=\"") + 10,
+                contentDisposition.lastIndexOf(".xlsx\";")
+            );;
+            return response.blob();
+        })
         .then(blob => {
-            downloadFile(blob, "Computation - " + name + ".xlsx");
+            downloadFile(blob, `Computation - ${fileName}.xlsx`);
+            return fileName;
         });
 };
 
@@ -121,5 +139,6 @@ export {
     addPayment,
     deleteTransaction,
     getMembersWithTransaction,
-    downloadComputation
+    downloadComputation,
+    getLoanPaymentDetails
 };

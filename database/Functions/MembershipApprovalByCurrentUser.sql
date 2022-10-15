@@ -25,7 +25,7 @@ RETURNS TABLE
 AS 
 RETURN 
 
-SELECT M.MemberKey, M.LastName + ', ' + M.FirstName + ' ' + M.MiddleName AS [Name], 
+SELECT M.MemberKey, M.MemberID, M.LastName + ', ' + M.FirstName + ' ' + M.MiddleName AS [Name], 
 M.FirstName, M.MiddleName, M.LastName, M.TinNumber, M.BODResolutionNumber, M.TypeOfMembership, M.SharesSubscribed, M.AmountSubscribed,
 M.InitialPaidUp, M.Address, M.CivilStatus, M.Birthdate, M.Birthplace, M.Occupation, M.Salary, M.OtherIncome, M.EducationalAttainment, M.SpouseName, M.Dependencies,
 M.OtherCooperative, M.Trainings, M.CreditReferences,

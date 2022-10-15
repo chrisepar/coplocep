@@ -8,6 +8,7 @@ namespace coploan.Models
     public class Member
     {
         public int MemberKey { get; set; }
+        public string MemberID { get; set; }
         public string FirstName { get; set; }
         public string MiddleName { get; set; }
         public string LastName { get; set; }

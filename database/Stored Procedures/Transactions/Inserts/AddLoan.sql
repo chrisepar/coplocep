@@ -21,8 +21,9 @@ CREATE PROCEDURE [dbo].[AddLoan]
 	@TransactionKey int OUTPUT,
 	@MemberKey int,
 	@Amount numeric(18,2),
-	@Interest numeric(3,2) = NULL,
+	@Interest numeric(4,2) = NULL,
 	@Term numeric(2,0) = NULL,
+	@StartDueDate datetime,
 	@CreatedBy nvarchar(250),
 	@CreatedDate datetime,
 	@ModifiedBy nvarchar(250),
@@ -40,6 +41,7 @@ BEGIN
            ,[Amount]
 		   ,[Interest]
 		   ,[Term]
+		   ,[StartDueDate]
            ,[CreatedBy]
            ,[CreatedDate]
            ,[ModifiedBy]
@@ -48,6 +50,7 @@ BEGIN
 		@Amount,
 		@Interest,
 		@Term,
+		@StartDueDate,
 		@CreatedBy,
 		@CreatedDate,
 		@ModifiedBy,

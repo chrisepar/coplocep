@@ -14,6 +14,7 @@ import TableFooter from '@material-ui/core/TableFooter';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
 import SearchIcon from '@material-ui/icons/Search';
+import ThumbUpAltIcon from '@material-ui/icons/ThumbUpAlt';
 import moment from 'moment';
 
 import Dropdown from 'app/core/fields/dropdown_field.js';
@@ -22,7 +23,7 @@ import { DeleteButton } from "app/transaction/components/common/delete_button.js
 import DateField from 'app/core/fields/date_field.js';
 
 import useStyles from 'app/transaction/styles/components/_transactionTable.js';
-import { FormatDateTime } from 'app/core/helpers/date_format.js';
+import { FormatDateTime, GetDueDateOfCurrentMonth } from 'app/core/helpers/date_format.js';
 import { Peso } from 'app/core/helpers/currency_format.js';
 
 import LoanDetails from "app/transaction/components/loan/loan_details.js";
@@ -50,12 +51,13 @@ const filterOptions = [
 ];
 
 const LoanToolbar = (props) => {
-    const { addCallback, setSetSearchValue, searchValue } = props;
+    const { addCallback, setSetSearchValue, searchValue, setLoading } = props;
     // const [filterBy, setFilterBy] = useState("NoFilter");
     const [fromDateValue, setFromDateValue] = useState();
     const [toDateValue, setToDateValue] = useState();
 
     const handleFilterChange = (value) => {
+        setLoading(true);
         !IsEmpty(setSetSearchValue) && setSetSearchValue(value)
     };
 
@@ -96,8 +98,8 @@ const LoanToolbar = (props) => {
 const LoanTable = (props) => {
     const classes = useStyles();
 
-    const { memberKey, rows, totalRowCount, page, setPage, addCallback, deleteCallback, approveCallback, 
-        rejectCallback, rowsPerPage, setSetSearchValue, searchValue } = props;
+    const { memberKey, rows, totalRowCount, page, setPage, addCallback, deleteCallback, approveCallback,
+        rejectCallback, rowsPerPage, setSetSearchValue, searchValue, setLoading } = props;
 
     const [selectedLoan, setSelectedLoan] = useState(null);
 
@@ -114,6 +116,7 @@ const LoanTable = (props) => {
 
     // Pagination
     const handleChangePage = (event, newPage) => {
+        setLoading(true);
         setPage(newPage);
     };
 
@@ -121,16 +124,17 @@ const LoanTable = (props) => {
         <React.Fragment>
             <Grid container>
                 <Grid item xs={12}>
-                    <LoanToolbar addCallback={addCallback} setSetSearchValue={setSetSearchValue} searchValue={searchValue} />
+                    <LoanToolbar addCallback={addCallback} setSetSearchValue={setSetSearchValue} searchValue={searchValue} setLoading={setLoading} />
                     <TableContainer>
                         <Table aria-label="simple table">
                             <TableHead>
                                 <TableRow>
                                     <TableCell />
-                                    <TableCell />
-                                    <TableCell align="right">
+                                    <TableCell>
                                         Loan Number
                                     </TableCell>
+                                    <TableCell >Next Due Date</TableCell>
+                                    <TableCell align="right">Balance</TableCell>
                                     <TableCell align="right">Loan Amount</TableCell>
                                     <TableCell align="right">Interest Rate</TableCell>
                                     <TableCell align="right">Term</TableCell>
@@ -144,17 +148,30 @@ const LoanTable = (props) => {
                                     rows.map((row, index) => (
                                         <TableRow key={index}>
                                             <TableCell>
-                                                <IconButton
-                                                    aria-label="more"
-                                                    id="loan-details"
-                                                    aria-haspopup="true"
-                                                    onClick={() => handleDetailOpen(row)}
-                                                >
-                                                    <SearchIcon />
-                                                </IconButton>
+                                                {
+                                                    (row.IsApproved) ?
+                                                        <IconButton
+                                                            aria-label="more"
+                                                            id="loan-details"
+                                                            aria-haspopup="true"
+                                                            onClick={() => handleDetailOpen(row)}
+                                                        >
+                                                            <SearchIcon />
+                                                        </IconButton>
+                                                        :
+                                                        <IconButton
+                                                            aria-label="more"
+                                                            id="loan-approve"
+                                                            aria-haspopup="true"
+                                                            onClick={() => approveCallback(row.TransactionKey, "Approved Loan Amounting to " + Peso(row.Amount))}
+                                                        >
+                                                            <ThumbUpAltIcon />
+                                                        </IconButton>
+                                                }
                                             </TableCell>
-                                            <TableCell></TableCell>
-                                            <TableCell align="right">{row.TransactionKey}</TableCell>
+                                            <TableCell align="left">{row.TransactionKey}</TableCell>
+                                            <TableCell align="left">{GetDueDateOfCurrentMonth(row.StartDueDate)}</TableCell>
+                                            <TableCell align="right">{Peso(row.Balance)}</TableCell>
                                             <TableCell align="right">{Peso(row.Amount)}</TableCell>
                                             <TableCell align="right">{row.Interest}</TableCell>
                                             <TableCell align="right">{row.Term}</TableCell>

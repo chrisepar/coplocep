@@ -20,7 +20,7 @@ GO
 CREATE PROCEDURE [dbo].[AddInterest]
 	@MemberKey int,
 	@LoanKey int,
-	@Interest numeric(3,2) = NULL,
+	@Interest numeric(4,2) = NULL,
 	@Term numeric(2,0) = NULL,
 	@Amount float,
 	@CreatedBy nvarchar(250),

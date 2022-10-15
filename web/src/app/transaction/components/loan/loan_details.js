@@ -7,21 +7,31 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import Loading from 'app/core/helpers/loading_screen.js';
 // import Button from '@material-ui/core/Button';
 import Button from "app/core/button/core_button.js";
 import Grid from '@material-ui/core/Grid';
 import TextField from 'app/core/fields/text_field.js';
 
+import { Peso } from 'app/core/helpers/currency_format.js';
 import EntryButton from "app/transaction/components/new_transaction/add_transaction_button.js";
 import IntPayView from "app/transaction/components/loan/interest_payment_view.js";
-import { addPayment, downloadComputation } from 'app/transaction/transaction_model.js';
+import { addPayment, downloadComputation, getLoanPaymentDetails } from 'app/transaction/transaction_model.js';
 import StatusBar from "app/core/dialogs/statusbar.js";
 
 export default (props) => {
     let { detailID } = useParams();
+    const loanPaymentDetails = {
+        PaidAmount: 0, UnpaidAmount: 0
+    };
+
     const { detail, handleDialogClose } = props;
     const { TransactionKey, Amount, Interest, Term } = detail;
     const [paymentReload, setPaymentReload] = useState(0);
+    const [details, setDetails] = useState(loanPaymentDetails);
+
+    const [isLoading, setLoading] = React.useState(null);
+    const [trigger, setTrigger] = useState(0);
 
     const defaultStatus = {
         open: false,
@@ -37,6 +47,7 @@ export default (props) => {
     };
 
     const addCallback = (paymentAmount) => {
+        setLoading(true);
         return addPayment(detailID, { loanID: TransactionKey, amount: paymentAmount }).then((data) => {
             if (data) {
                 setStatus({
@@ -44,25 +55,58 @@ export default (props) => {
                     message: "Payment successfully added!",
                     severity: "success"
                 });
+                setTrigger(data);
                 setPaymentReload(data);
             }
+            setLoading(false);
         }, (error) => {
             setStatus({
                 open: true,
                 message: "An error occured",
                 severity: "error"
             });
+            setLoading(false);
         });
     };
 
     const handleCalculate = (event) => {
-        downloadComputation(Amount, Interest, Term);
+        setLoading(true);
+        downloadComputation(detailID, Amount, Interest, Term).then((fileName) => {
+            setStatus({
+                open: true,
+                message: `Download Successful - ${fileName}`,
+                severity: "success"
+            });
+            setLoading(false);
+        }).catch((error) => {
+            setStatus({
+                open: true,
+                message: "Download Failed",
+                severity: "error"
+            });
+            setLoading(false);
+        });
     };
 
+    useEffect(() => {
+        let mounted = true;
+        getLoanPaymentDetails(TransactionKey)
+            .then(data => {
+                if (data && data.results.length > 0) {
+                    if (mounted) {
+                        setDetails(data.results[0]);
+                    }
+                }
+                setTrigger(0);
+                setLoading(false);
+            })
+        return () => mounted = false;
+    }, [trigger]);
 
     console.log("Render");
     return (
         <React.Fragment>
+            {(isLoading || isLoading === null) ? <Loading /> : null}
             <StatusBar open={status.open} setOpen={handleStatusClose} message={status.message} severity={status.severity} />
             <Dialog open={(TransactionKey > 0)} onClose={handleDialogClose} aria-labelledby="form-dialog-title" fullWidth fullScreen maxWidth="lg">
                 <DialogTitle id="form-dialog-title">Loan Details</DialogTitle>
@@ -72,23 +116,31 @@ export default (props) => {
                             <TextField id="LoanID" label="Loan Number" disabled={true} value={TransactionKey} />
                         </Grid>
                         <Grid item xs={3}>
-                            <TextField id="Amount" label="Loan Amount" disabled={true} value={Amount} />
-                        </Grid>
-                        <Grid item xs={3}>
                             <TextField id="InterestRate" label="Interest Rate" disabled={true} value={Interest} />
                         </Grid>
                         <Grid item xs={3}>
                             <TextField id="Term" label="Term" disabled={true} value={Term} />
                         </Grid>
+                        <Grid item xs={3}>
+                            <TextField id="Amount" label="Loan Amount" disabled={true} value={Peso(Amount)} />
+                        </Grid>
+
+                        <Grid item xs={6} />
+                        <Grid item xs={3}>
+                            <TextField id="PaidAmount" label="Total Paid" disabled={true} value={Peso(details.PaidAmount)} />
+                        </Grid>
+                        <Grid item xs={3}>
+                            <TextField id="UnpaidAmount" label="Outstanding Balance" disabled={true} value={Peso(details.UnpaidAmount)} />
+                        </Grid>
 
                         <Grid item xs={12}>
-                            <IntPayView paymentReload={paymentReload} loanID={TransactionKey} category="Payment" categoryTitle="Payment" />
+                            <IntPayView paymentReload={paymentReload} loanID={TransactionKey} category="Payment" categoryTitle="Payment" setLoanPaymentTrigger={setTrigger} />
                         </Grid>
                     </Grid>
                 </DialogContent>
                 <DialogActions>
                     <EntryButton callback={addCallback} categoryTitle="Payment" category="Payment" customText="Pay an amount" />
-                    <Button onClick={handleCalculate} label="Calculate" />
+                    <Button onClick={handleCalculate} label="Download Breakdown" />
                     <Button onClick={handleDialogClose} color="primary" label="Close" />
                 </DialogActions>
             </Dialog>

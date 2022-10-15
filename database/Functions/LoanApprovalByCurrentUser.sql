@@ -25,7 +25,7 @@ RETURNS TABLE
 AS 
 RETURN 
 
-SELECT T.TransactionKey, T.MemberKey, T.Amount, T.Interest, T.Term, 
+SELECT T.TransactionKey, T.MemberKey, T.Amount, T.Interest, T.Term, T.StartDueDate,
 dbo.GetUserRole(T.CreatedBy) AS [CreatedBy], 
 T.CreatedDate, 
 dbo.GetUserRole(T.ModifiedBy) AS [ModifiedBy], 

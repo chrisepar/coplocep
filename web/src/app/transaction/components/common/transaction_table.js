@@ -50,11 +50,12 @@ const filterOptions = [
 
 
 const TransactionToolbar = (props) => {
-    const { addCallback, deleteCallback, categoryTitle, category, setSetSearchValue, searchValue } = props;
+    const { addCallback, deleteCallback, categoryTitle, category, setSetSearchValue, searchValue, setLoading } = props;
     const [fromDateValue, setFromDateValue] = useState();
     const [toDateValue, setToDateValue] = useState();
 
     const handleFilterChange = (value) => {
+        setLoading(true);
         !IsEmpty(setSetSearchValue) && setSetSearchValue(value)
     };
 
@@ -97,20 +98,23 @@ const TransactionToolbar = (props) => {
 const TransactionTable = (props) => {
     const classes = useStyles();
 
-    const { rows, totalRowCount, page, setPage, addCallback, deleteCallback, categoryTitle, category, rowsPerPage, setSetSearchValue, searchValue } = props;
+    const { rows, totalRowCount, page, setPage, addCallback, deleteCallback, categoryTitle, category, rowsPerPage, setSetSearchValue, searchValue, setLoading } = props;
 
     // Compute for Empty Rows
     const emptyRows = Math.max(0, (1 + page) * rowsPerPage - totalRowCount);
 
     // Pagination
     const handleChangePage = (event, newPage) => {
+        setLoading(true);
         setPage(newPage);
     };
 
     return (
         <Grid container>
             <Grid item xs={12}>
-                <TransactionToolbar addCallback={addCallback} categoryTitle={categoryTitle} category={category} setSetSearchValue={setSetSearchValue} searchValue={searchValue} />
+                <TransactionToolbar addCallback={addCallback} categoryTitle={categoryTitle} category={category} setSetSearchValue={setSetSearchValue} searchValue={searchValue}
+                    setLoading={setLoading}
+                />
                 <TableContainer>
                     <Table aria-label="simple table">
                         <TableHead>
