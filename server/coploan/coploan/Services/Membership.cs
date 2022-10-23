@@ -48,5 +48,14 @@ namespace coploan.Services
             List<SqlParameter> sqlParam = sql.GenerateSQLParamFromInstance(typeof(Member), data, keyName);
             return sql.ExecuteNonQueryInsert("[dbo].[InsertMembership]", sqlParam, keyName);
         }
+
+        public bool DeleteMember(int memberKey)
+        {
+            List<SqlParameter> sqlParam = new List<SqlParameter>();
+
+            sqlParam.Add(new SqlParameter("@MemberKey", memberKey));
+
+            return sql.ExecuteNonQuery("[dbo].[DeleteMembership]", sqlParam);
+        }
     }
 }

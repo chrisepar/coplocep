@@ -12,7 +12,7 @@ import Layout from "app/core/layout/layout.js";
 import StatusBar from "app/core/dialogs/statusbar.js";
 
 import Table from "app/core/table/table.js";
-import { getMemberList } from 'app/membership/member_model.js';
+import { getMemberList, deleteMember } from 'app/membership/member_model.js';
 
 const columns = [
     { field: 'MemberID', type: field_types.text_field, headerName: 'Membership #', width: 100 },
@@ -34,6 +34,7 @@ export default function MembersList(props) {
     const [list, setList] = useState([]);
     const [isLoading, setLoading] = useState(true);
     const [page, setPage] = React.useState(0);
+    const [trigger, setTrigger] = useState(0);
     const [filterByValue, setFilterByValue] = React.useState("Name");
     const [searchValue, setSetSearchValue] = React.useState("");
     
@@ -46,6 +47,34 @@ export default function MembersList(props) {
     // Handle Status
     const handleStatusClose = () => {
         setStatus(defaultStatus);
+    };
+
+    const deleteCallback = (memberKey) => {
+        return deleteMember(memberKey).then((data) => {
+            if (data) {
+                setStatus({
+                    open: true,
+                    message: "Successfully deleted!",
+                    severity: "success"
+                });
+                setTrigger(data);
+            } else {
+                setStatus({
+                    open: true,
+                    message: "Error Occured - Delete Failed",
+                    severity: "error"
+                });
+                console.log("Error Occured - Delete Failed");
+            }
+            setLoading(false);
+        }, (error) => {
+            setStatus({
+                open: true,
+                message: "An error occured",
+                severity: "error"
+            });            
+            setLoading(false);
+        });
     };
 
     // Get Members List - Start
@@ -62,6 +91,7 @@ export default function MembersList(props) {
                 if (mounted) {
                     setList(data);
                 }
+                setTrigger(0);
                 setLoading(false);
             }, (error) => {
                 console.log(error);
@@ -72,7 +102,7 @@ export default function MembersList(props) {
                 });
             });
         return () => mounted = false;
-    }, [page, filterByValue, searchValue]);
+    }, [trigger, page, filterByValue, searchValue]);
     // End
 
     return (
@@ -84,6 +114,7 @@ export default function MembersList(props) {
                         page={page} setPage={setPage} rowsPerPage={pageCount}
                         filterByValue={filterByValue} setFilterByValue={setFilterByValue}
                         searchValue={searchValue} setSearchValue={setSetSearchValue}
+                        deleteCallback={deleteCallback}
                     />
             }
         </Layout>

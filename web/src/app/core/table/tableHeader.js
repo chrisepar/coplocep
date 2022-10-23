@@ -9,7 +9,7 @@ import Checkbox from '@material-ui/core/Checkbox';
 import { isNull } from 'lodash';
 
 function TableHeader(props) {
-    const { classes, order, orderBy, onRequestSort, columns } = props;
+    const { classes, order, orderBy, onRequestSort, columns, hasDelete } = props;
 
     const createSortHandler = (property) => (event) => {
         onRequestSort(event, property);
@@ -19,6 +19,7 @@ function TableHeader(props) {
         <TableHead>
             <TableRow className={classes.tableRow}>
                 <TableCell />
+                { (hasDelete) && <TableCell /> }
                 {columns.map((item) => (
                     <TableCell
                         key={item.field}

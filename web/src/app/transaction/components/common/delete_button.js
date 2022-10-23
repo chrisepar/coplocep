@@ -34,7 +34,11 @@ function DeleteDialog(props) {
             <DialogTitle id="form-dialog-title">Delete {category}</DialogTitle>
             <DialogContent>
                 <DialogContentText>
-                    Delete {categoryTitle} amounting to {Peso(amount)}
+                    {(amount) ?
+                        `Delete ${categoryTitle} amounting to ${Peso(amount)}`
+                        :
+                        `Delete ${category}: ${categoryTitle}`
+                    }
                 </DialogContentText>
             </DialogContent>
             <DialogActions>

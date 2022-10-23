@@ -23,6 +23,15 @@ namespace coploan.Models
         public int Term { get; set; }
 
         public DateTime StartDueDate { get; set; }
+
+        public string TypeOfLoan { get; set; }
+        public decimal ServiceFee { get; set; }
+        public decimal InsuranceAmount { get; set; }
+        public decimal FixedDepositAmount { get; set; }
+        public decimal DocumentationAmount { get; set; }
+        public decimal SavingsDepositAmount { get; set; }
+        public decimal BalancePreviousLoanAmount { get; set; }
+        public decimal InterestPreviousLoanAmount { get; set; }
     }
 
     public class LoanDetailsBalance: LoanDetails

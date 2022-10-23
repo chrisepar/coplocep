@@ -35,7 +35,7 @@ BEGIN
 	(SELECT COUNT(*) FROM MembershipWorkflow WHERE RecordID = @RecordID AND Category = @Category AND IsApproved = 'Y'),
 	(SELECT COUNT(*) FROM TransactionWorkflow WHERE RecordID = @RecordID AND Category = @Category AND IsApproved = 'Y'))
 	
-	SELECT @Result = IIF(@ApprovedCount = @MaxApprovalCount, 'Y', 'N')
+	SELECT @Result = IIF(@ApprovedCount >= @MaxApprovalCount, 'Y', 'N')
 
 	-- Return the result of the function
 	RETURN @Result

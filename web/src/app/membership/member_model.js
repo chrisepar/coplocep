@@ -89,6 +89,16 @@ const getMemberList =  (filters) => {
         .then(data => data.json())
 };
 
+const deleteMember = (memberKey) => {
+    return deleteData(`membership/delete/${memberKey}`).then((data) => {
+        if (data && data.ok) {
+            return data.json();
+        } else {
+            return false;
+        }
+    });
+};
+
 export {
-    model, saveMember, getMember, getMemberList
+    model, saveMember, getMember, getMemberList, deleteMember
 };

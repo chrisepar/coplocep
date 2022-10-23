@@ -24,6 +24,7 @@ const prepData = (detailID, category, data) => {
     detail.Amount = data.amount;
     detail.Interest = data.interest;
     detail.Term = data.term;
+    detail.TypeOfLoan = data.typeOfLoan;
     detail.StartDueDate = data.startDueDate;
     detail.CreatedBy = getUserCode();
     detail.CreatedDate = new Date();
@@ -110,6 +111,11 @@ const getLoanPaymentDetails = (loanID) => {
         .then(data => data.json())
 };
 
+const getTypeOfLoans = () => {
+    return getData('transaction/typeofloans/list')
+        .then(data => data.json())
+};
+
 const downloadComputation = (memberKey, amount, interest, term) => {
     let fileName = "";
     const param = `?memberKey=${memberKey}&amount=${amount}&interest=${interest}&term=${term}`;
@@ -140,5 +146,6 @@ export {
     deleteTransaction,
     getMembersWithTransaction,
     downloadComputation,
-    getLoanPaymentDetails
+    getLoanPaymentDetails,
+    getTypeOfLoans
 };

@@ -25,6 +25,8 @@ import isEmpty from "app/core/helpers/is_empty.js";
 
 import TablePaginationActions from "app/core/table/tablePagination.js";
 
+import { DeleteButton } from "app/transaction/components/common/delete_button.js";
+
 //Table
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -48,8 +50,10 @@ function TableCore(props) {
     const history = useHistory();
     const classes = useTableStyles();
 
-    const { data, totalRowCount, rowsPerPage, columns, title, editable, page, setPage, 
-        filterByValue, setFilterByValue, searchValue, setSearchValue } = props;
+    const { data, totalRowCount, rowsPerPage, columns, title, editable, page, setPage,
+        filterByValue, setFilterByValue, searchValue, setSearchValue, deleteCallback } = props;
+
+    const hasDelete = (typeof deleteCallback === "function");
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
@@ -64,8 +68,8 @@ function TableCore(props) {
 
     return (
         <Paper className={classes.paper}>
-            <TableToolbar title={title} searchValue={searchValue} setSearchValue={setSearchValue} filterByList={columns} 
-            filterByValue={filterByValue} setFilterByValue={setFilterByValue} />
+            <TableToolbar title={title} searchValue={searchValue} setSearchValue={setSearchValue} filterByList={columns}
+                filterByValue={filterByValue} setFilterByValue={setFilterByValue} />
             <TableContainer>
                 <Table
                     aria-label="simple table"
@@ -75,6 +79,7 @@ function TableCore(props) {
                         classes={classes}
                         rowCount={data.length}
                         columns={columns}
+                        hasDelete={hasDelete}
                     />
                     <TableBody>
                         {
@@ -90,6 +95,12 @@ function TableCore(props) {
                                                 <EditIcon />
                                             </IconButton>
                                         </TableCell>
+                                        {(hasDelete) &&
+                                            <TableCell>
+                                                <DeleteButton callback={deleteCallback} categoryTitle={row.Name} category="Member"
+                                                    transactionKey={row.MemberKey} />
+                                            </TableCell>
+                                        }
                                         {dataCell(columns, row)}
                                     </TableRow>
                                 );

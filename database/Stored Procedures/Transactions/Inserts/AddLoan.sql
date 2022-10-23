@@ -23,6 +23,7 @@ CREATE PROCEDURE [dbo].[AddLoan]
 	@Amount numeric(18,2),
 	@Interest numeric(4,2) = NULL,
 	@Term numeric(2,0) = NULL,
+	@TypeOfLoan nvarchar(100) = NULL,
 	@StartDueDate datetime,
 	@CreatedBy nvarchar(250),
 	@CreatedDate datetime,
@@ -41,6 +42,7 @@ BEGIN
            ,[Amount]
 		   ,[Interest]
 		   ,[Term]
+		   ,[TypeOfLoan]
 		   ,[StartDueDate]
            ,[CreatedBy]
            ,[CreatedDate]
@@ -50,6 +52,7 @@ BEGIN
 		@Amount,
 		@Interest,
 		@Term,
+		@TypeOfLoan,
 		@StartDueDate,
 		@CreatedBy,
 		@CreatedDate,

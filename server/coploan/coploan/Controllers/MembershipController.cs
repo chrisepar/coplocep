@@ -29,10 +29,17 @@ namespace coploan.Controllers
         {
             return membership.UpdateMemberDetails(data);
         }
+
         [ActionName("create"), HttpPost]
         public ActionResult<int> CreateMember([FromBody] Member data)
         {
             return membership.CreateMember(data);
+        }
+
+        [ActionName("delete"), HttpDelete("{memberKey}")]
+        public ActionResult<bool> DeleteMember(int memberKey)
+        {
+            return membership.DeleteMember(memberKey);
         }
     }
 }

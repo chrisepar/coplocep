@@ -8,7 +8,7 @@ import isEmpty from "app/core/helpers/is_empty.js";
 
 function DropdownCore(props) {
     const classes = useStyles();
-    const { id, label, value, list, helperText, onChange, item_label_key, item_value_key, disabled, fullWidth, size, placeHolder, error } = props;
+    const { id, label, value, list, helperText, onChange, item_label_key, item_value_key, disabled, fullWidth, size, placeHolder, error, isTextValue } = props;
     return (
         <TextField key={id + "Key"}
             id={id + "Dropdown"}
@@ -32,11 +32,12 @@ function DropdownCore(props) {
         >
             {
                 list.map((item, index) => {
+                    let label = !isEmpty(item_label_key) ? item[item_label_key] : item.label;
+                    let value = !isEmpty(item_value_key) ? item[item_value_key] : item.value;
+                    let textValue = (isTextValue) ? label : value;
                     return (
-                        <MenuItem key={index} value={!isEmpty(item_value_key) ? item[item_value_key] : item.value} >
-                            {
-                                !isEmpty(item_label_key) ? item[item_label_key] : item.label
-                            }
+                        <MenuItem key={index} value={textValue} >
+                            { label }
                         </MenuItem>
                     );
                 })
@@ -55,7 +56,8 @@ DropdownCore.defaultProps = {
     disabled: false,
     fullWidth: true,
     size: "medium",
-    error: false
+    error: false,
+    isTextValue: false
 };
 
 export default DropdownCore;

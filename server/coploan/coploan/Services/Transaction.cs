@@ -157,6 +157,13 @@ namespace coploan.Services
             return sql.ExecuteNonQuery("[dbo].[DeletePayment]", sqlParam);
         }
 
+        public string GetTypeOfLoans()
+        {
+            sql = new SQLQueries(config, typeof(Security));
+
+            return JsonConvert.SerializeObject(sql.ExecuteReader("[dbo].[GetTypeOfLoans]"));
+        }
+
         public byte[] GetComputedMonthlyLoan (string memberKey, out string fileName, float amount = 0,  float interest = 0, int term = 0)
         {
             sql = new SQLQueries(config, typeof(LoanComputation));

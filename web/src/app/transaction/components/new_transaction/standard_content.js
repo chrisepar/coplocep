@@ -6,17 +6,24 @@ import Loading from 'app/core/helpers/loading_screen.js';
 
 
 export default (props) => {
-    const { categoryTitle, category, amount, setAmount, isLoading, setLoading } = props;
-    
+    const { categoryTitle, category, newTransactData, setNewTransactData, isLoading, setLoading, status, setStatus } = props;
+
+    const handleChange = (value, field) => {
+        var newDetail = _.clone(newTransactData);
+        newDetail[field] = value;
+        setNewTransactData(newDetail);
+    };
+
     useEffect(() => {
         let mounted = true;
         setLoading(false);
         return () => mounted = false;
     }, [])
+
     return (
         <DialogContent>
             {(isLoading || isLoading === null) ? <Loading /> : null}
-            <CurrencyField id={category} label="Amount" value={amount} onChange={(value) => setAmount(value)} />
+            <CurrencyField id={category} label="Amount" value={newTransactData.amount} onChange={(value) => handleChange(value, "amount")} />
         </DialogContent>
     );
 };

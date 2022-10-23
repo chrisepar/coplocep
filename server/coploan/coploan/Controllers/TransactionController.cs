@@ -81,6 +81,12 @@ namespace coploan.Controllers
             return transaction.GetMemberInterestPaid(loanID);
         }
 
+        [ActionName("typeofloans/list"), HttpGet]
+        public ActionResult<string> GetTypeOfLoans()
+        {
+            return transaction.GetTypeOfLoans();
+        }
+
         [ActionName("payment/list"), HttpGet("{loanID}")]
         public ActionResult<string> GetMemberPayment(string loanID) => transaction.GetMemberPayment(loanID);
 

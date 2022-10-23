@@ -33,9 +33,9 @@ export default (props) => {
         setStatus(defaultStatus);
     };
 
-    const addCallback = (amount, interest = null, term = null) => {
+    const addCallback = (data) => {
         setLoading(true);
-        return addTransaction(detailID, category, { amount: amount, interest: interest, term: term }).then((data) => {
+        return addTransaction(detailID, category, data).then((data) => {
             if (data) {
                 setStatus({
                     open: true,
