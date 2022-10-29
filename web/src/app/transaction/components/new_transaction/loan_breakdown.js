@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import Grid from '@material-ui/core/Grid';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
+import Grid from '@mui/material/Grid';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
 import DateField from 'app/core/fields/date_field.js';
 import CurrencyField from 'app/core/fields/currency_field.js';
 import NumberField from "app/core/fields/number_field.js";
@@ -90,8 +90,8 @@ export default (props) => {
                         value={newTransactData.typeOfLoan} onChange={(value) => handleChange(value, "typeOfLoan")} item_value_key="Code" item_label_key="Name"/>
                 </Grid>
                 <Grid item xs={2}>
-                    <DateField id="StartDueDate" label="Due Date" openTo="month" views={["year", "month", "date"]}
-                        value={newTransactData.dueDate} onChange={(value) => handleChange(value, "duedate")} />
+                    <DateField id="StartDueDate" label="Due Date" openTo="month" views={["year", "month", "day"]}
+                        value={newTransactData.dueDate} onChange={(value) => handleChange(value, "dueDate")} />
                 </Grid>            
                 <Grid item xs={2}>
                     <CurrencyField id={category} label="Amount" value={newTransactData.amount} onChange={(value) => handleChange(value, "amount")} />

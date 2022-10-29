@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Layout from "app/core/layout/layout.js";
-import Grid from '@material-ui/core/Grid';
+import Grid from '@mui/material/Grid';
 
 import useStyles from "app/settings/styles/_settings.js";
 
@@ -11,7 +11,7 @@ import Loading from 'app/core/helpers/loading_screen.js';
 import { model, saveSettings, getSettings } from "app/settings/settings_model.js";
 
 export default (props) => {
-    const classes = useStyles();
+    const { classes } = useStyles();
 
     const [isLoading, setLoading] = useState(null);
     const [detail, setDetail] = useState(model);

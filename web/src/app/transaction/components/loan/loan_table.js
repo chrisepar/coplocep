@@ -2,19 +2,19 @@ import React, { useEffect, useState } from 'react';
 import _ from 'lodash';
 
 
-import Grid from '@material-ui/core/Grid';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import TablePagination from '@material-ui/core/TablePagination';
-import TableFooter from '@material-ui/core/TableFooter';
-import Toolbar from '@material-ui/core/Toolbar';
-import IconButton from '@material-ui/core/IconButton';
-import SearchIcon from '@material-ui/icons/Search';
-import ThumbUpAltIcon from '@material-ui/icons/ThumbUpAlt';
+import Grid from '@mui/material/Grid';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import TablePagination from '@mui/material/TablePagination';
+import TableFooter from '@mui/material/TableFooter';
+import Toolbar from '@mui/material/Toolbar';
+import IconButton from '@mui/material/IconButton';
+import SearchIcon from '@mui/icons-material/Search';
+import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt';
 import moment from 'moment';
 
 import Dropdown from 'app/core/fields/dropdown_field.js';
@@ -96,7 +96,7 @@ const LoanToolbar = (props) => {
 };
 
 const LoanTable = (props) => {
-    const classes = useStyles();
+    const { classes } = useStyles();
 
     const { memberKey, rows, totalRowCount, page, setPage, addCallback, deleteCallback, approveCallback,
         rejectCallback, rowsPerPage, setSetSearchValue, searchValue, setLoading } = props;

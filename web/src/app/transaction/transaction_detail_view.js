@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import _ from 'lodash';
 
-import Typography from '@material-ui/core/Typography';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import Grid from '@material-ui/core/Grid';
+import Typography from '@mui/material/Typography';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import Grid from '@mui/material/Grid';
 
-import Accordion from '@material-ui/core/Accordion';
-import AccordionSummary from '@material-ui/core/AccordionSummary';
-import AccordionDetails from '@material-ui/core/AccordionDetails';
+import Accordion from '@mui/material/Accordion';
+import AccordionSummary from '@mui/material/AccordionSummary';
+import AccordionDetails from '@mui/material/AccordionDetails';
 import moment from 'moment';
 
 //Apps
@@ -22,7 +22,7 @@ import DepositView from "app/transaction/components/deposit/deposit_view.js";
 import useStyles from 'app/membership/styles/_memberDetailsView.js';
 
 function MemberDetailsContainer(props) {
-    const classes = useStyles();
+    const { classes } = useStyles();
     const [expanded, setExpanded] = useState(false);
 
     const handleChange = (event, isExpanded) => {
@@ -47,7 +47,7 @@ function MemberDetailsContainer(props) {
 
 function LoanDetailsContainer(props) {
     console.log("Load Loan List for Member")
-    const classes = useStyles();
+    const { classes } = useStyles();
     const [expanded, setExpanded] = useState(true);
 
     const handleChange = (event, isExpanded) => {
@@ -71,7 +71,7 @@ function LoanDetailsContainer(props) {
 };
 
 function DepositDetailsContainer(props) {
-    const classes = useStyles();
+    const { classes } = useStyles();
     const [expanded, setExpanded] = useState(true);
 
     const handleChange = (event, isExpanded) => {
@@ -95,7 +95,7 @@ function DepositDetailsContainer(props) {
 };
 
 function TransactionDetailViewContainer(props) {
-    const classes = useStyles();
+    const { classes } = useStyles();
     return (
         <Layout appName={props.appName}>
             <Grid container spacing={3} >

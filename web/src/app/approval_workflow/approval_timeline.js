@@ -1,18 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import Typography from '@material-ui/core/Typography';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import Button from '@material-ui/core/Button';
-import DialogTitle from '@material-ui/core/DialogTitle';
+import Typography from '@mui/material/Typography';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import Button from '@mui/material/Button';
+import DialogTitle from '@mui/material/DialogTitle';
 
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableHead from '@material-ui/core/TableHead';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableRow from '@material-ui/core/TableRow';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableHead from '@mui/material/TableHead';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableRow from '@mui/material/TableRow';
 import IsTruthy from "app/core/helpers/is_truthy.js";
 import { FormatDateTime } from 'app/core/helpers/date_format.js';
 
@@ -33,7 +33,7 @@ const getStatus = (isApproved) => {
 };
 
 const ApprovalTimeline = (props) => {
-    const classes = useStyles();
+    const { classes } = useStyles();
     const { category, recordID, openDialog, setOpenDialog } = props;
     const [isLoading, setLoading] = useState(true);
 

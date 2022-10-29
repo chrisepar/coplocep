@@ -1,12 +1,12 @@
 
 import React from 'react';
-import Button from '@material-ui/core/Button';
-import SaveIcon from '@material-ui/icons/Save';
+import Button from '@mui/material/Button';
+import SaveIcon from '@mui/icons-material/Save';
 
 import useStyles from 'app/core/styles/buttons/_buttons.js';
 
 function CoreButton(props) {
-    const classes = useStyles();
+    const { classes } = useStyles();
     const { id, label } = props;
     return (
         <Button

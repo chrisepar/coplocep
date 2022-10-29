@@ -1,13 +1,13 @@
 import React from 'react';
 
-import MenuItem from '@material-ui/core/MenuItem';
-import TextField from '@material-ui/core/TextField';
+import MenuItem from '@mui/material/MenuItem';
+import TextField from '@mui/material/TextField';
 
 import useStyles from 'app/core/styles/fields/_formControl.js';
 import isEmpty from "app/core/helpers/is_empty.js";
 
 function DropdownCore(props) {
-    const classes = useStyles();
+    const { classes } = useStyles();
     const { id, label, value, list, helperText, onChange, item_label_key, item_value_key, disabled, fullWidth, size, placeHolder, error, isTextValue } = props;
     return (
         <TextField key={id + "Key"}

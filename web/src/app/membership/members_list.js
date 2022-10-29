@@ -28,8 +28,8 @@ const columns = [
 ];
 
 export default function MembersList(props) {
-    const classes = useStyles();
-    const pageCount = 8;
+    const { classes } = useStyles();
+    const pageCount = 9;
 
     const [list, setList] = useState([]);
     const [isLoading, setLoading] = useState(true);

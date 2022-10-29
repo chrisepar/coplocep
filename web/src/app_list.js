@@ -8,11 +8,11 @@ import Settings from "app/settings/settings_view.js";
 import Reports from "app/reports/reports_view.js";
 
 // icons
-import AssessmentIcon from '@material-ui/icons/Assessment';
-import PersonAddIcon from '@material-ui/icons/PersonAdd';
-import PeopleAltIcon from '@material-ui/icons/PeopleAlt';
-import ReceiptIcon from '@material-ui/icons/Receipt';
-import SettingsIcon from '@material-ui/icons/Settings';
+import AssessmentIcon from '@mui/icons-material/Assessment';
+import PersonAddIcon from '@mui/icons-material/PersonAdd';
+import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
+import ReceiptIcon from '@mui/icons-material/Receipt';
+import SettingsIcon from '@mui/icons-material/Settings';
 
 export default [
     {

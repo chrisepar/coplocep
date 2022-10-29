@@ -28,8 +28,8 @@ const columns = [
 ];
 
 export default (props) => {
-    const classes = useStyles();
-    const pageCount = 8;
+    const { classes } = useStyles();
+    const pageCount = 9;
 
     // Get Members Transaction List - Start
     const [list, setList] = useState([]);

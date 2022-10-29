@@ -1,9 +1,9 @@
 import React from 'react';
-import Backdrop from '@material-ui/core/Backdrop';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import { makeStyles } from '@material-ui/core/styles';
+import Backdrop from '@mui/material/Backdrop';
+import CircularProgress from '@mui/material/CircularProgress';
+import { makeStyles } from 'tss-react/mui';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
     backdrop: {
         zIndex: theme.zIndex.modal + 1,
         color: '#fff',
@@ -11,7 +11,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function Loading() {
-    const classes = useStyles();
+    const { classes } = useStyles();
     return (
         <Backdrop className={classes.backdrop} open={true}>
             <CircularProgress color="inherit" />

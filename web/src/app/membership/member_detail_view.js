@@ -5,8 +5,8 @@ import {
 import _ from 'lodash';
 
 import Dropdown from 'app/core/fields/dropdown_field.js';
-import Typography from '@material-ui/core/Typography';
-import Grid from '@material-ui/core/Grid';
+import Typography from '@mui/material/Typography';
+import Grid from '@mui/material/Grid';
 import TextField from 'app/core/fields/text_field.js';
 import DateField from 'app/core/fields/date_field.js';
 import NumberField from 'app/core/fields/number_field.js';
@@ -72,7 +72,7 @@ const typeOfMembershipItems = [
 
 function MemberDetails(props) {
     let { detailID } = props.match.params;
-    const classes = useStyles();
+    const { classes } = useStyles();
     const history = useHistory();
     const isCreateMode = (detailID === "~");
 
@@ -202,7 +202,7 @@ function MemberDetails(props) {
     const getAge = () => {
         var birthDate = _.get(detail, "Birthdate");
         if (birthDate) {
-            var end = moment(birthDate); // another date
+            var end = moment(new Date(birthDate)); // another date
             if (end.isValid()) {
                 var now = moment(new Date()); //todays date
                 var duration = moment.duration(now.diff(end));
@@ -310,7 +310,7 @@ function MemberDetails(props) {
 
 
                 <Grid item xs={3}>
-                    <DateField id="Birthdate" label="Birthdate" disableFuture={true} openTo="year" views={["year", "month", "date"]} error={hasError("Birthdate")}
+                    <DateField id="Birthdate" label="Birthdate" disableFuture={true} openTo="year" views={["year", "month", "day"]} error={hasError("Birthdate")}
                         value={detail.Birthdate} onChange={(value) => handleChange(value, "Birthdate")} disabled={shouldFieldDisabled} required={true} />
                 </Grid>
                 <Grid item xs={3}>

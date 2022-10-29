@@ -1,11 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import TextField from '@material-ui/core/TextField';
+import TextField from '@mui/material/TextField';
 import NumberFormat from 'react-number-format';
 import useStyles from 'app/core/styles/fields/_formControl.js';
 
 function CurrencyFieldCore(props) {
-    const classes = useStyles();
+    const { classes } = useStyles();
     const { id, label, prefix, value, onChange, disabled, defaultValue } = props;
 
     const onValueChange = (values) => {

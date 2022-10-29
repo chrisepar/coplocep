@@ -1,6 +1,6 @@
 import React from 'react';
-import FormControl from '@material-ui/core/FormControl';
-import InputLabel from '@material-ui/core/InputLabel';
+import FormControl from '@mui/material/FormControl';
+import InputLabel from '@mui/material/InputLabel';
 
 function FormControlCore(props) {
     const { children, id, label } = props;

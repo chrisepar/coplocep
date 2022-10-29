@@ -4,18 +4,18 @@ import clsx from 'clsx';
 import { useHistory, useLocation } from "react-router-dom";
 
 //Material UI
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableRow from '@material-ui/core/TableRow';
-import TablePagination from '@material-ui/core/TablePagination';
-import TableFooter from '@material-ui/core/TableFooter';
-import Paper from '@material-ui/core/Paper';
-import Checkbox from '@material-ui/core/Checkbox';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableRow from '@mui/material/TableRow';
+import TablePagination from '@mui/material/TablePagination';
+import TableFooter from '@mui/material/TableFooter';
+import Paper from '@mui/material/Paper';
+import Checkbox from '@mui/material/Checkbox';
 import { useTableStyles } from 'app/core/styles/_table.js';
-import IconButton from '@material-ui/core/IconButton';
-import EditIcon from '@material-ui/icons/Edit';
+import IconButton from '@mui/material/IconButton';
+import EditIcon from '@mui/icons-material/Edit';
 
 import TableHeader from "app/core/table/tableHeader.js";
 import TableToolbar from "app/core/table/tableToolbar.js";

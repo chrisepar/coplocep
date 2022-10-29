@@ -1,11 +1,11 @@
 
 import React from 'react';
-import Button from '@material-ui/core/Button';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
+import Button from '@mui/material/Button';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
 import MultilineField from 'app/core/fields/multiline_field.js';
 import CoreButton from 'app/core/button/core_button.js';
 
@@ -13,7 +13,7 @@ import useStyles from 'app/core/styles/buttons/_buttons.js';
 import { approveRecord } from "app/approval_workflow/approval_workflow_model.js";
 
 function ApproveButton(props) {
-    const classes = useStyles();
+    const { classes } = useStyles();
     const { id, label, callback, memberName, recordID, setReload } = props;
     const [openEntryDialog, setOpenEntryDialog] = React.useState(false);
 

@@ -1,8 +1,6 @@
-import { makeStyles, lighten } from '@material-ui/core/styles';
+import { makeStyles } from 'tss-react/mui';
 
-const drawerWidth = 240;
-
-const useTableStyles = makeStyles((theme) => ({
+const useTableStyles = makeStyles()((theme) => ({
     root: {
         display: 'flex'
     },
@@ -47,7 +45,7 @@ const useTableStyles = makeStyles((theme) => ({
     }
 }));
 
-const useToolbarStyles = makeStyles((theme) => ({
+const useToolbarStyles = makeStyles()((theme) => ({
     root: {
         paddingLeft: theme.spacing(2),
         paddingRight: theme.spacing(1),
@@ -56,7 +54,7 @@ const useToolbarStyles = makeStyles((theme) => ({
         theme.palette.type === 'light'
             ? {
                 color: theme.palette.secondary.main,
-                backgroundColor: lighten(theme.palette.secondary.light, 0.85),
+                backgroundColor: theme.palette.secondary.light,
             }
             : {
                 color: theme.palette.text.primary,

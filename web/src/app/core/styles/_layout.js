@@ -1,8 +1,8 @@
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from 'tss-react/mui';
 
 const drawerWidth = 240;
 
-export default makeStyles((theme) => ({
+export default makeStyles()((theme) => ({
     root: {
         display: 'flex',
     },

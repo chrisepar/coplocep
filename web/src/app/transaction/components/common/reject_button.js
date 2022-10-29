@@ -1,20 +1,20 @@
 
 import React from 'react';
-import Button from '@material-ui/core/Button';
-import AddCircleIcon from '@material-ui/icons/AddCircle';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
+import Button from '@mui/material/Button';
+import AddCircleIcon from '@mui/icons-material/AddCircle';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
 import MultilineField from 'app/core/fields/multiline_field.js';
-import IconButton from '@material-ui/core/IconButton';
-import ThumbDownIcon from '@material-ui/icons/ThumbDown';
+import IconButton from '@mui/material/IconButton';
+import ThumbDownIcon from '@mui/icons-material/ThumbDown';
 
 import useStyles from 'app/core/styles/buttons/_buttons.js';
 
 function RejectButton(props) {
-    const classes = useStyles();
+    const { classes } = useStyles();
     const { id, label, openDialog, handleDialogClose, setOpenDialog, callback, categoryTitle, category, amount, transactionKey } = props;
 
     const [comment, setComment] = React.useState("");

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useHistory, Redirect, Route } from "react-router-dom";
 
-import { Grid, Box, Select, FormControl, MenuItem, InputLabel } from '@material-ui/core';
+import { Grid, Box, Select, FormControl, MenuItem, InputLabel } from '@mui/material';
 import 'css/_authentication.css';
 
 import appDetails from '_appDetails.js';

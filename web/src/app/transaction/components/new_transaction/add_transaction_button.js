@@ -3,11 +3,11 @@ import React from 'react';
 import {
     useParams
 } from "react-router-dom";
-import Button from '@material-ui/core/Button';
-import AddCircleIcon from '@material-ui/icons/AddCircle';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogTitle from '@material-ui/core/DialogTitle';
+import Button from '@mui/material/Button';
+import AddCircleIcon from '@mui/icons-material/AddCircle';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogTitle from '@mui/material/DialogTitle';
 
 import useStyles from 'app/core/styles/buttons/_buttons.js';
 import isEmpty from "app/core/helpers/is_empty.js";
@@ -19,7 +19,7 @@ import { downloadComputation } from 'app/transaction/transaction_model.js';
 
 function AddButton(props) {
     let { detailID } = useParams();
-    const classes = useStyles();
+    const { classes } = useStyles();
     const { id, label, callback, categoryTitle, category, customText } = props;
     const [openEntryDialog, setOpenEntryDialog] = React.useState(false);
 
@@ -81,9 +81,6 @@ function AddButton(props) {
             case "Loan":
                 return <LoanBreakdown categoryTitle={categoryTitle} category={category} isLoading={isLoading} setLoading={setLoading}
                     newTransactData={newTransactData} setNewTransactData={setNewTransactData} status={status} setStatus={setStatus}
-                    // amount={amount} setAmount={setAmount}
-                    // interest={interest} setInterest={setInterest} term={term} setTerm={setTerm} dueDate={dueDate} setDueDate={setDueDate} 
-                    // typeOfLoan={typeOfLoan} setTypeOfLoan={setTypeOfLoan}
                 />;
             default:
                 return <StandardContent categoryTitle={categoryTitle} category={category} isLoading={isLoading} setLoading={setLoading}
@@ -103,7 +100,7 @@ function AddButton(props) {
                 startIcon={<AddCircleIcon />}
                 onClick={handleClickOpen}
             >{isEmpty(customText) ? category : customText}</Button>
-            <Dialog open={openEntryDialog} onClose={handleClose} aria-labelledby="form-dialog-title" maxWidth="lg">
+            <Dialog open={openEntryDialog} onClose={handleClose} aria-labelledby="form-dialog-title" maxWidth="xl" fullWidth>
                 <DialogTitle id="form-dialog-title">{category}</DialogTitle>
                 {
                     breakdown()

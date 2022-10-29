@@ -2,15 +2,15 @@ import React, { useEffect, useState } from 'react';
 import {
     useParams
 } from "react-router-dom";
-import Dialog from '@material-ui/core/Dialog';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogTitle from '@material-ui/core/DialogTitle';
+import Dialog from '@mui/material/Dialog';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogActions from '@mui/material/DialogActions';
+import DialogTitle from '@mui/material/DialogTitle';
 import Loading from 'app/core/helpers/loading_screen.js';
-// import Button from '@material-ui/core/Button';
+// import Button from '@mui/material/Button';
 import Button from "app/core/button/core_button.js";
-import Grid from '@material-ui/core/Grid';
+import Grid from '@mui/material/Grid';
 import TextField from 'app/core/fields/text_field.js';
 
 import { Peso } from 'app/core/helpers/currency_format.js';

@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import TextField from '@material-ui/core/TextField';
+import TextField from '@mui/material/TextField';
 import useStyles from 'app/core/styles/fields/_formControl.js';
 import field_types from 'app/core/fields/field_types.js';
 import FormatValue from "app/core/helpers/format_value.js";
 
 function TextFieldCore(props) {
-    const classes = useStyles();
+    const { classes } = useStyles();
     const { id, label, value, onChange, disabled, required, error} = props;
 
     return (
