@@ -1,7 +1,8 @@
-# coplocep
+# Coop Loan System (COPLOCEP)
 
-Creating a framework for application. React-js and Material-UI as framework base.
+Built using MUI, ReactJS, .NET Core, and SQL.
 
 Features:
 - CRUD
 - Role based static login.
+- Approval Workflow
