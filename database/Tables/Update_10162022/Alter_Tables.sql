@@ -33,3 +33,14 @@ ADD [TypeOfLoan] [nvarchar](100) NULL,
 	[SavingsDepositAmount] numeric(18,2),
 	[BalancePreviousLoanAmount] numeric(18,2),
 	[InterestPreviousLoanAmount] numeric(18,2)
+
+--Insert New columns to deposit
+ALTER TABLE Deposits
+ADD [DepositShareCapitalAmount] numeric(18,2),
+	[DepositSavings] numeric(18,2)
+
+-- Insert new columns to Payments
+ALTER TABLE Payments
+ADD Principal numeric(18,2),
+	Interest numeric(18,2),
+	Penalty numeric(18,2)

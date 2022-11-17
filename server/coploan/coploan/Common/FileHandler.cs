@@ -8,17 +8,19 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using ClosedXML.Excel;
 using System.Data;
+using coploan.Models;
 
 namespace coploan.Common
 {
     public class FileHandler
     {
-        public byte[] DownloadComputation(DataTable computationDatatable, DataTable customerDataTable, float amount)
+        public byte[] DownloadComputation(DataTable computationDatatable, DataTable customerDataTable, LoanComputation data)
         {
             using (XLWorkbook wb = new XLWorkbook())
             {
                 //Add DataTable in worksheet  
                 int row = 1;
+                float amount = (float)data.Amount;
                 var ws = wb.Worksheets.Add("Computation");
                 double serviceFee = Math.Round((0.02 * amount), 2);
 
@@ -106,7 +108,7 @@ namespace coploan.Common
                 ws.Cell(row, 1).Value = "  b. Insurance";
                 ws.Range(row, 5, row, 5).Style.Font.Bold = true;
                 ws.Range(row, 1, row, 3).Merge();
-                ws.Cell(row, 5).Value = 0;
+                ws.Cell(row, 5).Value = data.InsuranceAmount;
                 ws.Range(row, 5, row, 5).Style.NumberFormat.Format = "₱ #,##0.00";
                 ws.Range(row, 5, row, 5).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
@@ -115,7 +117,7 @@ namespace coploan.Common
                 ws.Cell(row, 1).Value = "  c. Fixed Deposit";
                 ws.Range(row, 5, row, 5).Style.Font.Bold = true;
                 ws.Range(row, 1, row, 3).Merge();
-                ws.Cell(row, 5).Value = 0;
+                ws.Cell(row, 5).Value = data.FixedDepositAmount;
                 ws.Range(row, 5, row, 5).Style.NumberFormat.Format = "₱ #,##0.00";
                 ws.Range(row, 5, row, 5).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
@@ -124,7 +126,7 @@ namespace coploan.Common
                 ws.Cell(row, 1).Value = "  d. Documentation";
                 ws.Range(row, 5, row, 5).Style.Font.Bold = true;
                 ws.Range(row, 1, row, 3).Merge();
-                ws.Cell(row, 5).Value = 0;
+                ws.Cell(row, 5).Value = data.DocumentationAmount;
                 ws.Range(row, 5, row, 5).Style.NumberFormat.Format = "₱ #,##0.00";
                 ws.Range(row, 5, row, 5).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
@@ -133,7 +135,7 @@ namespace coploan.Common
                 ws.Cell(row, 1).Value = "  e. Savings Deposit";
                 ws.Range(row, 5, row, 5).Style.Font.Bold = true;
                 ws.Range(row, 1, row, 3).Merge();
-                ws.Cell(row, 5).Value = 0;
+                ws.Cell(row, 5).Value = data.SavingsDepositAmount;
                 ws.Range(row, 5, row, 5).Style.NumberFormat.Format = "₱ #,##0.00";
                 ws.Range(row, 5, row, 5).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
@@ -142,7 +144,7 @@ namespace coploan.Common
                 ws.Cell(row, 1).Value = "  f. Balance of previous loan, if any";
                 ws.Range(row, 5, row, 5).Style.Font.Bold = true;
                 ws.Range(row, 1, row, 3).Merge();
-                ws.Cell(row, 5).Value = 0;
+                ws.Cell(row, 5).Value = data.BalancePreviousLoanAmount;
                 ws.Range(row, 5, row, 5).Style.NumberFormat.Format = "₱ #,##0.00";
                 ws.Range(row, 5, row, 5).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
@@ -151,7 +153,7 @@ namespace coploan.Common
                 ws.Cell(row, 1).Value = "  g. Interest of previous loan, if any";
                 ws.Range(row, 5, row, 5).Style.Font.Bold = true;
                 ws.Range(row, 1, row, 3).Merge();
-                ws.Cell(row, 5).Value = 0;
+                ws.Cell(row, 5).Value = data.InterestPreviousLoanAmount;
                 ws.Range(row, 5, row, 5).Style.NumberFormat.Format = "₱ #,##0.00";
                 ws.Range(row, 5, row, 5).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
@@ -184,11 +186,6 @@ namespace coploan.Common
                 ws.Cell(row, 1).InsertTable(computationDatatable.AsEnumerable());
                 ws.Range(row, 1, row, 5).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
                 ws.Range(row, 1, row, 5).Style.Font.Bold = true;
-                ws.Cell(row, 1).SetValue("Month");
-                ws.Cell(row, 2).SetValue("Amortization");
-                ws.Cell(row, 3).SetValue("Interest");
-                ws.Cell(row, 4).SetValue("Principal");
-                ws.Cell(row, 5).SetValue("Outstanding Principal Balance");
 
                 int dataRowCount = computationDatatable.Rows.Count;
                 ws.Range(row + 1, 2, dataRowCount + row, 5).Style.NumberFormat.Format = "₱ #,##0.00";

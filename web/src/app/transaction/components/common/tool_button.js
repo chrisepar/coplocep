@@ -96,11 +96,11 @@ function ToolButton(props) {
                         transactionKey={row.TransactionKey} amount={row.Amount} />
                 </React.Fragment>
             }
-            {
+            {/* {
                 (category === "Loan") && (isTruthy(row.IsApproved)) &&
                 <PaymentDialog openDialog={openDialog} setOpenDialog={setOpenDialog} handleDialogClose={handleDialogClose} callback={deleteCallback} categoryTitle={categoryTitle} category={category}
                     transactionKey={row.TransactionKey} amount={row.Amount} />
-            }
+            } */}
             {
                 (category !== "Payment") && (category !== "Interest") &&
                 <DeleteDialog openDialog={openDialog} setOpenDialog={setOpenDialog} handleDialogClose={handleDialogClose} callback={deleteCallback} categoryTitle={categoryTitle} category={category}

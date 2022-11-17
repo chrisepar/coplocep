@@ -164,16 +164,16 @@ namespace coploan.Services
             return JsonConvert.SerializeObject(sql.ExecuteReader("[dbo].[GetTypeOfLoans]"));
         }
 
-        public byte[] GetComputedMonthlyLoan (string memberKey, out string fileName, float amount = 0,  float interest = 0, int term = 0)
+        public byte[] GetComputedMonthlyLoan (string memberKey, out string fileName, LoanComputation data)
         {
-            sql = new SQLQueries(config, typeof(LoanComputation));
+            sql = new SQLQueries(config, typeof(ComputedMonthlyLoan));
             FileHandler fileHandler = new FileHandler();
             List<SqlParameter> sqlParam = new List<SqlParameter>();
 
             // Get Loan Computation
-            sqlParam.Add(new SqlParameter("@amount", amount));
-            sqlParam.Add(new SqlParameter("@interest", interest));
-            sqlParam.Add(new SqlParameter("@term", term));
+            sqlParam.Add(new SqlParameter("@amount", data.Amount));
+            sqlParam.Add(new SqlParameter("@interest", data.Interest));
+            sqlParam.Add(new SqlParameter("@term", data.Term));
 
             DataTable computationDatatable = sql.ExecuteReader("[dbo].[GetComputedMonthlyLoan]", sqlParam);
 
@@ -188,7 +188,7 @@ namespace coploan.Services
             // Out String fileName
             fileName = customerDataTable.Rows[0]["Name"].ToString();
 
-            return fileHandler.DownloadComputation(computationDatatable, customerDataTable, amount);
+            return fileHandler.DownloadComputation(computationDatatable, customerDataTable, data);
         }
     }
 }

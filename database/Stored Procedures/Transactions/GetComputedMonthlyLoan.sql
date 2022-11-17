@@ -28,17 +28,16 @@ BEGIN
 	-- interfering with SELECT statements.
 	SET NOCOUNT ON;
 
-DECLARE @monthlyInterestRate float = ((@interest / 100) / 12 )
-DECLARE @monthlyPayment float = @amount / ((POWER((1 + @monthlyInterestRate), @term) - 1) / (@monthlyInterestRate * POWER((1 + @monthlyInterestRate), @term)))
-DECLARE @monthlyAmount float = @amount
+DECLARE @monthlyInterestRate float = dbo.InterestRate(@interest)
+DECLARE @monthlyPayment float = dbo.ForcastMonthlyPayment(@amount, @interest, @term)
 
 
 ;WITH CTE_LoanTable(ID, [Balance], [Payment], [Principal], [Interest], [EndingBalance])
 	AS
 	(
-		SELECT ID = 1, @amount, @monthlyPayment, @monthlyPayment - (@amount * @monthlyInterestRate), @amount * @monthlyInterestRate, (@amount-@monthlyPayment)+(@amount * @monthlyInterestRate)
+		SELECT ID = 1, @amount, @monthlyPayment, dbo.Principal(@amount, @monthlyPayment, @interest), dbo.Interest(@amount, @interest), (@amount-@monthlyPayment)+(@amount * @monthlyInterestRate)
 		UNION ALL
-		SELECT ID + 1, ([Balance]-[Payment])+[Interest], [Payment], [Payment] - ((([Balance]-[Payment])+[Interest]) * @monthlyInterestRate), (([Balance]-[Payment])+[Interest]) * @monthlyInterestRate, ([EndingBalance]-[Payment])+((([Balance]-[Payment])+[Interest]) * @monthlyInterestRate)
+		SELECT ID + 1, ([Balance]-[Payment])+[Interest], [Payment], dbo.Principal((([Balance]-[Payment])+[Interest]), @monthlyPayment, @interest), dbo.Interest((([Balance]-[Payment])+[Interest]), @interest), ([EndingBalance]-[Payment])+((([Balance]-[Payment])+[Interest]) * @monthlyInterestRate)
 		FROM CTE_LoanTable
 		WHERE ID + 1 <= @term
 	)

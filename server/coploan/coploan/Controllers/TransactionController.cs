@@ -93,11 +93,11 @@ namespace coploan.Controllers
         [ActionName("loan/details"), HttpGet("{loanID}")]
         public ActionResult<string> GetLoanPaymentDetails(string loanID) => transaction.GetLoanPaymentDetails(loanID);
 
-        [ActionName("calculation"), HttpGet]
-        public ActionResult DownloadFile(string memberKey, float amount, float interest, int term)
+        [ActionName("calculation"), HttpPost]
+        public ActionResult DownloadFile(string memberKey, [FromBody] LoanComputation data)
         {
             string fileName;
-            byte[] result = transaction.GetComputedMonthlyLoan(memberKey, out fileName, amount, interest, term);
+            byte[] result = transaction.GetComputedMonthlyLoan(memberKey, out fileName, data);
             return File(result, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName + ".xlsx");
         }
     }

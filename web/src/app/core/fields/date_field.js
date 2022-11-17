@@ -26,13 +26,15 @@ function DateFieldCore(props) {
                 onChange={onChange}
                 openTo={openTo}
                 views={views}
-                error={error}
+                disabled={disabled}
                 KeyboardButtonProps={{
                     'aria-label': 'change date'
                 }}
                 renderInput={(params) => <TextField {...params} helperText={null}
                     variant="outlined"
                     margin="normal" fullWidth
+                    required={required}
+                    error={error}
                     InputLabelProps={{
                         shrink: true,
                         classes: {

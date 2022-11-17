@@ -21,6 +21,8 @@ CREATE PROCEDURE [dbo].[AddDeposit]
 	@TransactionKey int OUTPUT,
 	@MemberKey int,
 	@Amount numeric(18,2),
+	@DepositShareCapitalAmount numeric(18,2) = 0,
+	@DepositSavings numeric(18,2) = 0,
 	@CreatedBy nvarchar(250),
 	@CreatedDate datetime,
 	@ModifiedBy nvarchar(250),
@@ -36,12 +38,16 @@ BEGIN
 	INSERT INTO [dbo].[Deposits]
            ([MemberKey]
            ,[Amount]
+		   ,[DepositShareCapitalAmount]
+		   ,[DepositSavings]
            ,[CreatedBy]
            ,[CreatedDate]
            ,[ModifiedBy]
            ,[ModifiedDate])
      VALUES(@MemberKey,
 		@Amount,
+		@DepositShareCapitalAmount,
+		@DepositSavings,
 		@CreatedBy,
 		@CreatedDate,
 		@ModifiedBy,

@@ -6,7 +6,7 @@ import useStyles from 'app/core/styles/fields/_formControl.js';
 
 function CurrencyFieldCore(props) {
     const { classes } = useStyles();
-    const { id, label, prefix, value, onChange, disabled, defaultValue } = props;
+    const { id, label, prefix, value, onChange, disabled, defaultValue, required, allowNegative } = props;
 
     const onValueChange = (values) => {
         const {formattedValue, value} = values;
@@ -34,7 +34,8 @@ function CurrencyFieldCore(props) {
             onValueChange={(values) => onValueChange(values)}
             disabled={disabled}
             defaultValue={defaultValue}
-            allowNegative={false}
+            allowNegative={allowNegative}
+            required={required}
         />
     );
 };
@@ -46,7 +47,9 @@ CurrencyFieldCore.defaultProps = {
     value: "",
     onChange: () => { },
     disabled: false,
-    defaultValue: 0
+    defaultValue: 0,
+    required: false,
+    allowNegative: false
 };
 
 export default CurrencyFieldCore;

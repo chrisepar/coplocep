@@ -24,6 +24,13 @@ CREATE PROCEDURE [dbo].[AddLoan]
 	@Interest numeric(4,2) = NULL,
 	@Term numeric(2,0) = NULL,
 	@TypeOfLoan nvarchar(100) = NULL,
+	@ServiceFee numeric(18,2) = NULL,
+	@InsuranceAmount numeric(18,2) = NULL,
+	@FixedDepositAmount numeric(18,2) = NULL,
+	@DocumentationAmount numeric(18,2) = NULL,
+	@SavingsDepositAmount numeric(18,2) = NULL,
+	@BalancePreviousLoanAmount numeric(18,2) = NULL,
+	@InterestPreviousLoanAmount numeric(18,2) = NULL,
 	@StartDueDate datetime,
 	@CreatedBy nvarchar(250),
 	@CreatedDate datetime,
@@ -43,6 +50,13 @@ BEGIN
 		   ,[Interest]
 		   ,[Term]
 		   ,[TypeOfLoan]
+		   ,[ServiceFee]
+		   ,[InsuranceAmount]
+		   ,[FixedDepositAmount]
+		   ,[DocumentationAmount]
+		   ,[SavingsDepositAmount]
+		   ,[BalancePreviousLoanAmount]
+		   ,[InterestPreviousLoanAmount]
 		   ,[StartDueDate]
            ,[CreatedBy]
            ,[CreatedDate]
@@ -53,6 +67,13 @@ BEGIN
 		@Interest,
 		@Term,
 		@TypeOfLoan,
+		@ServiceFee,
+		@InsuranceAmount,
+		@FixedDepositAmount,
+		@DocumentationAmount,
+		@SavingsDepositAmount,
+		@BalancePreviousLoanAmount,
+		@InterestPreviousLoanAmount,
 		@StartDueDate,
 		@CreatedBy,
 		@CreatedDate,

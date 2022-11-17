@@ -98,6 +98,9 @@ const TransactionToolbar = (props) => {
 const TransactionTable = (props) => {
     const { classes } = useStyles();
 
+    const DEPOSIT_CONSTANT = "Deposit";
+    const PAYMENT_CONSTANT = "Payment";
+
     const { rows, totalRowCount, page, setPage, addCallback, deleteCallback, categoryTitle, category, rowsPerPage, setSetSearchValue, searchValue, setLoading } = props;
 
     // Compute for Empty Rows
@@ -123,6 +126,13 @@ const TransactionTable = (props) => {
                                     {category} Number
                                 </TableCell>
                                 <TableCell align="right">{category} Amount</TableCell>
+
+                                {(category === DEPOSIT_CONSTANT) && <TableCell align="right">{category} Savings</TableCell>}
+                                {(category === DEPOSIT_CONSTANT) && <TableCell align="right">{category} Share Capital Amount</TableCell>}
+
+                                {(category === PAYMENT_CONSTANT) && <TableCell align="right">Interest</TableCell>}
+                                {(category === PAYMENT_CONSTANT) && <TableCell align="right">Principal</TableCell>}
+                                {(category === PAYMENT_CONSTANT) && <TableCell align="right">Penalty</TableCell>}
                                 <TableCell >Created</TableCell>
                                 <TableCell />
                             </TableRow>
@@ -133,6 +143,14 @@ const TransactionTable = (props) => {
                                     <TableRow key={index}>
                                         <TableCell align="right">{row.TransactionKey}</TableCell>
                                         <TableCell align="right">{Peso(row.Amount)}</TableCell>
+
+                                        {(category === DEPOSIT_CONSTANT) && <TableCell align="right">{Peso(row.DepositSavings)}</TableCell>}
+                                        {(category === DEPOSIT_CONSTANT) && <TableCell align="right">{Peso(row.DepositShareCapitalAmount)}</TableCell>}
+
+                                        {(category === PAYMENT_CONSTANT) && <TableCell align="right">{Peso(row.Interest)}</TableCell>}
+                                        {(category === PAYMENT_CONSTANT) && <TableCell align="right">{Peso(row.Principal)}</TableCell>}
+                                        {(category === PAYMENT_CONSTANT) && <TableCell align="right">{Peso(row.Penalty)}</TableCell>}
+
                                         <TableCell>{row.CreatedBy} - {FormatDateTime(row.CreatedDate)}</TableCell>
                                         <TableCell>
                                             <DeleteButton callback={deleteCallback} categoryTitle={categoryTitle} category={category}

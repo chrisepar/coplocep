@@ -16,7 +16,7 @@ export default (props) => {
     const pageCount = 4;
     let { detailID } = useParams();
     const [list, setList] = useState([]);
-    const [isLoading, setLoading] = useState(true);
+    const [isLoading, setLoading] = useState(null);
     const [trigger, setTrigger] = useState(0);
     const [page, setPage] = React.useState(0);
     const [searchValue, setSetSearchValue] = React.useState("NoFilter");
@@ -37,6 +37,7 @@ export default (props) => {
     const addCallback = (data) => {
         setLoading(true);
         return addTransaction(detailID, category, data).then((data) => {
+            setLoading(false);
             if (data) {
                 setStatus({
                     open: true,
@@ -51,21 +52,21 @@ export default (props) => {
                     severity: "error"
                 });
                 console.log("Error Occured - Add Failed");
-            }            
-            setLoading(false);
+            }
         }, (error) => {
+            setLoading(false);
             setStatus({
                 open: true,
                 message: "An error occured",
                 severity: "error"
             });
-            setLoading(false);
         });
     };
 
     const deleteCallback = (transactionKey) => {
         setLoading(true);
         return deleteTransaction(transactionKey, category).then((data) => {
+            setLoading(false);
             if (data) {
                 setStatus({
                     open: true,
@@ -81,20 +82,20 @@ export default (props) => {
                 });
                 console.log("Error Occured - Delete Failed");
             }
-            setLoading(false);
         }, (error) => {
+            setLoading(false);
             setStatus({
                 open: true,
                 message: "An error occured",
                 severity: "error"
-            });            
-            setLoading(false);
+            });
         });
     };
 
     const approveCallback = (transactionKey, comment) => {
         setLoading(true);
         return approveRecord(transactionKey, category, comment).then((data) => {
+            setLoading(false);
             if (data) {
                 setStatus({
                     open: true,
@@ -110,20 +111,20 @@ export default (props) => {
                 });
                 console.log("Error Occured - Approve Failed");
             }
-            setLoading(false);
         }, (error) => {
+            setLoading(false);
             setStatus({
                 open: true,
                 message: "An error occured",
                 severity: "error"
             });
-            setLoading(false);
         });
     };
 
     const rejectCallback = (transactionKey, comment) => {
         setLoading(true);
         return rejectRecord(transactionKey, category, comment).then((data) => {
+            setLoading(false);
             if (data) {
                 setStatus({
                     open: true,
@@ -139,14 +140,13 @@ export default (props) => {
                 });
                 console.log("Error Occured - Reject Failed");
             }
-            setLoading(false);
         }, (error) => {
+            setLoading(false);
             setStatus({
                 open: true,
                 message: "An error occured",
                 severity: "error"
             });
-            setLoading(false);
         });
     };
 
@@ -158,6 +158,7 @@ export default (props) => {
             filterByValue: "CreatedDate",
             searchValue: searchValue
         };
+
         getMemberTransactionList(detailID, category, filters)
             .then(data => {
                 if (mounted) {
@@ -170,11 +171,12 @@ export default (props) => {
     }, [trigger, page, searchValue]);
     // End
 
-    if (isLoading) {
+    if (isLoading === null) {
         return (<Loading />);
     } else {
         return (
             <React.Fragment>
+                {(isLoading) ? <Loading /> : null}
                 <StatusBar open={status.open} setOpen={handleStatusClose} message={status.message} severity={status.severity} />
                 <LoanTable rows={list.results} totalRowCount={list.totalRowCount} addCallback={addCallback} deleteCallback={deleteCallback}
                     approveCallback={approveCallback} rejectCallback={rejectCallback} page={page} setPage={setPage} rowsPerPage={pageCount}

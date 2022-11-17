@@ -6,7 +6,7 @@ import Loading from 'app/core/helpers/loading_screen.js';
 
 
 export default (props) => {
-    const { categoryTitle, category, newTransactData, setNewTransactData, isLoading, setLoading, status, setStatus } = props;
+    const { categoryTitle, category, newTransactData, setNewTransactData, status, setStatus, setDialogStatus, dialogStatus } = props;
 
     const handleChange = (value, field) => {
         var newDetail = _.clone(newTransactData);
@@ -16,14 +16,14 @@ export default (props) => {
 
     useEffect(() => {
         let mounted = true;
-        setLoading(false);
+        setDialogStatus({ ...dialogStatus, isLoading: false })
         return () => mounted = false;
     }, [])
 
     return (
         <DialogContent>
-            {(isLoading || isLoading === null) ? <Loading /> : null}
-            <CurrencyField id={category} label="Amount" value={newTransactData.amount} onChange={(value) => handleChange(value, "amount")} />
+            {(dialogStatus.isLoading || dialogStatus.isLoading === null) ? <Loading /> : null}
+            <CurrencyField id={category} label="Amount" value={newTransactData.Amount} onChange={(value) => handleChange(value, "Amount")} />
         </DialogContent>
     );
 };

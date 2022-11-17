@@ -22,6 +22,9 @@ CREATE PROCEDURE [dbo].[AddPayment]
 	@MemberKey int,
 	@LoanKey int,
 	@Amount numeric(18,2),
+	@Principal numeric(18,2),
+	@Interest numeric(18,2),
+	@Penalty numeric(18,2),
 	@CreatedBy nvarchar(250),
 	@CreatedDate datetime,
 	@ModifiedBy nvarchar(250),
@@ -38,6 +41,9 @@ BEGIN
            ([MemberKey]
 		   ,[LoanKey]
            ,[Amount]
+           ,[Principal]
+           ,[Interest]
+           ,[Penalty]
            ,[CreatedBy]
            ,[CreatedDate]
            ,[ModifiedBy]
@@ -45,6 +51,9 @@ BEGIN
      VALUES(@MemberKey,
 		@LoanKey,
 		@Amount,
+		@Principal,
+		@Interest,
+		@Penalty,
 		@CreatedBy,
 		@CreatedDate,
 		@ModifiedBy,

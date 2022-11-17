@@ -26,6 +26,8 @@ AS
 RETURN 
 
 SELECT T.TransactionKey, T.MemberKey, T.Amount, T.Interest, T.Term, T.StartDueDate,
+T.TypeOfLoan, T.ServiceFee, T.InsuranceAmount, T.FixedDepositAmount, T.DocumentationAmount, T.SavingsDepositAmount,
+T.BalancePreviousLoanAmount, T.InterestPreviousLoanAmount,
 dbo.GetUserRole(T.CreatedBy) AS [CreatedBy], 
 T.CreatedDate, 
 dbo.GetUserRole(T.ModifiedBy) AS [ModifiedBy], 

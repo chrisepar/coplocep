@@ -31,10 +31,13 @@ BEGIN
 	SELECT TA.[TransactionKey]
       ,TA.[MemberKey]
       ,TA.[Amount]
-	  ,TA.Amount - SUM(P.[Amount]) AS [Balance]
+	  ,TA.Amount - SUM(COALESCE(P.[Amount],0) - COALESCE(P.[Interest],0) - COALESCE(P.[Penalty],0)) AS [Balance]
 	  ,TA.[Interest]
 	  ,TA.[Term]
 	  ,TA.[StartDueDate]
+	  ,TA.TypeOfLoan, TA.ServiceFee, TA.InsuranceAmount
+	  ,TA.FixedDepositAmount, TA.DocumentationAmount, TA.SavingsDepositAmount
+ 	  ,TA.BalancePreviousLoanAmount, TA.InterestPreviousLoanAmount
       ,TA.[CreatedBy]
       ,TA.[CreatedDate]
       ,TA.[ModifiedBy]
@@ -47,6 +50,8 @@ BEGIN
 		LEFT JOIN Payments AS P ON TA.TransactionKey = P.LoanKey
 	WHERE TA.MemberKey = @memberKey
 	GROUP BY TA.TransactionKey, TA.MemberKey, TA.Amount, TA.Interest, TA.Term, TA.StartDueDate, TA.CreatedBy, TA.CreatedDate,
-	TA.ModifiedBy, TA.ModifiedDate, TA.ApprovalID, TA.LastApprovedBy, TA.LastApprovedDate, TA.LastIsApproved, TA.Comment
+	TA.ModifiedBy, TA.ModifiedDate, TA.ApprovalID, TA.LastApprovedBy, TA.LastApprovedDate, TA.LastIsApproved, TA.Comment,
+	TA.TypeOfLoan, TA.ServiceFee, TA.InsuranceAmount ,TA.FixedDepositAmount, TA.DocumentationAmount, TA.SavingsDepositAmount,
+ 	TA.BalancePreviousLoanAmount, TA.InterestPreviousLoanAmount
 END
 GO

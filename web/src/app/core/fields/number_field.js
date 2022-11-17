@@ -40,7 +40,7 @@ function NumberFieldCore(props) {
             format={format}
             inputProps={{ maxLength: maxLength }}
             value={FormatValue(field_types.number_field, value)}
-            onChange={(event) => onChange(event.target.value)}
+            onValueChange={(values) => onChange(values.value)}
             allowLeadingZeros={allowLeadingZeros}
             allowNegative={allowNegative}
             isAllowed={withValueLimit}

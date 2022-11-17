@@ -13,25 +13,27 @@ import useStyles from 'app/core/styles/buttons/_buttons.js';
 import isEmpty from "app/core/helpers/is_empty.js";
 
 import LoanBreakdown from "app/transaction/components/new_transaction/loan_breakdown.js";
+import DepositBreakdown from "app/transaction/components/new_transaction/deposit_breakdown.js";
 import StandardContent from "app/transaction/components/new_transaction/standard_content.js";
+import PaymentBreakdown from "app/transaction/components/new_transaction/payment_breakdown.js";
 
 import { downloadComputation } from 'app/transaction/transaction_model.js';
 
 function AddButton(props) {
     let { detailID } = useParams();
     const { classes } = useStyles();
-    const { id, label, callback, categoryTitle, category, customText } = props;
-    const [openEntryDialog, setOpenEntryDialog] = React.useState(false);
+    const { id, label, callback, categoryTitle, category, customText, otherOptions } = props;
+
+    const LOAN_CONSTANT = "Loan";
+    const DEPOSIT_CONSTANT = "Deposit";
+    const PAYMENT_CONSTANT = "Payment";
 
     const newTransactionModel = {
-        amount: 0, interest: 0, term: 0, typeOfLoan: "", dueDate: null,
-        serviceFee: 0, insuranceAmount: 0, fixedDepositAmount: 0, documentationAmount: 0, 
-        savingsDepositAmount: 0, balancePreviousLoanAmount: 0, interestPreviousLoanAmount: 0
+        Amount: 0, Interest: 0, Term: 0, TypeOfLoan: "", StartDueDate: null,
+        ServiceFee: 0, InsuranceAmount: 0, FixedDepositAmount: 0, DocumentationAmount: 0,
+        SavingsDepositAmount: 0, BalancePreviousLoanAmount: 0, InterestPreviousLoanAmount: 0,
+        DepositSavings: 0, DepositShareCapitalAmount: 0, Principal: 0, Penalty: 0
     };
-    
-    const [newTransactData, setNewTransactData] = React.useState(newTransactionModel);
-
-    const [isLoading, setLoading] = React.useState(null);
 
     const defaultStatus = {
         open: false,
@@ -41,53 +43,83 @@ function AddButton(props) {
 
     const [status, setStatus] = React.useState(defaultStatus);
 
+    const [newTransactData, setNewTransactData] = React.useState(newTransactionModel);
+
+    const [dialogStatus, setDialogStatus] = React.useState({
+        isLoading: null,
+        openEntryDialog: false
+    });
+
     const handleClickOpen = () => {
-        setOpenEntryDialog(true);
+        setDialogStatus({
+            ...dialogStatus,
+            openEntryDialog: true
+        });
     };
 
     const handleClose = () => {
-        setOpenEntryDialog(false);
+        setDialogStatus({
+            ...dialogStatus,
+            openEntryDialog: false
+        });
     };
 
     const handleConfirm = () => {
         if (callback) {
-            setLoading(true);
+            setDialogStatus({
+                ...dialogStatus,
+                isLoading: true
+            });
             callback(newTransactData).then(() => {
-                setOpenEntryDialog(false);
+                setDialogStatus({
+                    isLoading: false,
+                    openEntryDialog: false
+                });
             });
         }
-    };    
+    };
 
     const handleCalculate = (event) => {
-        setLoading(true);
-        downloadComputation(detailID, newTransactData.amount, newTransactData.interest, newTransactData.term).then((fileName) => {
-            setLoading(false);
-            setStatus({
-                open: true,
-                message: `Download Successful - ${fileName}`,
-                severity: "success"
+        setDialogStatus({
+            ...dialogStatus,
+            isLoading: true
+        });
+        downloadComputation(detailID, newTransactData).then((fileName) => {
+            setDialogStatus({
+                ...dialogStatus,
+                isLoading: false
             });
         }).catch((error) => {
-            setStatus({
-                open: true,
-                message: "Download Failed",
-                severity: "error"
+            setDialogStatus({
+                ...dialogStatus,
+                isLoading: false
             });
         });
     };
 
     const breakdown = () => {
         switch (category) {
-            case "Loan":
-                return <LoanBreakdown categoryTitle={categoryTitle} category={category} isLoading={isLoading} setLoading={setLoading}
-                    newTransactData={newTransactData} setNewTransactData={setNewTransactData} status={status} setStatus={setStatus}
+            case LOAN_CONSTANT:
+                return <LoanBreakdown categoryTitle={categoryTitle} category={category} isLoading={dialogStatus.isLoading} status={status} setStatus={setStatus}
+                    newTransactData={newTransactData} setNewTransactData={setNewTransactData} setDialogStatus={setDialogStatus} dialogStatus={dialogStatus}
+                />;
+            case DEPOSIT_CONSTANT:
+                return <DepositBreakdown categoryTitle={categoryTitle} category={category} isLoading={dialogStatus.isLoading} status={status} setStatus={setStatus}
+                    newTransactData={newTransactData} setNewTransactData={setNewTransactData} setDialogStatus={setDialogStatus} dialogStatus={dialogStatus}
+                />;
+            case PAYMENT_CONSTANT:
+                return <PaymentBreakdown categoryTitle={categoryTitle} category={category} isLoading={dialogStatus.isLoading} status={status} setStatus={setStatus}
+                    newTransactData={newTransactData} setNewTransactData={setNewTransactData} setDialogStatus={setDialogStatus} dialogStatus={dialogStatus}
+                    otherOptions={otherOptions}
                 />;
             default:
-                return <StandardContent categoryTitle={categoryTitle} category={category} isLoading={isLoading} setLoading={setLoading}
-                    newTransactData={newTransactData} setNewTransactData={setNewTransactData}  status={status} setStatus={setStatus}
+                return <StandardContent categoryTitle={categoryTitle} category={category} isLoading={dialogStatus.isLoading} status={status} setStatus={setStatus}
+                    newTransactData={newTransactData} setNewTransactData={setNewTransactData} setDialogStatus={setDialogStatus} dialogStatus={dialogStatus}
                 />;
         }
     };
+
+    const isButtonsDisabled = (newTransactData.Amount <= 0 || isEmpty(newTransactData.StartDueDate));
 
     return (
         <div>
@@ -100,15 +132,13 @@ function AddButton(props) {
                 startIcon={<AddCircleIcon />}
                 onClick={handleClickOpen}
             >{isEmpty(customText) ? category : customText}</Button>
-            <Dialog open={openEntryDialog} onClose={handleClose} aria-labelledby="form-dialog-title" maxWidth="xl" fullWidth>
+            <Dialog open={dialogStatus.openEntryDialog} onClose={handleClose} aria-labelledby="form-dialog-title" maxWidth="xl" fullWidth={(category === LOAN_CONSTANT)}>
                 <DialogTitle id="form-dialog-title">{category}</DialogTitle>
-                {
-                    breakdown()
-                }
+                {breakdown()}
                 <DialogActions>
-                    <Button onClick={handleCalculate} color="primary" disabled={(newTransactData.amount <= 0)} > Download Breakdown </Button>
+                    {(category === LOAN_CONSTANT) && <Button onClick={handleCalculate} color="primary" disabled={isButtonsDisabled} > Download Breakdown </Button>}
                     <Button onClick={handleClose} color="primary"> Cancel </Button>
-                    <Button onClick={handleConfirm} color="primary" disabled={(newTransactData.amount <= 0)}> Confirm </Button>
+                    <Button onClick={handleConfirm} color="primary" disabled={(newTransactData.Amount <= 0)}> Confirm </Button>
                 </DialogActions>
             </Dialog>
         </div>
@@ -117,7 +147,8 @@ function AddButton(props) {
 
 AddButton.defaultProps = {
     callback: null,
-    customText: null
+    customText: null,
+    otherOptions: {}
 };
 
 export default AddButton;

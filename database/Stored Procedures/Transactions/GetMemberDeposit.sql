@@ -30,6 +30,8 @@ BEGIN
 	SELECT [TransactionKey]
       ,[MemberKey]
       ,[Amount]
+	  ,[DepositShareCapitalAmount]
+	  ,[DepositSavings]
       ,[CreatedBy]
       ,[CreatedDate]
       ,[ModifiedBy]

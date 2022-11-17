@@ -19,17 +19,32 @@ const model = {
 
 const prepData = (detailID, category, data) => {
     var detail = _.clone(model);
-    detail.MemberKey = detailID;
-    detail.Category = category;
-    detail.Amount = data.amount;
-    detail.Interest = data.interest;
-    detail.Term = data.term;
-    detail.TypeOfLoan = data.typeOfLoan;
-    detail.StartDueDate = data.startDueDate;
-    detail.CreatedBy = getUserCode();
-    detail.CreatedDate = new Date();
-    detail.ModifiedBy = getUserCode();
-    detail.ModifiedDate = new Date();
+
+    // Use only for transactions
+    if (category !== null) {
+        detail.MemberKey = detailID;
+        detail.Category = category;
+        detail.TypeOfLoan = data.TypeOfLoan;
+        detail.StartDueDate = data.StartDueDate;
+        detail.CreatedBy = getUserCode();
+        detail.CreatedDate = new Date();
+        detail.ModifiedBy = getUserCode();
+        detail.ModifiedDate = new Date();
+    }
+
+    // Shared for Download Computation and New Loan
+    detail.Amount = data.Amount;
+    detail.Interest = data.Interest;
+    detail.Term = data.Term;
+    detail.ServiceFee = data.ServiceFee;
+    detail.InsuranceAmount = data.InsuranceAmount;
+    detail.FixedDepositAmount = data.FixedDepositAmount;
+    detail.DocumentationAmount = data.DocumentationAmount;
+    detail.SavingsDepositAmount = data.SavingsDepositAmount;
+    detail.BalancePreviousLoanAmount = data.BalancePreviousLoanAmount;
+    detail.InterestPreviousLoanAmount = data.InterestPreviousLoanAmount;
+    detail.DepositSavings = data.DepositSavings;
+    detail.DepositShareCapitalAmount = data.DepositShareCapitalAmount;
     return detail;
 };
 
@@ -38,7 +53,10 @@ const prepPayment = (detailID, data) => {
     detail.MemberKey = detailID;
     detail.LoanKey = data.loanID;
     detail.Category = "Payment";
-    detail.Amount = data.amount;
+    detail.Amount = data.Amount;
+    detail.Interest = data.Interest;
+    detail.Principal = data.Principal;
+    detail.Penalty = data.Penalty;
     detail.CreatedBy = getUserCode();
     detail.CreatedDate = new Date();
     detail.ModifiedBy = getUserCode();
@@ -46,8 +64,8 @@ const prepPayment = (detailID, data) => {
     return detail;
 };
 
-const addPayment = (detailID, data) => {
-    var detail = prepPayment(detailID, data);
+const addPayment = (detailID, dataDetail) => {
+    var detail = prepPayment(detailID, dataDetail);
     return postData(`transaction/add/payment`, detail).then((data) => {
         if (data && data.ok) {
             return data.json();
@@ -57,8 +75,8 @@ const addPayment = (detailID, data) => {
     });
 };
 
-const addTransaction = (detailID, category, data) => {
-    var detail = prepData(detailID, category, data);
+const addTransaction = (detailID, category, dataDetail) => {
+    var detail = prepData(detailID, category, dataDetail);
     return postData(`transaction/add/${category}`, detail).then((data) => {
         if (data && data.ok) {
             return data.json();
@@ -116,10 +134,10 @@ const getTypeOfLoans = () => {
         .then(data => data.json())
 };
 
-const downloadComputation = (memberKey, amount, interest, term) => {
+const downloadComputation = (memberKey, transactData) => {
     let fileName = "";
-    const param = `?memberKey=${memberKey}&amount=${amount}&interest=${interest}&term=${term}`;
-    return getData(`transaction/calculation${param}`)
+    var detail = prepData(memberKey, null, transactData);
+    return postData(`transaction/calculation?memberKey=${memberKey}&amount=${transactData.Amount}`, detail)
         .then(response => {
             if (!response.ok) {
                 throw new Error('Network response was not OK');

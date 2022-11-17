@@ -63,7 +63,7 @@ export default (props) => {
                             suffix="%" />
                     </Grid>
                     <Grid item xs={3}>
-                        <NumberField id="MaxTerm" label="Max Term" maxValue={60} decimalScale={0}
+                        <NumberField id="MaxTerm" label="Default Term" maxValue={60} decimalScale={0}
                             value={detail.MaxTerm} onChange={(value) => handleChange(value, "MaxTerm")} />
                     </Grid>
                     <Grid item xs={6} />

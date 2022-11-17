@@ -46,9 +46,12 @@ export default (props) => {
         setStatus(defaultStatus);
     };
 
-    const addCallback = (paymentAmount) => {
+    const addCallback = (paymentData) => {
         setLoading(true);
-        return addPayment(detailID, { loanID: TransactionKey, amount: paymentAmount }).then((data) => {
+        return addPayment(detailID, {
+            ...paymentData,
+            loanID: TransactionKey
+        }).then((data) => {
             if (data) {
                 setStatus({
                     open: true,
@@ -57,6 +60,12 @@ export default (props) => {
                 });
                 setTrigger(data);
                 setPaymentReload(data);
+            } else {
+                setStatus({
+                    open: true,
+                    message: "An error occured",
+                    severity: "error"
+                });
             }
             setLoading(false);
         }, (error) => {
@@ -71,7 +80,7 @@ export default (props) => {
 
     const handleCalculate = (event) => {
         setLoading(true);
-        downloadComputation(detailID, Amount, Interest, Term).then((fileName) => {
+        downloadComputation(detailID, detail).then((fileName) => {
             setStatus({
                 open: true,
                 message: `Download Successful - ${fileName}`,
@@ -112,26 +121,28 @@ export default (props) => {
                 <DialogTitle id="form-dialog-title">Loan Details</DialogTitle>
                 <DialogContent>
                     <Grid container spacing={3} >
-                        <Grid item xs={3}>
+                        <Grid item xs={2}>
                             <TextField id="LoanID" label="Loan Number" disabled={true} value={TransactionKey} />
                         </Grid>
-                        <Grid item xs={3}>
+                        <Grid item xs={2}>
                             <TextField id="InterestRate" label="Interest Rate" disabled={true} value={Interest} />
                         </Grid>
-                        <Grid item xs={3}>
+                        <Grid item xs={2}>
                             <TextField id="Term" label="Term" disabled={true} value={Term} />
                         </Grid>
-                        <Grid item xs={3}>
-                            <TextField id="Amount" label="Loan Amount" disabled={true} value={Peso(Amount)} />
+                        <Grid item xs={4}>
+                            <TextField id="Amount" label="Loan Amount" disabled={true} value={Peso(details.LoanAmount)} />
                         </Grid>
-
+                        <Grid item xs={2} />
                         <Grid item xs={6} />
-                        <Grid item xs={3}>
-                            <TextField id="PaidAmount" label="Total Paid" disabled={true} value={Peso(details.PaidAmount)} />
-                        </Grid>
-                        <Grid item xs={3}>
+
+                        <Grid item xs={2}>
                             <TextField id="UnpaidAmount" label="Outstanding Balance" disabled={true} value={Peso(details.UnpaidAmount)} />
                         </Grid>
+                        <Grid item xs={2}>
+                            <TextField id="PaidAmount" label="Total Paid" disabled={true} value={Peso(details.PaidAmount)} />
+                        </Grid>
+                        <Grid item xs={2} />
 
                         <Grid item xs={12}>
                             <IntPayView paymentReload={paymentReload} loanID={TransactionKey} category="Payment" categoryTitle="Payment" setLoanPaymentTrigger={setTrigger} />
@@ -139,11 +150,12 @@ export default (props) => {
                     </Grid>
                 </DialogContent>
                 <DialogActions>
-                    <EntryButton callback={addCallback} categoryTitle="Payment" category="Payment" customText="Pay an amount" />
+                    <EntryButton callback={addCallback} categoryTitle="Payment" category="Payment" customText="Pay an amount"
+                        otherOptions={{ UnpaidAmount: details.UnpaidAmount }} />
                     <Button onClick={handleCalculate} label="Download Breakdown" />
                     <Button onClick={handleDialogClose} color="primary" label="Close" />
                 </DialogActions>
-            </Dialog>
-        </React.Fragment>
+            </Dialog >
+        </React.Fragment >
     );
 };
