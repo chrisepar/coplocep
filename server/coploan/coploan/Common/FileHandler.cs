@@ -219,5 +219,27 @@ namespace coploan.Common
                 }
             }
         }
+    
+        public byte[] DownloadTable(DataTable datatable, string name)
+        {
+            using (XLWorkbook wb = new XLWorkbook())
+            {
+                var ws = wb.Worksheets.Add(name);
+                int dataRowCount = datatable.Rows.Count;
+                int dataColumnCount = datatable.Columns.Count;
+                ws.Cell(1, 1).InsertTable(datatable.AsEnumerable());
+                ws.Range(1, 1, 1, dataColumnCount).Style.Font.Bold = true;
+                ws.Range(2, 1, dataRowCount, dataColumnCount).Style.NumberFormat.Format = "₱ #,##0.00";
+
+                using (MemoryStream stream = new MemoryStream())
+                {
+                    wb.SaveAs(stream);
+
+                    return stream.ToArray();
+                }
+
+            }
+        }
+    
     }
 }

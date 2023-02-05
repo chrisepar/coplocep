@@ -8,6 +8,8 @@ import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import DeleteIcon from '@mui/icons-material/Delete';
 import FilterListIcon from '@mui/icons-material/FilterList';
+
+import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import MenuItem from '@mui/material/MenuItem';
 import Grid from '@mui/material/Grid';
@@ -31,6 +33,10 @@ function TableToolbar(props) {
         !isEmpty(setFilterByValue) && setFilterByValue(value);
     };
 
+    const handleDownload = () => {
+        
+    };
+
     return (
         <Toolbar
             className={clsx(classes.root, {
@@ -49,7 +55,10 @@ function TableToolbar(props) {
                     <TextField id="table-search" placeholder={searchPlaceHolder} type="search" variant="outlined" size="small" margin="normal"
                         onChange={(e) => searchDebounce(e)} />
                 </Grid>
-                <Grid item xs={8} />
+                <Grid item xs={6} />
+                <Grid item xs={2}>
+                    <Button onClick={handleDownload} color="primary"> Download </Button>
+                </Grid>
             </Grid>
         </Toolbar>
     );
