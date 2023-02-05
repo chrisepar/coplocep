@@ -19,10 +19,13 @@ namespace coploan.Services
             sql = new SQLQueries(config);
         }
         private SQLQueries sql;
-        public string DownloadMembership()
+        public byte[] DownloadMembership()
         {
+            FileHandler fileHandler = new FileHandler();
             DataTable results = sql.ExecuteReader("[dbo].[DownloadMembership]");
-            return JsonConvert.SerializeObject(GetDataByPage(results));
+
+            return fileHandler.DownloadTable(results, "Membership");
+            //return JsonConvert.SerializeObject(GetDataByPage(results));
         }
     }
 }

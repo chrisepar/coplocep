@@ -20,9 +20,11 @@ namespace coploan.Controllers
         }
 
         [ActionName("download/membership"), HttpGet]
-        public ActionResult<string> DownloadMembership()
+        public ActionResult DownloadTable(string category)
         {
-            return reports.DownloadMembership();
+            string fileName = "Membership";
+            byte[] result = reports.DownloadMembership();
+            return File(result, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName + ".xlsx");
         }
     }
 }
